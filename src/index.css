@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { color-scheme: light; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-creme font-sans text-tinta antialiased;
+    /* leve textura de papel */
+    background-image: radial-gradient(rgba(82, 2, 21, 0.035) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  ::selection { @apply bg-rosa text-vinho; }
+  input[type='date'], input[type='time'] { @apply cursor-pointer; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(82, 2, 21, 0.2) transparent; }
+}
+
+@layer utilities {
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
