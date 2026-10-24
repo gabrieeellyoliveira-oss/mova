@@ -1,12 +1,24 @@
-/* Modak para headings médios: mesma fonte, glifos ampliados para
-   compensar a altura-x baixa, sem alterar font-size nem line-height. */
+/* Sooky 70s (Slidehack): logo, títulos e headings.
+   A fonte não tem acentos (mapeia ç→c, ó→o…), então ela cobre só os caracteres
+   que possui e as letras acentuadas usam a Modak, em escala casada pela altura-x.
+   size-adjust aproxima o tamanho visual da referência sem mudar o font-size. */
 @font-face {
-  font-family: 'Modak Heading';
+  font-family: 'Sooky 70s';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/Sooky70s.woff2') format('woff2'), url('./assets/fonts/Sooky70s.woff') format('woff');
+  unicode-range: U+0020-007E, U+00A0, U+00AD;
+  size-adjust: 135%;
+}
+@font-face {
+  font-family: 'Sooky 70s';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
   src: url('../node_modules/@fontsource/modak/files/modak-latin-400-normal.woff2') format('woff2');
-  size-adjust: 108%;
+  unicode-range: U+00C0-024F;
+  size-adjust: 111%;
 }
 
 @tailwind base;
@@ -29,7 +41,6 @@
 
 @layer utilities {
   .font-display, .font-heading { font-weight: 400; font-synthesis: none; }
-  .font-heading { letter-spacing: -0.02em; }
   .tabular-nums { font-variant-numeric: tabular-nums; }
 }
 

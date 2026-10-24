@@ -33,7 +33,7 @@ export function Shortcuts() {
               </span>
             </div>
             <div>
-              <p className={cn('text-[17px] font-extrabold leading-tight', it.text)}>{a.label}</p>
+              <p className={cn('font-heading text-[17px] leading-tight', it.text)}>{a.label}</p>
               <p className={cn('mt-1 text-[13px] leading-snug', it.sub)}>{a.tagline}</p>
             </div>
           </Link>

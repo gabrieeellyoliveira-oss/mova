@@ -13,7 +13,7 @@ export function DayAgenda({ date, events }: { date: ISODate; events: CalendarEve
     <div>
       <div className="mb-3 flex items-center justify-between gap-2">
         <div>
-          <p className="text-[15px] font-bold capitalize text-vinho">{rel === 'hoje' || rel === 'amanhã' || rel === 'ontem' ? rel : 'Agenda'}</p>
+          <p className="font-heading text-[15px] capitalize text-vinho">{rel === 'hoje' || rel === 'amanhã' || rel === 'ontem' ? rel : 'Agenda'}</p>
           <p className="text-xs text-vinho/55 first-letter:uppercase">{formatLong(date)}</p>
         </div>
         <Button size="icon-sm" variant="soft" onClick={() => openForm('event', { date })} aria-label="Novo compromisso"><Plus size={16} /></Button>

@@ -31,10 +31,10 @@ export function WelcomeBanner() {
           <p className="text-sm font-extrabold uppercase tracking-[0.06em] text-rosa-50 sm:text-base">
             {greeting(now)}, {name}.
           </p>
-          <h1 className="mt-2 max-w-[11ch] font-display text-[3.2rem] leading-[0.84] text-rosa-50 sm:text-[4rem] min-[1360px]:text-[4.5rem]">
+          <h1 className="mt-2 font-display text-[2.5rem] leading-[0.95] text-rosa-50 sm:text-[3.1rem] min-[1360px]:text-[3.4rem]">
             O que vamos mover hoje?
           </h1>
-          <p className="mt-3 font-heading text-[15px] text-rosa-50/90 sm:text-base">Pequenas ações, uma vida gigante.</p>
+          <p className="mt-3 text-[15px] font-medium text-rosa-50/90 sm:text-base">Pequenas ações, uma vida gigante.</p>
           <button
             onClick={() => openForm('event')}
             className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-rosa px-5 text-[15px] font-bold text-vinho shadow-soft transition hover:bg-rosa-100 active:scale-[0.97]"
