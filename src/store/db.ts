@@ -1,6 +1,6 @@
 import type {
-  Book, CalendarEvent, Course, Experience, FinancialGoal, FocusSession, Goal, Habit,
-  Note, Place, Settings, Task, Transaction, WeeklyPriority,
+  Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
+  Note, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
 } from '@/types'
 import * as seed from '@/data/seed'
 import { createCollection } from './collections'
@@ -10,7 +10,6 @@ import { createPersistedStore } from './createStore'
  * Todas as coleções do MOVA. Cada uma é persistida separadamente pelo adapter
  * em `lib/storage.ts` (hoje LocalStorage).
  */
-const places = createCollection<Place>('places', seed.seedPlaces)
 const courses = createCollection<Course>('courses', seed.seedCourses)
 
 export const db = {
@@ -18,8 +17,8 @@ export const db = {
   tasks: createCollection<Task>('tasks', seed.seedTasks),
   transactions: createCollection<Transaction>('transactions', seed.seedTransactions),
   financialGoals: createCollection<FinancialGoal>('financialGoals', seed.seedFinancialGoals),
-  places,
-  experiences: createCollection<Experience>('experiences', () => seed.seedExperiences(places.store.get())),
+  vaultEntries: createCollection<VaultEntry>('vaultEntries', seed.seedVaultEntries),
+  vaultCosts: createCollection<VaultCost>('vaultCosts', seed.seedVaultCosts),
   courses,
   focusSessions: createCollection<FocusSession>('focusSessions', () => seed.seedFocusSessions(courses.store.get())),
   books: createCollection<Book>('books', seed.seedBooks),
@@ -30,6 +29,7 @@ export const db = {
 }
 
 export const settingsStore = createPersistedStore<Settings>('settings', seed.seedSettings)
+export const vaultSettingsStore = createPersistedStore<VaultSettings>('vaultSettings', seed.seedVaultSettings)
 
 export type CollectionName = keyof typeof db
 
@@ -38,11 +38,13 @@ export const exportAll = () => ({
   version: 1,
   exportedAt: new Date().toISOString(),
   settings: settingsStore.get(),
+  vaultSettings: vaultSettingsStore.get(),
   ...Object.fromEntries(Object.entries(db).map(([k, c]) => [k, c.store.get()])),
 })
 
 export const importAll = (data: Record<string, unknown>) => {
   if (data.settings) settingsStore.set(data.settings as Settings)
+  if (data.vaultSettings) vaultSettingsStore.set(data.vaultSettings as VaultSettings)
   for (const [k, c] of Object.entries(db)) {
     if (Array.isArray(data[k])) (c.store.set as (v: unknown) => void)(data[k])
   }
@@ -51,6 +53,7 @@ export const importAll = (data: Record<string, unknown>) => {
 /** Volta para os dados de exemplo. */
 export const resetAll = () => {
   settingsStore.reset()
-  // ordem importa: places/courses antes de experiences/focusSessions
+  vaultSettingsStore.reset()
+  // ordem importa: courses antes de focusSessions
   for (const c of Object.values(db)) c.store.reset()
 }

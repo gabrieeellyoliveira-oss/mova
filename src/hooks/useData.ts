@@ -4,20 +4,21 @@
  * no armazenamento diretamente.
  */
 import { useMemo } from 'react'
-import { db, settingsStore } from '@/store/db'
+import { db, settingsStore, vaultSettingsStore } from '@/store/db'
 import { useCollection } from '@/store/collections'
 import { useStore } from '@/store/createStore'
 import { addDays, monthKey, startOfWeek, today, weekDays } from '@/utils/date'
 import { ratio } from '@/utils/format'
-import type { Goal, Habit, Transaction } from '@/types'
+import type { Goal, Habit, Transaction, VaultEntry } from '@/types'
 
 export const useSettings = () => useStore(settingsStore)
 export const useEvents = () => useCollection(db.events)
 export const useTasks = () => useCollection(db.tasks)
 export const useTransactions = () => useCollection(db.transactions)
 export const useFinancialGoals = () => useCollection(db.financialGoals)
-export const usePlaces = () => useCollection(db.places)
-export const useExperiences = () => useCollection(db.experiences)
+export const useVaultEntries = () => useCollection(db.vaultEntries)
+export const useVaultCosts = () => useCollection(db.vaultCosts)
+export const useVaultSettings = () => useStore(vaultSettingsStore)
 export const useCourses = () => useCollection(db.courses)
 export const useFocusSessions = () => useCollection(db.focusSessions)
 export const useBooks = () => useCollection(db.books)
@@ -102,28 +103,58 @@ export function useStudyWeek() {
   }, [sessions, settings.weeklyStudyHours])
 }
 
-/** Próximo rolê: lugar planejado mais próximo ou evento de categoria rolê */
-export function useNextOuting() {
-  const places = usePlaces()
-  const events = useEvents()
-  return useMemo(() => {
-    const t = today()
-    const now = new Date()
-    const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-    const upcoming = (date?: string, time?: string) => !!date && (date > t || (date === t && (!time || time >= hhmm)))
-    const planned = places
-      .filter((p) => p.status === 'planejado' && upcoming(p.plannedFor, p.plannedTime))
-      .sort((a, b) => `${a.plannedFor}${a.plannedTime}`.localeCompare(`${b.plannedFor}${b.plannedTime}`))
-    if (planned[0]) return { kind: 'place' as const, place: planned[0], date: planned[0].plannedFor!, time: planned[0].plannedTime }
-    const ev = events
-      .filter((e) => e.category === 'role' && upcoming(e.date, e.time))
-      .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))[0]
-    if (ev) return { kind: 'event' as const, event: ev, date: ev.date, time: ev.time }
-    return null
-  }, [places, events])
-}
+export const vaultNet = (e: Pick<VaultEntry, 'type' | 'amount'>) => (e.type === 'deposito' ? e.amount : -e.amount)
 
-export function useLastExperience() {
-  const exps = useExperiences()
-  return useMemo(() => [...exps].sort((a, b) => b.date.localeCompare(a.date))[0], [exps])
+/** Resumo do cofre "Sair de casa": quanto tenho, quanto falta e quando chego lá */
+export function useVault() {
+  const entries = useVaultEntries()
+  const costs = useVaultCosts()
+  const settings = useVaultSettings()
+  return useMemo(() => {
+    const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt))
+    const saved = sorted.reduce((a, e) => a + vaultNet(e), 0)
+    const orderedCosts = [...costs].sort((a, b) => a.order - b.order)
+    const target = orderedCosts.length ? orderedCosts.reduce((a, c) => a + c.amount, 0) : settings.manualTarget
+    const remaining = Math.max(0, target - saved)
+    const progress = ratio(saved, target)
+
+    // série mensal (do primeiro depósito até hoje)
+    const now = new Date()
+    const firstKey = sorted[0] ? monthKey(sorted[0].date) : monthKey(today())
+    const [fy, fm] = firstKey.split('-').map(Number)
+    const months: { key: string; mes: string; liquido: number; saldo: number }[] = []
+    let acc = 0
+    for (let d = new Date(fy, fm - 1, 1); d <= now; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+      const liquido = sorted.filter((e) => monthKey(e.date) === key).reduce((a, e) => a + vaultNet(e), 0)
+      acc += liquido
+      months.push({ key, mes: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''), liquido, saldo: acc })
+    }
+    const recent = months.slice(-6)
+    const monthlyAvg = recent.length ? recent.reduce((a, m) => a + m.liquido, 0) / recent.length : 0
+    const thisMonth = months[months.length - 1]?.liquido ?? 0
+
+    // previsão no ritmo atual
+    const monthsToGoal = remaining <= 0 ? 0 : monthlyAvg > 0 ? Math.ceil(remaining / monthlyAvg) : null
+    const forecast = monthsToGoal === null ? null : new Date(now.getFullYear(), now.getMonth() + monthsToGoal, 1)
+
+    // quanto guardar por mês para chegar na data desejada
+    let monthsLeft: number | null = null
+    let neededPerMonth: number | null = null
+    if (settings.targetDate) {
+      const [ty, tm] = settings.targetDate.split('-').map(Number)
+      monthsLeft = Math.max(1, (ty - now.getFullYear()) * 12 + (tm - 1 - now.getMonth()))
+      neededPerMonth = remaining / monthsLeft
+    }
+
+    // o saldo vai "cobrindo" os custos na ordem da lista
+    let left = Math.max(0, saved)
+    const coverage = orderedCosts.map((c) => {
+      const covered = Math.min(c.amount, left)
+      left -= covered
+      return { cost: c, covered, progress: ratio(covered, c.amount) }
+    })
+
+    return { entries: sorted, costs: orderedCosts, settings, saved, target, remaining, progress, months, monthlyAvg, thisMonth, monthsToGoal, forecast, monthsLeft, neededPerMonth, coverage }
+  }, [entries, costs, settings])
 }

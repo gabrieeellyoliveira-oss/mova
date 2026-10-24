@@ -8,3 +8,6 @@
 ## Identidade visual
 - Siga à risca o prompt original e as imagens de referência da Gabi; não invente elementos, cores ou textos.
 - Tipografia: a Sooky 70s (`src/assets/fonts`, comercial) é usada **somente no logo MOVA** (`font-logo`). Todo o resto — títulos, atalhos, cards, banner — usa DM Sans, a mesma fonte do menu (`font-display`/`font-heading` apontam para ela).
+
+## Módulos
+- **Sair de casa** = sair da casa dos pais (mudança), **não** rolês. A aba `/sair-de-casa` é um cofre: depósitos/retiradas (`db.vaultEntries`), custos da mudança cuja soma é a meta (`db.vaultCosts`), data desejada (`vaultSettingsStore`). Cálculos em `useVault()` (`src/hooks/useData.ts`).

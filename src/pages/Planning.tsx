@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Inbox } from 'lucide-react'
 import type { ISODate } from '@/types'
 import { db } from '@/store/db'
-import { useEvents, usePlaces, useTasks } from '@/hooks/useData'
+import { useEvents, useTasks } from '@/hooks/useData'
 import { AREAS, EVENT_CATEGORIES } from '@/data/constants'
 import { addDays, formatShort, startOfWeek, today, weekDays } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
@@ -19,7 +19,6 @@ export default function Planning() {
   const [ref, setRef] = useState(today())
   const tasks = useTasks()
   const events = useEvents()
-  const places = usePlaces()
   const dragged = useRef<PlannerEntry | null>(null)
   const [dragging, setDragging] = useState(false)
   const days = weekDays(ref)
@@ -31,16 +30,13 @@ export default function Planning() {
       const c = EVENT_CATEGORIES[e.category]
       map[e.date].push({ kind: 'event', key: `e${e.id}`, event: e, title: e.title, time: e.time, color: c.color, label: c.label, onOpen: () => openForm('event', e as never) })
     })
-    places.filter((p) => p.status === 'planejado' && p.plannedFor && map[p.plannedFor]).forEach((p) => {
-      map[p.plannedFor!].push({ kind: 'place', key: `p${p.id}`, place: p, title: p.name, time: p.plannedTime, color: '#CB757C', label: 'Rolê', onOpen: () => openForm('place', p as never) })
-    })
     tasks.filter((t) => t.date && map[t.date]).forEach((t) => {
       const a = AREAS[t.area]
       map[t.date!].push({ kind: 'task', key: `t${t.id}`, task: t, title: t.title, color: a.color, label: a.id === 'geral' ? 'Tarefa' : a.label, done: t.done, onOpen: () => openForm('task', t as never) })
     })
     for (const d of days) map[d].sort((a, b) => (a.time ?? '99').localeCompare(b.time ?? '99'))
     return map
-  }, [days, events, places, tasks])
+  }, [days, events, tasks])
 
   const unscheduled = tasks.filter((t) => !t.date && !t.done)
 
@@ -51,7 +47,6 @@ export default function Planning() {
     if (!e) return
     if (e.kind === 'task') db.tasks.update(e.task.id, { date: date ?? undefined })
     else if (date && e.kind === 'event') db.events.update(e.event.id, { date })
-    else if (date && e.kind === 'place') db.places.update(e.place.id, { plannedFor: date })
   }
   const start = (e: PlannerEntry) => { dragged.current = e; setDragging(true) }
 

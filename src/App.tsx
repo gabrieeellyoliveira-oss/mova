@@ -3,7 +3,7 @@ import { AppShell } from '@/components/layout/AppShell'
 import Home from '@/pages/Home'
 import Planning from '@/pages/Planning'
 import Finance from '@/pages/Finance'
-import GoOut from '@/pages/GoOut'
+import Vault from '@/pages/Vault'
 import Studies from '@/pages/Studies'
 import Reading from '@/pages/Reading'
 import Goals from '@/pages/Goals'
@@ -20,7 +20,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="planejamento" element={<Planning />} />
           <Route path="financas" element={<Finance />} />
-          <Route path="sair-de-casa" element={<GoOut />} />
+          <Route path="sair-de-casa" element={<Vault />} />
           <Route path="estudos" element={<Studies />} />
           <Route path="leitura" element={<Reading />} />
           <Route path="metas" element={<Goals />} />

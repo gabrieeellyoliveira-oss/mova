@@ -1,4 +1,4 @@
-import type { CalendarEvent, Place, Task } from '@/types'
+import type { CalendarEvent, Task } from '@/types'
 
 interface Base {
   key: string
@@ -13,4 +13,3 @@ interface Base {
 export type PlannerEntry =
   | (Base & { kind: 'task'; task: Task })
   | (Base & { kind: 'event'; event: CalendarEvent })
-  | (Base & { kind: 'place'; place: Place })

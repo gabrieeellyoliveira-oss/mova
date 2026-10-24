@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { BookOpen, CalendarDays, CalendarPlus, Compass, Home, ListTodo, MapPin, NotebookPen, Plus, User, Wallet } from 'lucide-react'
+import { BookOpen, CalendarDays, CalendarPlus, Home, ListTodo, NotebookPen, PiggyBank, Plus, User, Wallet } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { openForm, type FormKind } from '@/hooks/useQuickAdd'
 
@@ -8,7 +8,7 @@ const items = [
   { label: 'Início', path: '/', icon: Home },
   { label: 'Planejar', path: '/planejamento', icon: CalendarDays },
   null,
-  { label: 'Explorar', path: '/sair-de-casa', icon: Compass },
+  { label: 'Cofre', path: '/sair-de-casa', icon: PiggyBank },
   { label: 'Perfil', path: '/perfil', icon: User },
 ]
 
@@ -16,7 +16,7 @@ export const QUICK_ACTIONS: { kind: FormKind; label: string; icon: typeof Plus; 
   { kind: 'task', label: 'Nova tarefa', icon: ListTodo, color: '#961415' },
   { kind: 'transaction', label: 'Novo gasto', icon: Wallet, color: '#520215' },
   { kind: 'event', label: 'Novo compromisso', icon: CalendarPlus, color: '#CB757C' },
-  { kind: 'place', label: 'Novo lugar', icon: MapPin, color: '#7A7A4A' },
+  { kind: 'deposit', label: 'Guardar no cofre', icon: PiggyBank, color: '#7A7A4A' },
   { kind: 'book', label: 'Nova leitura', icon: BookOpen, color: '#b8565e' },
   { kind: 'note', label: 'Nova nota', icon: NotebookPen, color: '#5f5f37' },
 ]

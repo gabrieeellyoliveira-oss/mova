@@ -1,6 +1,6 @@
 import type {
-  Book, CalendarEvent, Course, Experience, FinancialGoal, FocusSession, Goal, Habit,
-  Note, Place, Settings, Task, Transaction, WeeklyPriority,
+  Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
+  Note, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
 } from '@/types'
 import { addDays, startOfWeek, today, toISODate } from '@/utils/date'
 import { uid } from '@/utils/id'
@@ -45,13 +45,13 @@ export const seedTasks = (): Task[] => {
     ['Responder e-mails', 'media', 'geral', 0, true],
     ['Organizar o planner', 'baixa', 'geral', 0, false],
     ['Estudar 1h', 'alta', 'estudos', 0, false],
-    ['Pesquisar lugares novos', 'media', 'sair', 0, false],
+    ['Pesquisar apartamentos', 'media', 'sair', 0, false],
     ['Ler 20 páginas', 'media', 'leitura', 0, false],
     ['Pagar conta de luz', 'alta', 'financas', 1, false],
     ['Aula 7 do curso de UX', 'media', 'estudos', 1, false],
     ['Skincare noturno caprichado', 'baixa', 'rotina', 2, false],
     ['Revisar metas do mês', 'media', 'metas', 3, false],
-    ['Passeio na Beira-Mar', 'baixa', 'sair', 5, false],
+    ['Visitar apartamento no Benfica', 'baixa', 'sair', 5, false],
     ['Exercícios de inglês', 'media', 'estudos', 4, false],
     ['Marcar consulta no oftalmo', 'media', 'geral', undefined, false],
     ['Trocar a capinha do celular', 'baixa', 'geral', undefined, false],
@@ -99,27 +99,37 @@ export const seedFinancialGoals = (): FinancialGoal[] => [
   { ...base(), name: 'Notebook novo', current: 1450, target: 6500, emoji: '💻' },
 ]
 
-export const seedPlaces = (): Place[] => [
-  { ...base(), name: 'Café Florinda', category: 'Cafés', neighborhood: 'Meireles', price: 35, status: 'planejado', favorite: true, moods: ['cafe', 'relaxar'], goodFor: 'tanto faz', plannedFor: d(0), plannedTime: '17:00', notes: 'Pedir o bolo de laranja' },
-  { ...base(), name: 'Museu da Cultura Cearense', category: 'Museus', neighborhood: 'Centro Dragão do Mar', price: 0, status: 'quero', favorite: false, moods: ['conhecer', 'cultura'], goodFor: 'tanto faz' },
-  { ...base(), name: 'Parque do Cocó', category: 'Parques', neighborhood: 'Cocó', price: 0, status: 'voltar', favorite: true, moods: ['relaxar', 'passear'], goodFor: 'sozinha' },
-  { ...base(), name: 'Cantina da Vó Lia', category: 'Restaurantes', neighborhood: 'Varjota', price: 80, status: 'quero', favorite: false, moods: ['comer'], goodFor: 'acompanhada' },
-  { ...base(), name: 'Feirinha de vinil', category: 'Eventos', neighborhood: 'Benfica', price: 20, status: 'quero', favorite: true, moods: ['diferente', 'comprar', 'cultura'], goodFor: 'tanto faz' },
-  { ...base(), name: 'Sessão de cinema clássico', category: 'Cinema', neighborhood: 'Praia de Iracema', price: 24, status: 'planejado', favorite: false, moods: ['cultura', 'relaxar'], goodFor: 'acompanhada', plannedFor: d(3), plannedTime: '20:00' },
-  { ...base(), name: 'Brechó da Aldeota', category: 'Compras', neighborhood: 'Aldeota', price: 60, status: 'quero', favorite: false, moods: ['comprar', 'passear'], goodFor: 'sozinha' },
-  { ...base(), name: 'Pôr do sol na Ponte dos Ingleses', category: 'Passeios', neighborhood: 'Praia de Iracema', price: 0, status: 'fui', favorite: true, moods: ['passear', 'relaxar'], goodFor: 'tanto faz' },
-  { ...base(), name: 'Aula de cerâmica', category: 'Experiências', neighborhood: 'Fátima', price: 120, status: 'quero', favorite: true, moods: ['diferente', 'conhecer'], goodFor: 'acompanhada' },
-  { ...base(), name: 'Jardim japonês', category: 'Lugares diferentes', neighborhood: 'Dionísio Torres', price: 0, status: 'quero', favorite: false, moods: ['relaxar', 'conhecer'], goodFor: 'sozinha' },
-  { ...base(), name: 'Doceria Pistache', category: 'Cafés', neighborhood: 'Papicu', price: 28, status: 'fui', favorite: false, moods: ['cafe', 'comer'], goodFor: 'acompanhada' },
-]
+export const seedVaultSettings = (): VaultSettings => ({
+  manualTarget: 15000,
+  targetDate: d(300),
+})
 
-export const seedExperiences = (places: Place[]): Experience[] => {
-  const ponte = places.find((p) => p.name.startsWith('Pôr do sol'))
-  const doceria = places.find((p) => p.name.startsWith('Doceria'))
+export const seedVaultCosts = (): VaultCost[] =>
+  ([
+    ['Caução (2 aluguéis)', 2400],
+    ['Primeiro aluguel', 1200],
+    ['Frete da mudança', 600],
+    ['Móveis básicos', 3500],
+    ['Eletrodomésticos', 2800],
+    ['Enxoval e utensílios', 900],
+    ['Reserva para os primeiros meses', 3600],
+  ] as const).map(([name, amount], order) => ({ ...base(), name, amount, order }))
+
+export const seedVaultEntries = (): VaultEntry[] => {
+  const e = (monthsAgo: number, day: number, amount: number, note?: string, type: VaultEntry['type'] = 'deposito'): VaultEntry =>
+    ({ ...base(), type, amount, date: monthDay(monthsAgo, day), note })
   return [
-    { ...base(), placeId: ponte?.id, title: 'Pôr do sol na Ponte dos Ingleses', date: d(-6), photos: [], rating: 5, spent: 18, with: 'Lu e Rafa', comment: 'O céu ficou cor de cereja. Levar canga da próxima vez.', wouldReturn: true },
-    { ...base(), placeId: doceria?.id, title: 'Doceria Pistache', date: d(-15), photos: [], rating: 4, spent: 42, with: 'Mãe', comment: 'Croissant de pistache absurdo, café ok.', wouldReturn: true },
-    { ...base(), title: 'Exposição de fotografia', date: d(-27), photos: [], rating: 4, spent: 0, with: 'Sozinha', comment: 'Fui sem planejar e foi a melhor parte do mês.', wouldReturn: false },
+    e(7, 6, 500, 'Primeiro depósito!'),
+    e(6, 6, 450),
+    e(5, 6, 500),
+    e(5, 21, 300, 'Parte do freela'),
+    e(4, 6, 400),
+    e(3, 6, 500),
+    e(3, 15, 200, 'Conserto do celular', 'retirada'),
+    e(2, 6, 550),
+    e(1, 6, 500),
+    e(1, 20, 450, 'Freela de design'),
+    e(0, 6, 600),
   ]
 }
 

@@ -49,7 +49,7 @@ export function GlobalSearch({ className, autoFocus, onDone }: { className?: str
         onChange={(e) => { setQ(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => { if (e.key === 'Enter' && results[0]) choose(results[0]); if (e.key === 'Escape') { setOpen(false); onDone?.() } }}
-        placeholder="Buscar tarefas, lugares, livros, notas…"
+        placeholder="Buscar tarefas, livros, notas, custos…"
         className="h-11 w-full rounded-full border border-vinho/10 bg-quente pl-11 pr-10 text-sm text-tinta shadow-soft placeholder:text-vinho/40 focus:border-queimado focus:outline-none focus:ring-2 focus:ring-rosa/50"
         aria-label="Busca global"
       />

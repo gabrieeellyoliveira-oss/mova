@@ -80,58 +80,28 @@ export interface FinancialGoal extends Entity {
   emoji?: string
 }
 
-/* ---------- Sair de casa ---------- */
-export type PlaceCategory =
-  | 'Cafés'
-  | 'Restaurantes'
-  | 'Museus'
-  | 'Parques'
-  | 'Eventos'
-  | 'Cinema'
-  | 'Compras'
-  | 'Passeios'
-  | 'Experiências'
-  | 'Lugares diferentes'
-export type PlaceStatus = 'quero' | 'planejado' | 'fui' | 'voltar'
-export type PriceLevel = 0 | 30 | 50 | 100 | 200
-export type Mood =
-  | 'comer'
-  | 'cafe'
-  | 'conhecer'
-  | 'relaxar'
-  | 'diferente'
-  | 'passear'
-  | 'comprar'
-  | 'cultura'
-export type Company = 'sozinha' | 'acompanhada' | 'tanto faz'
+/* ---------- Sair de casa (cofre da mudança) ---------- */
+export type VaultEntryType = 'deposito' | 'retirada'
 
-export interface Place extends Entity {
-  name: string
-  category: PlaceCategory
-  neighborhood: string
-  city?: string
-  /** Preço estimado por pessoa em R$ */
-  price: number
-  status: PlaceStatus
-  favorite: boolean
-  photo?: string
-  moods: Mood[]
-  goodFor: Company
-  plannedFor?: ISODate
-  plannedTime?: Time
-  notes?: string
+export interface VaultEntry extends Entity {
+  type: VaultEntryType
+  amount: number
+  date: ISODate
+  note?: string
 }
 
-export interface Experience extends Entity {
-  placeId?: string
-  title: string
-  date: ISODate
-  photos: string[]
-  rating: number
-  spent: number
-  with: string
-  comment: string
-  wouldReturn: boolean
+/** Custo previsto da mudança; a soma dos custos é a meta do cofre */
+export interface VaultCost extends Entity {
+  name: string
+  amount: number
+  order: number
+}
+
+export interface VaultSettings {
+  /** Meta usada quando não há custos cadastrados */
+  manualTarget: number
+  /** Quando quero sair de casa (opcional) */
+  targetDate?: ISODate
 }
 
 /* ---------- Estudos ---------- */

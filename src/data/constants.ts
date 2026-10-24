@@ -1,12 +1,11 @@
 import {
   Coins, Dumbbell, GraduationCap as GradCap, Heart, Plane, Sprout, Users,
-  BookOpen, CalendarDays, Coffee, Film, GraduationCap, Home, Landmark, LucideIcon,
-  Map, NotebookPen, Repeat, ShoppingBag, Sparkles, Target, Ticket, Trees,
-  UtensilsCrossed, Wallet, Compass, Footprints,
+  BookOpen, CalendarDays, GraduationCap, Home, LucideIcon,
+  NotebookPen, PiggyBank, Repeat, Target, Wallet,
 } from 'lucide-react'
 import type {
-  AreaId, BookStatus, Company, EventCategory, FinanceCategory, GoalCategory, GoalStatus,
-  Mood, PaymentMethod, PlaceCategory, PlaceStatus, Priority,
+  AreaId, BookStatus, EventCategory, FinanceCategory, GoalCategory, GoalStatus,
+  PaymentMethod, Priority,
 } from '@/types'
 
 export interface AreaMeta {
@@ -24,7 +23,7 @@ export interface AreaMeta {
 export const AREAS: Record<AreaId, AreaMeta> = {
   geral: { id: 'geral', label: 'Geral', path: '/', icon: Home, color: '#520215', soft: '#F6EDE3' },
   financas: { id: 'financas', label: 'Finanças', path: '/financas', icon: Wallet, color: '#961415', soft: '#f8dcde', tagline: 'Controle seus gastos e metas' },
-  sair: { id: 'sair', label: 'Sair de casa', path: '/sair-de-casa', icon: Compass, color: '#CB757C', soft: '#fcefef', tagline: 'Planeje rolês e explore lugares' },
+  sair: { id: 'sair', label: 'Sair de casa', path: '/sair-de-casa', icon: PiggyBank, color: '#CB757C', soft: '#fcefef', tagline: 'Seu cofre para a casa nova' },
   estudos: { id: 'estudos', label: 'Estudos', path: '/estudos', icon: GraduationCap, color: '#7A7A4A', soft: '#E6E4CF', tagline: 'Acompanhe seus cursos e progresso' },
   leitura: { id: 'leitura', label: 'Leitura', path: '/leitura', icon: BookOpen, color: '#520215', soft: '#EFE3D6', tagline: 'Seus livros e novas histórias' },
   metas: { id: 'metas', label: 'Metas', path: '/metas', icon: Target, color: '#961415', soft: '#DFD1D1', tagline: 'Conquiste o que importa' },
@@ -36,7 +35,7 @@ export const NAV_ITEMS: { label: string; path: string; icon: LucideIcon }[] = [
   { label: 'Início', path: '/', icon: Home },
   { label: 'Planejamento', path: '/planejamento', icon: CalendarDays },
   { label: 'Finanças', path: '/financas', icon: Wallet },
-  { label: 'Sair de casa', path: '/sair-de-casa', icon: Compass },
+  { label: 'Sair de casa', path: '/sair-de-casa', icon: PiggyBank },
   { label: 'Estudos', path: '/estudos', icon: GraduationCap },
   { label: 'Leitura', path: '/leitura', icon: BookOpen },
   { label: 'Metas', path: '/metas', icon: Target },
@@ -79,48 +78,6 @@ export const FINANCE_COLORS: Record<FinanceCategory, string> = {
 }
 
 export const PAYMENT_METHODS: PaymentMethod[] = ['Pix', 'Crédito', 'Débito', 'Dinheiro', 'Boleto', 'Transferência']
-
-export const PLACE_CATEGORIES: { id: PlaceCategory; icon: LucideIcon; color: string }[] = [
-  { id: 'Cafés', icon: Coffee, color: '#961415' },
-  { id: 'Restaurantes', icon: UtensilsCrossed, color: '#520215' },
-  { id: 'Museus', icon: Landmark, color: '#7A7A4A' },
-  { id: 'Parques', icon: Trees, color: '#5f5f37' },
-  { id: 'Eventos', icon: Ticket, color: '#CB757C' },
-  { id: 'Cinema', icon: Film, color: '#3a010f' },
-  { id: 'Compras', icon: ShoppingBag, color: '#b8565e' },
-  { id: 'Passeios', icon: Footprints, color: '#8a6f5c' },
-  { id: 'Experiências', icon: Sparkles, color: '#961415' },
-  { id: 'Lugares diferentes', icon: Map, color: '#520215' },
-]
-export const placeCategoryMeta = (c: PlaceCategory) => PLACE_CATEGORIES.find((p) => p.id === c) ?? PLACE_CATEGORIES[0]
-
-export const PLACE_STATUS: Record<PlaceStatus, { label: string; color: string; soft: string }> = {
-  quero: { label: 'Quero conhecer', color: '#961415', soft: '#f8dcde' },
-  planejado: { label: 'Planejado', color: '#520215', soft: '#EFE3D6' },
-  fui: { label: 'Fui', color: '#5f5f37', soft: '#E6E4CF' },
-  voltar: { label: 'Quero voltar', color: '#b8565e', soft: '#fcefef' },
-}
-
-export const MOODS: { id: Mood; label: string; emoji: string }[] = [
-  { id: 'comer', label: 'comer', emoji: '🍝' },
-  { id: 'cafe', label: 'tomar café', emoji: '☕' },
-  { id: 'conhecer', label: 'conhecer algo', emoji: '🗺️' },
-  { id: 'relaxar', label: 'relaxar', emoji: '🌿' },
-  { id: 'diferente', label: 'fazer algo diferente', emoji: '✨' },
-  { id: 'passear', label: 'passear', emoji: '👟' },
-  { id: 'comprar', label: 'comprar', emoji: '🛍️' },
-  { id: 'cultura', label: 'cultura', emoji: '🎭' },
-]
-
-export const BUDGETS: { label: string; max: number | null }[] = [
-  { label: 'Grátis', max: 0 },
-  { label: 'Até R$30', max: 30 },
-  { label: 'Até R$50', max: 50 },
-  { label: 'Até R$100', max: 100 },
-  { label: 'Tanto faz', max: null },
-]
-
-export const COMPANIES: Company[] = ['sozinha', 'acompanhada', 'tanto faz']
 
 export const BOOK_STATUS: Record<BookStatus, string> = {
   quero: 'Quero ler',

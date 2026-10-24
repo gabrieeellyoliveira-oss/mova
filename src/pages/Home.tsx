@@ -3,11 +3,11 @@ import { Shortcuts } from '@/components/widgets/Shortcuts'
 import { CalendarWidget } from '@/components/widgets/CalendarWidget'
 import { TasksWidget } from '@/components/widgets/TasksWidget'
 import { FinanceWidget } from '@/components/widgets/FinanceWidget'
-import { NextOutingWidget } from '@/components/widgets/NextOutingWidget'
+import { VaultWidget } from '@/components/widgets/VaultWidget'
 import { StudyWeekWidget } from '@/components/widgets/StudyWeekWidget'
 import { ReadingWidget } from '@/components/widgets/ReadingWidget'
 import { GoalsWidget } from '@/components/widgets/GoalsWidget'
-import { WantToDoWidget } from '@/components/widgets/WantToDoWidget'
+import { CostsWidget } from '@/components/widgets/CostsWidget'
 
 export default function Home() {
   return (
@@ -17,11 +17,11 @@ export default function Home() {
         <Shortcuts />
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 min-[1360px]:grid-cols-3">
           <FinanceWidget />
-          <NextOutingWidget />
+          <VaultWidget />
           <StudyWeekWidget />
           <ReadingWidget />
           <GoalsWidget />
-          <WantToDoWidget />
+          <CostsWidget />
         </div>
       </div>
       <aside className="grid content-start gap-5 md:grid-cols-2 xl:grid-cols-1">

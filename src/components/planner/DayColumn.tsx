@@ -11,7 +11,7 @@ import { toggleTask } from '@/components/tasks/TaskItem'
 const KINDS: { id: 'tarefa' | 'estudo' | 'role' | 'habito' | 'compromisso'; label: string; area?: AreaId }[] = [
   { id: 'tarefa', label: 'Tarefa', area: 'geral' },
   { id: 'estudo', label: 'Estudo', area: 'estudos' },
-  { id: 'role', label: 'Rolê', area: 'sair' },
+  { id: 'role', label: 'Mudança', area: 'sair' },
   { id: 'habito', label: 'Hábito', area: 'rotina' },
   { id: 'compromisso', label: 'Compromisso' },
 ]
