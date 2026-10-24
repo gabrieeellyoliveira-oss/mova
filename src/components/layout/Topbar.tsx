@@ -39,7 +39,7 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-vinho/[0.06] bg-creme/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-vinho/[0.06] bg-creme/90 backdrop-blur lg:hidden">
       <div className="flex h-16 w-full items-center gap-3 px-4 sm:h-[72px] sm:px-6 lg:px-4">
         <Link to="/" className="pl-2 lg:hidden"><Logo size="sm" /></Link>
         <GlobalSearch className="hidden max-w-md flex-1 md:block" />
