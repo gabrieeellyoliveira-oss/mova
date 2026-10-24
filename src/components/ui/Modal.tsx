@@ -48,7 +48,7 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
         <div className="relative flex items-start justify-between gap-4 border-b border-vinho/10 px-6 pb-4 pt-6">
           <Cherry size={34} className="absolute -top-1 right-16 rotate-12 opacity-90" />
           <div>
-            <h2 className="font-display text-[2rem] leading-[0.9] text-vinho">{title}</h2>
+            <h2 className="font-display text-[2rem] leading-[1.1] text-vinho">{title}</h2>
             {subtitle && <p className="mt-1.5 text-sm text-vinho/70">{subtitle}</p>}
           </div>
           <button onClick={onClose} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-vinho hover:bg-vinho/5" aria-label="Fechar">

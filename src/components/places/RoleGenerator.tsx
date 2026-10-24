@@ -52,7 +52,7 @@ export function RoleGenerator({ onGo }: { onGo: (p: Place) => void }) {
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">bateu a preguiça?</p>
-          <h2 className="mt-1 font-display text-5xl leading-[0.9] sm:text-6xl">Não sei o que fazer.</h2>
+          <h2 className="mt-1 font-display text-5xl leading-[1.05] sm:text-6xl">Não sei o que fazer.</h2>
           <Squiggle width={140} className="mb-5 text-queimado" />
           <div className="space-y-5">
             <div>

@@ -22,7 +22,7 @@ export function FocusTimer() {
     <div className="relative overflow-hidden rounded-4xl bg-vinho p-6 text-rosa-50 shadow-lift sm:p-7">
       <Cup size={46} className="absolute right-5 top-5 -rotate-6" />
       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">um tempinho só pra você</p>
-      <h2 className="mt-1 font-display text-5xl leading-[0.9]">Foco</h2>
+      <h2 className="mt-1 font-display text-5xl leading-[1.05]">Foco</h2>
       <div className="my-6 flex justify-center">
         <Ring value={(1 - t.remaining / total) * 100} size={200} stroke={12} color="#EFAFB3" track="rgba(239,175,179,0.16)">
           <div className="text-center">

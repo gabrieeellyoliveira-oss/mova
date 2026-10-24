@@ -7,7 +7,7 @@ export function WidgetHeader({ title, to, linkLabel = 'Ver mais', subtitle, acti
   return (
     <div className="mb-4 flex items-start justify-between gap-3">
       <div className="min-w-0">
-        <h3 className="whitespace-nowrap font-heading text-base leading-tight text-vinho">{title}</h3>
+        <h3 className="whitespace-nowrap font-heading text-[15px] leading-tight text-vinho">{title}</h3>
         {subtitle && <p className="mt-0.5 text-xs text-vinho/55">{subtitle}</p>}
       </div>
       <div className="flex shrink-0 items-center gap-2">

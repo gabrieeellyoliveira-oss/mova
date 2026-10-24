@@ -7,4 +7,4 @@
 
 ## Identidade visual
 - Siga à risca o prompt original e as imagens de referência da Gabi; não invente elementos, cores ou textos.
-- Fonte de títulos: Sooky 70s (`src/assets/fonts`), comercial e sem acentos — as letras acentuadas usam a Modak via `unicode-range` (ver `src/index.css`). Textos de interface: DM Sans.
+- Tipografia: a Sooky 70s (`src/assets/fonts`, comercial) é usada **somente no logo MOVA** (`font-logo`). Todo o resto — títulos, atalhos, cards, banner — usa DM Sans, a mesma fonte do menu (`font-display`/`font-heading` apontam para ela).

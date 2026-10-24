@@ -1,24 +1,16 @@
-/* Sooky 70s (Slidehack): logo, títulos e headings.
-   A fonte não tem acentos (mapeia ç→c, ó→o…), então ela cobre só os caracteres
-   que possui e as letras acentuadas usam a Modak, em escala casada pela altura-x.
-   size-adjust aproxima o tamanho visual da referência sem mudar o font-size. */
+/* Sooky 70s (Slidehack): usada só no logo MOVA. */
 @font-face {
   font-family: 'Sooky 70s';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
   src: url('./assets/fonts/Sooky70s.woff2') format('woff2'), url('./assets/fonts/Sooky70s.woff') format('woff');
-  unicode-range: U+0020-007E, U+00A0, U+00AD;
   size-adjust: 135%;
-}
-@font-face {
-  font-family: 'Sooky 70s';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../node_modules/@fontsource/modak/files/modak-latin-400-normal.woff2') format('woff2');
-  unicode-range: U+00C0-024F;
-  size-adjust: 111%;
+  /* o arquivo traz métricas diferentes para Windows (usWin) e Mac/Linux (hhea);
+     fixar evita o logo subir/cortar no Windows */
+  ascent-override: 76%;
+  descent-override: 22%;
+  line-gap-override: 0%;
 }
 
 @tailwind base;
@@ -40,7 +32,9 @@
 }
 
 @layer utilities {
-  .font-display, .font-heading { font-weight: 400; font-synthesis: none; }
+  .font-logo { font-weight: 400; font-synthesis: none; }
+  .font-heading { font-weight: 700; }
+  .font-display { font-weight: 800; letter-spacing: -0.02em; }
   .tabular-nums { font-variant-numeric: tabular-nums; }
 }
 

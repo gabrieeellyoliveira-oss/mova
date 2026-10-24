@@ -31,7 +31,7 @@ export function WelcomeBanner() {
           <p className="text-sm font-extrabold uppercase tracking-[0.06em] text-rosa-50 sm:text-base">
             {greeting(now)}, {name}.
           </p>
-          <h1 className="mt-2 font-display text-[2.5rem] leading-[0.95] text-rosa-50 sm:text-[3.1rem] min-[1360px]:text-[3.4rem]">
+          <h1 className="mt-2 font-display text-[2.5rem] leading-[1.05] text-rosa-50 sm:text-[3.1rem] min-[1360px]:text-[3.4rem]">
             O que vamos mover hoje?
           </h1>
           <p className="mt-3 text-[15px] font-medium text-rosa-50/90 sm:text-base">Pequenas ações, uma vida gigante.</p>

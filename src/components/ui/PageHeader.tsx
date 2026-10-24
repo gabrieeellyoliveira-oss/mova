@@ -8,7 +8,7 @@ export function PageHeader({
     <header className="relative mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div className="relative">
         {kicker && <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-queimado">{kicker}</p>}
-        <h1 className="font-display text-[3.2rem] leading-[0.9] text-vinho sm:text-[4.2rem]">{title}</h1>
+        <h1 className="font-display text-[3.2rem] leading-[1.05] text-vinho sm:text-[4.2rem]">{title}</h1>
         <Underline width={150} className="-mt-0.5 text-rosa" />
         {subtitle && <p className="mt-2 max-w-xl text-sm text-vinho/70 sm:text-[15px]">{subtitle}</p>}
         {doodle && <div className="pointer-events-none absolute -right-24 -top-8 hidden sm:block">{doodle}</div>}

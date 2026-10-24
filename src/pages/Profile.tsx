@@ -35,7 +35,7 @@ export default function Profile() {
         <div className="grid items-end gap-6 md:grid-cols-[1fr_360px]">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">oi, {s.name}!</p>
-            <p className="mt-2 font-display text-6xl leading-[0.9]">Mais movimento,<br />mais vida.</p>
+            <p className="mt-2 font-display text-6xl leading-[1.05]">Mais movimento,<br />mais vida.</p>
             <p className="mt-3 max-w-md text-sm text-rosa-50/75">O MOVA não existe pra te deixar mais produtiva. Existe pra organizar a vida e sobrar tempo pra vivê-la.</p>
           </div>
           <img src={gabi} alt="" className="mx-auto w-full max-w-[360px] md:-mb-8" />

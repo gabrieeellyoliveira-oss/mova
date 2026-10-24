@@ -15,8 +15,9 @@ export default {
         oliva: { DEFAULT: '#7A7A4A', 100: '#E6E4CF', 600: '#5f5f37' },
       },
       fontFamily: {
-        heading: ['"Sooky 70s"', 'Modak', '"Arial Rounded MT Bold"', 'system-ui', 'sans-serif'],
-        display: ['"Sooky 70s"', 'Modak', '"Arial Rounded MT Bold"', 'system-ui', 'sans-serif'],
+        logo: ['"Sooky 70s"', '"Arial Rounded MT Bold"', 'system-ui', 'sans-serif'],
+        heading: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
+        display: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
         sans: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
       },
       borderRadius: { '4xl': '2rem' },

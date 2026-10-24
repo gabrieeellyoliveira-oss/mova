@@ -7,7 +7,7 @@ import { Logo } from './Logo'
 export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-[232px] flex-col border-r border-vinho/[0.06] bg-quente lg:flex">
-      <div className="px-8 pb-6 pt-8">
+      <div className="px-8 pb-4 pt-5">
         <Logo />
       </div>
       <nav className="space-y-1 overflow-y-auto px-4">
