@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import { Settings } from 'lucide-react'
+import { LogOut, Settings } from 'lucide-react'
+import { signOut } from '@/lib/auth'
 import { NAV_ITEMS } from '@/data/constants'
 import { cn } from '@/lib/cn'
 import { Logo } from './Logo'
@@ -33,9 +34,14 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="relative mt-auto px-6 pb-6">
-        <NavLink to="/perfil" className="flex items-center justify-center gap-1.5 text-xs font-semibold text-vinho/55 hover:text-vinho">
-          <Settings size={13} /> Ajustes e dados
-        </NavLink>
+        <div className="flex items-center justify-center gap-4">
+          <NavLink to="/perfil" className="flex items-center gap-1.5 text-xs font-semibold text-vinho/55 hover:text-vinho">
+            <Settings size={13} /> Ajustes e dados
+          </NavLink>
+          <button onClick={signOut} className="flex items-center gap-1.5 text-xs font-semibold text-vinho/55 hover:text-cereja">
+            <LogOut size={13} /> Sair
+          </button>
+        </div>
       </div>
     </aside>
   )

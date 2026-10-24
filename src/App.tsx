@@ -11,9 +11,13 @@ import Goals from '@/pages/Goals'
 import Routine from '@/pages/Routine'
 import Notes from '@/pages/Notes'
 import Profile from '@/pages/Profile'
+import Login from '@/pages/Login'
+import { useSession } from '@/lib/auth'
 
 // HashRouter: funciona em qualquer hospedagem estática, sem configurar rewrites.
 export default function App() {
+  const session = useSession()
+  if (!session) return <Login />
   return (
     <HashRouter>
       <Routes>

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Download, RotateCcw, Upload } from 'lucide-react'
+import { Download, LogOut, RotateCcw, Upload } from 'lucide-react'
+import { signOut, useSession } from '@/lib/auth'
 import gabi from '@/assets/gabi-e-gata.webp'
 import { exportAll, importAll, resetAll, settingsStore } from '@/store/db'
 import { useSettings } from '@/hooks/useData'
@@ -14,6 +15,7 @@ import { Flower } from '@/components/doodles/Doodles'
 
 export default function Profile() {
   const s = useSettings()
+  const session = useSession()
   const file = useRef<HTMLInputElement>(null)
   const [confirmReset, setConfirmReset] = useState(false)
   const set = <K extends keyof typeof s>(k: K, v: (typeof s)[K]) => settingsStore.set((p) => ({ ...p, [k]: v }))
@@ -62,6 +64,13 @@ export default function Profile() {
             <Field label="Horas de estudo por semana"><Input type="number" value={s.weeklyStudyHours} onChange={(e) => set('weeklyStudyHours', Number(e.target.value))} /></Field>
             <Field label="Meta de livros no ano"><Input type="number" value={s.yearlyBooksGoal} onChange={(e) => set('yearlyBooksGoal', Number(e.target.value))} /></Field>
           </FormGrid>
+        </Card>
+        <Card className="lg:col-span-2 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold text-vinho">Acesso</p>
+            <p className="text-xs text-vinho/60">Entrou como {session}</p>
+          </div>
+          <Button variant="soft" onClick={signOut}><LogOut size={16} /> Sair</Button>
         </Card>
         <Card tone="creme">
           <CardHeader title="Seus dados" subtitle="ficam guardados neste navegador" />
