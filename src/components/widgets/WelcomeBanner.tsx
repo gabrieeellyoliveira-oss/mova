@@ -31,7 +31,7 @@ export function WelcomeBanner() {
           <p className="text-sm font-extrabold uppercase tracking-[0.06em] text-rosa-50 sm:text-base">
             {greeting(now)}, {name}.
           </p>
-          <h1 className="mt-2 font-display text-[2.5rem] leading-[1.05] text-rosa-50 sm:text-[3.1rem] min-[1360px]:text-[3.4rem]">
+          <h1 className="mt-2 max-w-[12ch] font-display text-[2.5rem] leading-[1.05] text-rosa-50 sm:text-[3.1rem] min-[1360px]:text-[3.4rem]">
             O que vamos mover hoje?
           </h1>
           <p className="mt-3 text-[15px] font-medium text-rosa-50/90 sm:text-base">Pequenas ações, uma vida gigante.</p>
@@ -46,7 +46,7 @@ export function WelcomeBanner() {
           <img
             src={gabi}
             alt="Ilustração da Gabi com o notebook e a gata preta dormindo ao lado"
-            className="relative z-10 -mb-1 w-full max-w-[440px] object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.25)] md:-ml-24 md:w-[135%] md:max-w-none"
+            className="relative z-10 -mb-1 w-full max-w-[440px] object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.25)] md:-ml-24 md:w-[135%] md:max-w-[560px]"
           />
           <div className="absolute bottom-3 right-3 z-20 hidden flex-col items-end gap-1 xl:flex">
             {SPINES.map((s, i) => (

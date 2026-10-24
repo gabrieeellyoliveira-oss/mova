@@ -16,7 +16,7 @@ export function AppShell() {
       <Sidebar />
       <div className="lg:pl-[232px]">
         <Topbar />
-        <main key={pathname} className="mx-auto max-w-[1400px] px-4 pb-32 pt-5 animate-rise sm:px-6 sm:pt-6 lg:pb-12">
+        <main key={pathname} className="w-full px-4 pb-32 pt-5 animate-rise sm:px-6 sm:pt-6 lg:px-4 lg:pb-12">
           <Outlet />
         </main>
       </div>
