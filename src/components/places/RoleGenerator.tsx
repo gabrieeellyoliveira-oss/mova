@@ -93,7 +93,7 @@ export function RoleGenerator({ onGo }: { onGo: (p: Place) => void }) {
           {result === undefined ? (
             <div className="relative text-center">
               <Arrow size={70} className="absolute -left-16 top-0 hidden -scale-x-100 rotate-[200deg] text-rosa lg:block" />
-              <p className="text-lg font-semibold leading-snug text-rosa">responde aqui do lado<br />e eu escolho por você</p>
+              <p className="font-heading text-lg leading-snug text-rosa">responde aqui do lado<br />e eu escolho por você</p>
             </div>
           ) : result === null ? (
             <div className="rounded-3xl bg-vinho-900/50 p-6 text-center">

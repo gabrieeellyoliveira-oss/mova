@@ -17,7 +17,7 @@ export function MiniCalendar({
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-lg font-extrabold capitalize text-vinho">{MONTHS[view.m]} <span className="text-lg font-extrabold text-vinho">{view.y}</span></p>
+        <p className="font-heading text-lg capitalize text-vinho">{MONTHS[view.m]} <span className="text-vinho">{view.y}</span></p>
         <div className="flex gap-1">
           <button onClick={() => shift(-1)} className="grid h-8 w-8 place-items-center rounded-full text-vinho hover:bg-vinho/5" aria-label="Mês anterior"><ChevronLeft size={17} /></button>
           <button onClick={() => shift(1)} className="grid h-8 w-8 place-items-center rounded-full text-vinho hover:bg-vinho/5" aria-label="Próximo mês"><ChevronRight size={17} /></button>

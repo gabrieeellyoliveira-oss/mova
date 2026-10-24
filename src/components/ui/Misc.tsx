@@ -72,7 +72,7 @@ export function SectionTitle({ children, kicker, action, className }: { children
     <div className={cn('mb-4 flex items-end justify-between gap-3', className)}>
       <div>
         {kicker && <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-queimado">{kicker}</p>}
-        <h2 className="text-lg font-extrabold tracking-tight text-vinho sm:text-xl">{children}</h2>
+        <h2 className="font-heading text-lg text-vinho sm:text-xl">{children}</h2>
       </div>
       {action}
     </div>

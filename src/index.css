@@ -1,3 +1,14 @@
+/* Modak para headings médios: mesma fonte, glifos ampliados para
+   compensar a altura-x baixa, sem alterar font-size nem line-height. */
+@font-face {
+  font-family: 'Modak Heading';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../node_modules/@fontsource/modak/files/modak-latin-400-normal.woff2') format('woff2');
+  size-adjust: 108%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,6 +28,8 @@
 }
 
 @layer utilities {
+  .font-display, .font-heading { font-weight: 400; font-synthesis: none; }
+  .font-heading { letter-spacing: -0.02em; }
   .tabular-nums { font-variant-numeric: tabular-nums; }
 }
 
