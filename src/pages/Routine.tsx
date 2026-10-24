@@ -55,7 +55,7 @@ export default function Routine() {
           </Ring>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa/80">Hoje</p>
-            <p className="mt-1 text-base font-semibold leading-snug text-rosa-50">{gentle(doneToday, habits.length)}</p>
+            <p className="mt-1 font-heading text-base leading-snug text-rosa-50">{gentle(doneToday, habits.length)}</p>
           </div>
         </Card>
         <StatCard label="Maior sequência" value={`🔥 ${best} ${best === 1 ? 'dia' : 'dias'}`} />

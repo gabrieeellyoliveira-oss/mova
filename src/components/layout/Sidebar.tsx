@@ -3,7 +3,6 @@ import { Settings } from 'lucide-react'
 import { NAV_ITEMS } from '@/data/constants'
 import { cn } from '@/lib/cn'
 import { Logo } from './Logo'
-import { Cherry, Heart } from '@/components/doodles/Doodles'
 
 export function Sidebar() {
   return (
@@ -34,12 +33,7 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="relative mt-auto px-6 pb-6">
-        <Cherry size={84} className="mx-auto mb-2 -rotate-6" />
-        <p className="-rotate-[10deg] text-center font-display text-[2rem] leading-[0.85] text-vinho">
-          Mais movimento,<br />mais vida.
-        </p>
-        <Heart size={24} className="mx-auto mt-2 text-vinho" />
-        <NavLink to="/perfil" className="mt-4 flex items-center justify-center gap-1.5 text-xs font-semibold text-vinho/55 hover:text-vinho">
+        <NavLink to="/perfil" className="flex items-center justify-center gap-1.5 text-xs font-semibold text-vinho/55 hover:text-vinho">
           <Settings size={13} /> Ajustes e dados
         </NavLink>
       </div>
