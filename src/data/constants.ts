@@ -1,7 +1,7 @@
 import {
   Coins, Dumbbell, GraduationCap as GradCap, Heart, Plane, Sprout, Users,
   BookOpen, CalendarDays, GraduationCap, Home, LucideIcon,
-  NotebookPen, PiggyBank, Repeat, Target, Wallet,
+  Briefcase, NotebookPen, PiggyBank, Repeat, Target, Wallet,
 } from 'lucide-react'
 import type {
   AreaId, BookStatus, EventCategory, FinanceCategory, GoalCategory, GoalStatus,
@@ -34,6 +34,7 @@ export const AREAS: Record<AreaId, AreaMeta> = {
 export const NAV_ITEMS: { label: string; path: string; icon: LucideIcon }[] = [
   { label: 'Início', path: '/', icon: Home },
   { label: 'Planejamento', path: '/planejamento', icon: CalendarDays },
+  { label: 'Trabalho', path: '/trabalho', icon: Briefcase },
   { label: 'Finanças', path: '/financas', icon: Wallet },
   { label: 'Sair de casa', path: '/sair-de-casa', icon: PiggyBank },
   { label: 'Estudos', path: '/estudos', icon: GraduationCap },

@@ -1,8 +1,9 @@
 import type {
   Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
   Note, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
+  WorkEntry, WorkGoal, WorkSettings,
 } from '@/types'
-import { addDays, startOfWeek, today, toISODate } from '@/utils/date'
+import { addDays, startOfWeek, today, toISODate, weekdayIndex } from '@/utils/date'
 import { uid } from '@/utils/id'
 
 /**
@@ -131,6 +132,40 @@ export const seedVaultEntries = (): VaultEntry[] => {
     e(1, 20, 450, 'Freela de design'),
     e(0, 6, 600),
   ]
+}
+
+export const seedWorkSettings = (): WorkSettings => ({ metricName: 'Vendas', unit: 'moeda', workDays: [0, 1, 2, 3, 4] })
+
+const monthOf = (monthsAgo: number) => {
+  const n = new Date()
+  const dt = new Date(n.getFullYear(), n.getMonth() - monthsAgo, 1)
+  return { y: dt.getFullYear(), m: dt.getMonth(), key: `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}` }
+}
+
+export const seedWorkGoals = (): WorkGoal[] =>
+  [18000, 18000, 20000, 20000, 22000, 22000, 24000].map((target, i) => ({ ...base(), month: monthOf(6 - i).key, target }))
+
+export const seedWorkEntries = (): WorkEntry[] => {
+  // resultados diários determinísticos dos últimos 7 meses, até hoje
+  const pace = [0.92, 1.05, 0.97, 1.1, 0.88, 1.04, 0.98]
+  const out: WorkEntry[] = []
+  const t = today()
+  for (let i = 0; i < 7; i++) {
+    const { y, m } = monthOf(6 - i)
+    const target = [18000, 18000, 20000, 20000, 22000, 22000, 24000][i]
+    const last = new Date(y, m + 1, 0).getDate()
+    const days: string[] = []
+    for (let d = 1; d <= last; d++) {
+      const iso = toISODate(new Date(y, m, d))
+      if (weekdayIndex(iso) < 5) days.push(iso)
+    }
+    const perDay = (target * pace[i]) / days.length
+    days.filter((iso) => iso <= t).forEach((date, k) => {
+      const wobble = 0.6 + Math.abs(Math.sin((k + 1) * (i + 3))) * 0.8
+      out.push({ ...base(), date, amount: Math.round((perDay * wobble) / 10) * 10 })
+    })
+  }
+  return out
 }
 
 export const seedCourses = (): Course[] => [

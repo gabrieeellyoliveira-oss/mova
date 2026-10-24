@@ -104,6 +104,30 @@ export interface VaultSettings {
   targetDate?: ISODate
 }
 
+/* ---------- Trabalho (meta do mês) ---------- */
+export type WorkUnit = 'moeda' | 'numero'
+
+export interface WorkSettings {
+  /** Nome do que é medido: "Vendas", "Clientes"… */
+  metricName: string
+  unit: WorkUnit
+  /** Dias úteis (0 = segunda … 6 = domingo) */
+  workDays: number[]
+}
+
+/** Meta de um mês ("2026-10") */
+export interface WorkGoal extends Entity {
+  month: string
+  target: number
+}
+
+/** Resultado registrado num dia */
+export interface WorkEntry extends Entity {
+  date: ISODate
+  amount: number
+  note?: string
+}
+
 /* ---------- Estudos ---------- */
 export interface Course extends Entity {
   name: string

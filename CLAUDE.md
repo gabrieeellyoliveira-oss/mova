@@ -11,3 +11,4 @@
 
 ## Módulos
 - **Sair de casa** = sair da casa dos pais (mudança), **não** rolês. A aba `/sair-de-casa` é um cofre: depósitos/retiradas (`db.vaultEntries`), custos da mudança cuja soma é a meta (`db.vaultCosts`), data desejada (`vaultSettingsStore`). Cálculos em `useVault()` (`src/hooks/useData.ts`).
+- **Trabalho** (`/trabalho`): meta do mês e evolução. Meta por mês (`db.workGoals`, herda a do mês anterior se não houver), resultados diários (`db.workEntries`), o que é medido/unidade/dias úteis em `workSettingsStore`. Cálculos (ritmo esperado, projeção, quanto fazer por dia útil, histórico) em `useWork()` (`src/hooks/useWork.ts`).
