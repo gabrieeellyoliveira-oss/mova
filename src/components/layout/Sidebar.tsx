@@ -40,9 +40,6 @@ export function Sidebar() {
         >
           <PixelIcon name="hourglass" size={20} /> Modo foco
         </button>
-        <div className="rounded-px border-2 border-rosa/30 bg-white/[0.04] px-3 py-2 text-center">
-          <p className="font-pixel text-[15px] leading-snug text-rosa">Mais movimento, mais vida. ♥</p>
-        </div>
         <button onClick={signOut} className="flex w-full items-center justify-center gap-1.5 text-xs font-semibold text-rosa-50/50 hover:text-rosa">
           <LogOut size={13} /> Sair
         </button>

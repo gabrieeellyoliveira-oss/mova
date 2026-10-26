@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Inbox } from 'lucide-react'
 import type { ISODate } from '@/types'
 import { db } from '@/store/db'
 import { useEvents, useTasks } from '@/hooks/useData'
-import { AREAS, EVENT_CATEGORIES } from '@/data/constants'
+import { areaMeta, EVENT_CATEGORIES } from '@/data/constants'
 import { addDays, formatShort, startOfWeek, today, weekDays } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -30,7 +30,7 @@ export default function Planning() {
       map[e.date].push({ kind: 'event', key: `e${e.id}`, event: e, title: e.title, time: e.time, color: c.color, label: c.label, onOpen: () => openForm('event', e as never) })
     })
     tasks.filter((t) => t.date && map[t.date]).forEach((t) => {
-      const a = AREAS[t.area]
+      const a = areaMeta(t.area)
       map[t.date!].push({ kind: 'task', key: `t${t.id}`, task: t, title: t.title, color: a.color, label: a.id === 'geral' ? 'Tarefa' : a.label, done: t.done, onOpen: () => openForm('task', t as never) })
     })
     for (const d of days) map[d].sort((a, b) => (a.time ?? '99').localeCompare(b.time ?? '99'))
@@ -77,9 +77,9 @@ export default function Planning() {
           <CardHeader icon={<Inbox size={17} />} title="Sem dia definido" subtitle={`${unscheduled.length} tarefas · arraste para um dia`} />
           <ul className="max-h-48 space-y-1.5 overflow-y-auto">
             {unscheduled.map((t) => (
-              <li key={t.id} draggable onDragStart={() => start({ kind: 'task', key: t.id, task: t, title: t.title, color: AREAS[t.area].color, label: '', onOpen: () => {} })}
+              <li key={t.id} draggable onDragStart={() => start({ kind: 'task', key: t.id, task: t, title: t.title, color: areaMeta(t.area).color, label: '', onOpen: () => {} })}
                 className="flex cursor-grab items-center gap-2 rounded-xl bg-quente px-3 py-2 text-sm shadow-sm">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: AREAS[t.area].color }} />
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: areaMeta(t.area).color }} />
                 <span className="flex-1 truncate">{t.title}</span>
                 <select value="" onChange={(e) => db.tasks.update(t.id, { date: e.target.value })} className="bg-transparent text-[11px] text-vinho/50 focus:outline-none lg:hidden" aria-label="Escolher dia">
                   <option value="">dia…</option>

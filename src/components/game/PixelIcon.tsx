@@ -28,7 +28,7 @@ export const PixelIcon = memo(function PixelIcon({
 }: { name: SpriteName; size?: number; className?: string; title?: string }) {
   return (
     <svg
-      viewBox="0 0 12 12" width={size} height={size} shapeRendering="crispEdges"
+      viewBox={`0 0 ${SPRITES[name][0].length} ${SPRITES[name].length}`} width={size} height={size} shapeRendering="crispEdges"
       className={cn('shrink-0', className)} role={title ? 'img' : undefined} aria-hidden={title ? undefined : true}
     >
       {title && <title>{title}</title>}

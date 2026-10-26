@@ -1,5 +1,5 @@
 import type { Task } from '@/types'
-import { AREAS } from '@/data/constants'
+import { areaMeta } from '@/data/constants'
 import { XP_VALUES } from '@/game/config'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { toggleTask } from '@/components/tasks/TaskItem'
@@ -8,7 +8,7 @@ import { cn } from '@/lib/cn'
 
 /** Tarefa do dia como missão de jogo (+XP ao concluir). */
 export function DailyMission({ task, compact }: { task: Task; compact?: boolean }) {
-  const area = AREAS[task.area] ?? AREAS.geral
+  const area = areaMeta(task.area)
   return (
     <li className={cn('group flex items-center gap-3 rounded-lg border-2 px-2.5 transition-all', compact ? 'py-1.5' : 'py-2', task.done ? 'border-oliva/30 bg-oliva-100/60' : 'border-transparent bg-white/50 hover:border-px-line/30 hover:bg-white/80')}>
       <Checkbox checked={task.done} onChange={() => toggleTask(task)} label={task.title} size={compact ? 20 : 22} />

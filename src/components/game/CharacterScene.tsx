@@ -14,7 +14,7 @@ export const dayPeriod = (d: Date): DayPeriod => {
 
 const OPTIONS = [
   { label: 'Organizar meu dia', to: '/meu-dia' },
-  { label: 'Cuidar de mim', to: '/saude' },
+  { label: 'Cuidar de mim', to: '/rotina' },
   { label: 'Estudar', to: '/estudos' },
   { label: 'Planejar algo', to: '/planejamento' },
   { label: 'Quero sair de casa', to: '/sair-de-casa' },

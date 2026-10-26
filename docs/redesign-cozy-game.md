@@ -26,17 +26,15 @@ textos, valores e formulários.
 4. **Componentes de jogo**: `XPBar`, `LevelBadge`, `Achievement`, `Quest`,
    `DailyMission`, `CharacterScene`, `ProgressPanel`, `PixelIcon`,
    `ExplorationCard`, `GameWatcher` (toasts de XP, LEVEL UP, conquistas).
-5. **Novas áreas** (sem remover nenhuma): Meu dia, Vida social, Saúde,
-   Explorar (mapa estilo jogo + lugares), Minha cidade (bairros dos lugares
-   cadastrados), Conquistas, Configurações (= Perfil), Modo foco.
-   Lugares/experiências voltam do histórico do git (mesmas chaves de
-   armazenamento, então dados antigos reaparecem).
+5. **Novas áreas**: Meu dia, Conquistas, Configurações (= Perfil), Modo foco.
+   (Vida social, Saúde, Explorar e Minha cidade chegaram a existir e foram
+   removidas a pedido da Gabi; os dados de lugares/experiências seguem salvos.)
 6. **Layout**: sidebar escura de jogo com ícones pixel, nível/XP no topo do
-   cenário e da sidebar; bottom nav mobile Início · Meu dia · ＋ · Explorar ·
+   cenário e da sidebar; bottom nav mobile Início · Meu dia · ＋ · Metas ·
    Perfil.
 
 ## 3. Decisões
 - "Sair de casa" continua sendo o **cofre da mudança** (pedido anterior da
-  Gabi). "Explorar" é a área nova de lugares/rolês.
+  Gabi).
 - Trabalho, Sair de casa e Notas continuam no menu, além dos itens novos.
 - Sem fonte pixel em textos longos, valores ou formulários.

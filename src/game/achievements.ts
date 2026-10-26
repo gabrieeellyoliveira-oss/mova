@@ -58,8 +58,6 @@ export const ACHIEVEMENTS: AchievementDef[] = [
       const target = d.vaultCosts.reduce((a, c) => a + c.amount, 0) || 1
       return { current: Math.max(0, Math.round((saved / target) * 100)), target: 50 }
     } },
-  { id: 'explora5', title: 'Exploradora', description: 'Conheça 5 lugares da sua lista.', sprite: 'map',
-    progress: (d) => ({ current: d.places.filter((p) => p.status === 'fui' || p.status === 'voltar').length, target: 5 }) },
   { id: 'nivel10', title: 'Nível 10', description: 'Chegue ao nível 10.', sprite: 'trophy',
     progress: (d) => ({ current: d.level, target: 10 }) },
 ]

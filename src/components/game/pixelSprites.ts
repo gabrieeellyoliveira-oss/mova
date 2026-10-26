@@ -19,9 +19,38 @@ export const PALETTE: Record<string, string> = {
   s: '#9c8a92', // cinza rosado
   l: '#a9cfe8', // azul claro (água)
   L: '#5d8fbf', // azul
+  e: '#D8204F', // cereja viva
+  E: '#FF7FA3', // reflexo da cereja
+  d: '#8E0C2C', // sombra da cereja
+  H: '#C4C47A', // brilho da folha
 }
 
 export const SPRITES = {
+  /** cerejas grandes (22×22) para o logo e a tela inicial */
+  cherries: [
+'.............kkkkk....',
+'...........kkHGGGGkk..',
+'..........kGGGGGGGGGk.',
+'..........kgGGGGGGGGGk',
+'..........kggggggggGk.',
+'...........kkggggkkk..',
+'...........kgGkkk.....',
+'..........kgGkgGk.....',
+'.........kgGk.kgGk....',
+'........kgGk...kgGk...',
+'.......kgGk.....kgGk..',
+'...kkkkgGk.......kgGk.',
+'..keeeegek....kkkkgek.',
+'.keweeeeeek..keeeeeeek',
+'keewweeeeeekkeweeeeeek',
+'keEweeeeeeekkewweeeeek',
+'keeeeeeeeeekkeEweeeeek',
+'keeeeeeeeedkkeeeeeeedk',
+'keeeeeeeeddkkeeeeeeddk',
+'.keeeeeedddk.keeeeedk.',
+'..keeedddkk..keeedddk.',
+'...kkkkkk.....kkkkkk..',
+  ],
   home: [
     '.....kk.....',
     '....krrk....',

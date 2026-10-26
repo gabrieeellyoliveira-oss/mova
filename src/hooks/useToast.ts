@@ -44,6 +44,5 @@ export const celebrate = {
   task: () => toast('Missão concluída!', { kind: 'check', duration: 1800 }),
   book: (title: string) => toast('Livro concluído ✨', { text: `“${title}” agora faz parte de você.`, kind: 'sparkle' }),
   goal: () => { toast('Você moveu mais uma parte da sua vida.', { kind: 'sparkle', duration: 4000 }); burst() },
-  place: () => toast('Nova memória desbloqueada ♥', { text: 'Que tal registrar como foi?', kind: 'heart' }),
   focus: (min: number) => toast(`${min} minutos de foco ✨`, { text: 'Sessão registrada nos seus estudos.', kind: 'sparkle' }),
 }

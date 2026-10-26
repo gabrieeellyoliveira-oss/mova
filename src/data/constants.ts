@@ -2,12 +2,11 @@ import {
   Coins, Dumbbell, GraduationCap as GradCap, Heart, Plane, Sprout, Users,
   BookOpen, GraduationCap, Home, LucideIcon,
   Briefcase, NotebookPen, PiggyBank, Repeat, Target, Wallet,
-  Coffee, Film, Footprints, Landmark, Map, ShoppingBag, Sparkles, Ticket, Trees, UtensilsCrossed, HeartPulse,
 } from 'lucide-react'
 import type { SpriteName } from '@/components/game/pixelSprites'
 import type {
-  AreaId, BookStatus, Company, EventCategory, FinanceCategory, GoalCategory, GoalStatus,
-  Mood, PaymentMethod, PlaceCategory, PlaceStatus, Priority,
+  AreaId, BookStatus, EventCategory, FinanceCategory, GoalCategory, GoalStatus,
+  PaymentMethod, Priority,
 } from '@/types'
 
 export interface AreaMeta {
@@ -32,11 +31,11 @@ export const AREAS: Record<AreaId, AreaMeta> = {
   leitura: { id: 'leitura', label: 'Leitura', path: '/leitura', icon: BookOpen, sprite: 'book', color: '#520215', soft: '#EFE3D6', tagline: 'Seus livros e novas histórias' },
   metas: { id: 'metas', label: 'Metas', path: '/metas', icon: Target, sprite: 'target', color: '#961415', soft: '#DFD1D1', tagline: 'Conquiste o que importa' },
   rotina: { id: 'rotina', label: 'Rotina', path: '/rotina', icon: Repeat, sprite: 'dumbbell', color: '#b8565e', soft: '#f8dcde', tagline: 'Seus hábitos e bem-estar' },
-  social: { id: 'social', label: 'Vida social', path: '/vida-social', icon: Users, sprite: 'cherry', color: '#961415', soft: '#f8dcde', tagline: 'Aventuras, rolês e memórias' },
-  saude: { id: 'saude', label: 'Saúde', path: '/saude', icon: HeartPulse, sprite: 'heart', color: '#b8565e', soft: '#f8dcde', tagline: 'Corpo, mente e descanso' },
   trabalho: { id: 'trabalho', label: 'Trabalho', path: '/trabalho', icon: Briefcase, sprite: 'briefcase', color: '#6b3f26', soft: '#EFE3D6', tagline: 'Meta do mês e evolução' },
   notas: { id: 'notas', label: 'Notas', path: '/notas', icon: NotebookPen, sprite: 'note', color: '#5f5f37', soft: '#E6E4CF' },
 }
+/** Área de uma tarefa (cai em "Geral" se a área não existir mais). */
+export const areaMeta = (id: string): AreaMeta => AREAS[id as AreaId] ?? AREAS.geral
 
 /** Menu principal (ordem do redesign; Trabalho, Sair de casa e Notas continuam). */
 export const NAV_ITEMS: { label: string; path: string; sprite: SpriteName }[] = [
@@ -49,11 +48,7 @@ export const NAV_ITEMS: { label: string; path: string; sprite: SpriteName }[] = 
   { label: 'Finanças', path: '/financas', sprite: 'coins' },
   { label: 'Sair de casa', path: '/sair-de-casa', sprite: 'piggy' },
   { label: 'Estudos', path: '/estudos', sprite: 'laptop' },
-  { label: 'Vida social', path: '/vida-social', sprite: 'cherry' },
-  { label: 'Saúde', path: '/saude', sprite: 'heart' },
   { label: 'Leitura', path: '/leitura', sprite: 'book' },
-  { label: 'Explorar', path: '/explorar', sprite: 'map' },
-  { label: 'Minha cidade', path: '/minha-cidade', sprite: 'city' },
   { label: 'Notas', path: '/notas', sprite: 'note' },
   { label: 'Conquistas', path: '/conquistas', sprite: 'trophy' },
   { label: 'Configurações', path: '/perfil', sprite: 'gear' },
@@ -94,48 +89,6 @@ export const FINANCE_COLORS: Record<FinanceCategory, string> = {
 }
 
 export const PAYMENT_METHODS: PaymentMethod[] = ['Pix', 'Crédito', 'Débito', 'Dinheiro', 'Boleto', 'Transferência']
-
-export const PLACE_CATEGORIES: { id: PlaceCategory; icon: LucideIcon; color: string }[] = [
-  { id: 'Cafés', icon: Coffee, color: '#961415' },
-  { id: 'Restaurantes', icon: UtensilsCrossed, color: '#520215' },
-  { id: 'Museus', icon: Landmark, color: '#7A7A4A' },
-  { id: 'Parques', icon: Trees, color: '#5f5f37' },
-  { id: 'Eventos', icon: Ticket, color: '#CB757C' },
-  { id: 'Cinema', icon: Film, color: '#3a010f' },
-  { id: 'Compras', icon: ShoppingBag, color: '#b8565e' },
-  { id: 'Passeios', icon: Footprints, color: '#8a6f5c' },
-  { id: 'Experiências', icon: Sparkles, color: '#961415' },
-  { id: 'Lugares diferentes', icon: Map, color: '#520215' },
-]
-export const placeCategoryMeta = (c: PlaceCategory) => PLACE_CATEGORIES.find((p) => p.id === c) ?? PLACE_CATEGORIES[0]
-
-export const PLACE_STATUS: Record<PlaceStatus, { label: string; color: string; soft: string }> = {
-  quero: { label: 'Quero conhecer', color: '#961415', soft: '#f8dcde' },
-  planejado: { label: 'Planejado', color: '#520215', soft: '#EFE3D6' },
-  fui: { label: 'Fui', color: '#5f5f37', soft: '#E6E4CF' },
-  voltar: { label: 'Quero voltar', color: '#b8565e', soft: '#fcefef' },
-}
-
-export const MOODS: { id: Mood; label: string; emoji: string }[] = [
-  { id: 'comer', label: 'comer', emoji: '🍝' },
-  { id: 'cafe', label: 'tomar café', emoji: '☕' },
-  { id: 'conhecer', label: 'conhecer algo', emoji: '🗺️' },
-  { id: 'relaxar', label: 'relaxar', emoji: '🌿' },
-  { id: 'diferente', label: 'fazer algo diferente', emoji: '✨' },
-  { id: 'passear', label: 'passear', emoji: '👟' },
-  { id: 'comprar', label: 'comprar', emoji: '🛍️' },
-  { id: 'cultura', label: 'cultura', emoji: '🎭' },
-]
-
-export const BUDGETS: { label: string; max: number | null }[] = [
-  { label: 'Grátis', max: 0 },
-  { label: 'Até R$30', max: 30 },
-  { label: 'Até R$50', max: 50 },
-  { label: 'Até R$100', max: 100 },
-  { label: 'Tanto faz', max: null },
-]
-
-export const COMPANIES: Company[] = ['sozinha', 'acompanhada', 'tanto faz']
 
 export const BOOK_STATUS: Record<BookStatus, string> = {
   quero: 'Quero ler',

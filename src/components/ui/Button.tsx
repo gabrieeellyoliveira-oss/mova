@@ -47,5 +47,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = 'Button'
 
-/** Nome de jogo para o mesmo botão */
-export const PixelButton = Button

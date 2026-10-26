@@ -2,7 +2,7 @@ import type { DragEvent } from 'react'
 import { useState } from 'react'
 import { GripVertical, Pencil } from 'lucide-react'
 import type { Task } from '@/types'
-import { AREAS, PRIORITIES } from '@/data/constants'
+import { areaMeta, PRIORITIES } from '@/data/constants'
 import { db } from '@/store/db'
 import { celebrate } from '@/hooks/useToast'
 import { openForm } from '@/hooks/useQuickAdd'
@@ -27,7 +27,7 @@ export function TaskItem({
   compact?: boolean
 }) {
   const [justDone, setJustDone] = useState(false)
-  const area = AREAS[task.area]
+  const area = areaMeta(task.area)
   return (
     <li
       draggable={draggable}

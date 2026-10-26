@@ -8,9 +8,9 @@ const ITEMS: { label: string; to: string; sprite: SpriteName }[] = [
   { label: 'Leitura', to: '/leitura', sprite: 'book' },
   { label: 'Metas', to: '/metas', sprite: 'target' },
   { label: 'Finanças', to: '/financas', sprite: 'coins' },
-  { label: 'Vida social', to: '/vida-social', sprite: 'cherry' },
-  { label: 'Explorar', to: '/explorar', sprite: 'map' },
-  { label: 'Saúde', to: '/saude', sprite: 'heart' },
+  { label: 'Trabalho', to: '/trabalho', sprite: 'briefcase' },
+  { label: 'Sair de casa', to: '/sair-de-casa', sprite: 'piggy' },
+  { label: 'Notas', to: '/notas', sprite: 'note' },
 ]
 
 export function AreaMenu() {

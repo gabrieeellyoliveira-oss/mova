@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Pause, Play, RotateCcw, X } from 'lucide-react'
+import { Pause, Play, Plus, RotateCcw, X } from 'lucide-react'
 import cenario from '@/assets/game/cenario-quarto.webp'
 import { focusTimer, useFocusTimer } from '@/hooks/useFocusTimer'
 import { setFocusMode, useFocusMode } from '@/hooks/useFocusMode'
@@ -20,6 +20,7 @@ export function FocusMode() {
   const courses = useCourses().filter((c) => c.active)
   const pending = useMemo(() => tasks.filter((x) => !x.done && (!x.date || x.date <= today())), [tasks])
   const [taskId, setTaskId] = useState<string>('')
+  const [draft, setDraft] = useState('')
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setFocusMode(false)
@@ -34,6 +35,16 @@ export function FocusMode() {
   const ss = String(t.remaining % 60).padStart(2, '0')
   const started = t.remaining < total
   const course = courses.find((c) => c.id === t.courseId)
+
+  // cria a missão na hora (tarefa de hoje) e já deixa ela selecionada
+  const createMission = () => {
+    const title = draft.trim()
+    if (!title) return
+    const order = Math.max(-1, ...tasks.map((x) => x.order)) + 1
+    const created = db.tasks.add({ title, done: false, priority: 'media', area: 'geral', order, date: today() })
+    setTaskId(created.id)
+    setDraft('')
+  }
 
   const finish = () => {
     focusTimer.finishEarly()
@@ -58,10 +69,25 @@ export function FocusMode() {
             <p className="font-pixel text-[13px] font-semibold uppercase tracking-[0.14em] text-cereja">Missão atual</p>
             <p className="mt-1 font-heading text-2xl text-vinho">{mission?.title ?? course?.name ?? 'Foco livre'}</p>
           </div>
-          <select value={taskId} onChange={(e) => setTaskId(e.target.value)} className="h-10 w-full rounded-lg border-2 border-vinho/25 bg-white/80 px-3 text-sm text-vinho focus:outline-none" aria-label="Escolher missão">
-            <option value="">{course ? `Estudar: ${course.name}` : 'Sem missão específica'}</option>
-            {pending.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
-          </select>
+          {mission ? (
+            <button type="button" onClick={() => setTaskId('')} className="text-xs font-semibold text-cereja hover:underline">Trocar missão</button>
+          ) : (
+            <div className="space-y-2">
+              <form onSubmit={(e) => { e.preventDefault(); createMission() }} className="flex gap-2">
+                <input
+                  value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Qual é a missão agora?" aria-label="Nova missão"
+                  className="h-10 min-w-0 flex-1 rounded-lg border-2 border-vinho/25 bg-white/80 px-3 text-sm text-tinta placeholder:text-vinho/40 focus:border-cereja focus:outline-none"
+                />
+                <Button type="submit" disabled={!draft.trim()}><Plus size={16} /> Criar</Button>
+              </form>
+              {pending.length > 0 && (
+                <select value="" onChange={(e) => setTaskId(e.target.value)} className="h-10 w-full rounded-lg border-2 border-vinho/25 bg-white/80 px-3 text-sm text-vinho focus:outline-none" aria-label="Escolher missão pendente">
+                  <option value="">{course ? `Ou escolha uma pendente (agora: ${course.name})` : 'Ou escolha uma missão pendente'}</option>
+                  {pending.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
+                </select>
+              )}
+            </div>
+          )}
           <p className="font-pixel text-7xl font-bold tabular-nums text-vinho">{mm}:{ss}</p>
           <div className="flex justify-center gap-2">
             {[25, 45, 60].map((m) => (

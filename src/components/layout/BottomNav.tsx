@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { BookOpen, CalendarPlus, ListTodo, MapPin, NotebookPen, PiggyBank, Plus, Wallet } from 'lucide-react'
+import { BookOpen, CalendarPlus, ListTodo, NotebookPen, PiggyBank, Plus, Wallet } from 'lucide-react'
 import { PixelIcon, type SpriteName } from '@/components/game/PixelIcon'
 import { cn } from '@/lib/cn'
 import { openForm, type FormKind } from '@/hooks/useQuickAdd'
@@ -9,7 +9,7 @@ const items: ({ label: string; path: string; sprite: SpriteName } | null)[] = [
   { label: 'Início', path: '/', sprite: 'home' },
   { label: 'Meu dia', path: '/meu-dia', sprite: 'check' },
   null,
-  { label: 'Explorar', path: '/explorar', sprite: 'map' },
+  { label: 'Metas', path: '/metas', sprite: 'target' },
   { label: 'Perfil', path: '/perfil', sprite: 'user' },
 ]
 
@@ -18,7 +18,6 @@ export const QUICK_ACTIONS: { kind: FormKind; label: string; icon: typeof Plus; 
   { kind: 'transaction', label: 'Novo gasto', icon: Wallet, color: '#520215' },
   { kind: 'event', label: 'Novo compromisso', icon: CalendarPlus, color: '#CB757C' },
   { kind: 'deposit', label: 'Guardar no cofre', icon: PiggyBank, color: '#7A7A4A' },
-  { kind: 'place', label: 'Novo lugar', icon: MapPin, color: '#b8565e' },
   { kind: 'book', label: 'Nova leitura', icon: BookOpen, color: '#b8565e' },
   { kind: 'note', label: 'Nova nota', icon: NotebookPen, color: '#5f5f37' },
 ]

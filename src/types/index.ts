@@ -18,8 +18,6 @@ export type AreaId =
   | 'metas'
   | 'rotina'
   | 'notas'
-  | 'social'
-  | 'saude'
   | 'trabalho'
 
 /* ---------- Agenda ---------- */
