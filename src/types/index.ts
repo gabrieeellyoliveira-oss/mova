@@ -183,6 +183,69 @@ export interface WorkEntry extends Entity {
   note?: string
 }
 
+/** Projeto de trabalho, com o mesmo controle da meta do mês (meta, ritmo e prazo) */
+export type ProjectStatus = 'planejado' | 'andamento' | 'pausado' | 'concluido'
+/** Como o avanço é medido: etapas concluídas ou um número com meta */
+export type ProjectMetric = 'etapas' | 'moeda' | 'horas' | 'numero'
+
+export interface ProjectStep {
+  id: string
+  title: string
+  done: boolean
+}
+
+export interface ProjectEntry {
+  id: string
+  date: ISODate
+  amount: number
+  note?: string
+}
+
+export interface WorkProject extends Entity {
+  name: string
+  client?: string
+  status: ProjectStatus
+  start?: ISODate
+  deadline?: ISODate
+  metric: ProjectMetric
+  /** Meta (quando a medida não é por etapas) */
+  target: number
+  /** Nome da unidade quando a medida é "número" (ex.: entregas, telas) */
+  unitLabel?: string
+  steps: ProjectStep[]
+  entries: ProjectEntry[]
+  color: string
+  notes?: string
+}
+
+/* ---------- Conexões ---------- */
+export interface Integrations {
+  /** Link da agenda do Google (secreto/público iCal, compartilhamento ou incorporar) */
+  googleCalendarUrl: string
+}
+
+/** Último resultado da leitura do Google Agenda (cache local) */
+export interface GoogleCalendarCache {
+  fetchedAt?: string
+  name?: string
+  error?: string
+  events: { id: string; title: string; date: ISODate; time: Time | ''; endTime?: Time; allDay: boolean; location?: string; notes?: string }[]
+}
+
+/** LinkedIn conectado pelo link do perfil; números atualizados pela Gabi */
+export interface LinkedInData {
+  profileUrl: string
+  name?: string
+  headline?: string
+  followers?: number
+  connections?: number
+  /** Meta de posts por mês */
+  postsGoal: number
+  /** Dias em que publicou */
+  posts: ISODate[]
+  updatedAt?: string
+}
+
 /* ---------- Estudos ---------- */
 export interface Course extends Entity {
   name: string

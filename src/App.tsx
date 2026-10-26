@@ -8,7 +8,6 @@ import Vault from '@/pages/Vault'
 import Studies from '@/pages/Studies'
 import Reading from '@/pages/Reading'
 import Goals from '@/pages/Goals'
-import Routine from '@/pages/Routine'
 import Notes from '@/pages/Notes'
 import Profile from '@/pages/Profile'
 import Login from '@/pages/Login'
@@ -33,7 +32,6 @@ export default function App() {
           <Route path="estudos" element={<Studies />} />
           <Route path="leitura" element={<Reading />} />
           <Route path="metas" element={<Goals />} />
-          <Route path="rotina" element={<Routine />} />
           <Route path="conquistas" element={<Achievements />} />
           <Route path="notas" element={<Notes />} />
           <Route path="perfil" element={<Profile />} />

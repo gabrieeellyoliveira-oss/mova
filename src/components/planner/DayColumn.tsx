@@ -70,9 +70,9 @@ export function DayColumn({
         {entries.map((e) => (
           <li
             key={e.key}
-            draggable
+            draggable={!e.locked}
             onDragStart={() => onDragStart(e)}
-            className={cn('group cursor-grab rounded-2xl border-l-4 bg-creme-100 px-2.5 py-2 text-[13px] shadow-sm transition hover:-translate-y-0.5 hover:shadow-pixel-sm active:cursor-grabbing', e.done && 'opacity-50')}
+            className={cn('group cursor-grab rounded-2xl border-l-4 bg-creme-100 px-2.5 py-2 text-[13px] shadow-sm transition hover:-translate-y-0.5 hover:shadow-pixel-sm active:cursor-grabbing', e.done && 'opacity-50', e.locked && 'cursor-default active:cursor-default')}
             style={{ borderLeftColor: e.color }}
           >
             <div className="flex items-start gap-1.5">
@@ -88,14 +88,14 @@ export function DayColumn({
               </button>
             </div>
             {/* alternativa ao arrastar (toque/teclado) */}
-            <select
+            {!e.locked && <select
               value={date}
               onChange={(ev) => move(e, ev.target.value)}
               className="mt-1 w-full rounded-lg bg-transparent text-[10px] text-vinho/50 focus:outline-none lg:hidden"
               aria-label="Mover para outro dia"
             >
               {days.map((x, i) => <option key={x} value={x}>{x === date ? 'mover para…' : WEEKDAYS_SHORT[i]}</option>)}
-            </select>
+            </select>}
           </li>
         ))}
       </ul>

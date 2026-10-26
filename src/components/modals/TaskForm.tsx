@@ -41,7 +41,7 @@ export function TaskForm({ initial, onClose }: { initial?: Partial<Task>; onClos
     >
       <form onSubmit={(e) => { e.preventDefault(); save() }} className="space-y-4">
         <Field label="Tarefa"><Input value={f.title} onChange={(e) => set('title', e.target.value)} placeholder="Ler 20 páginas" /></Field>
-        <Field label="Prioridade">
+        <Field group label="Prioridade">
           <Segmented<Priority>
             value={f.priority} onChange={(v) => set('priority', v)}
             options={(['baixa', 'media', 'alta'] as Priority[]).map((p) => ({ value: p, label: PRIORITIES[p].label }))}

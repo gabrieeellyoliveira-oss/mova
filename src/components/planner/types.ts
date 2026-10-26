@@ -7,6 +7,8 @@ interface Base {
   color: string
   label: string
   done?: boolean
+  /** vem do Google Agenda: só leitura */
+  locked?: boolean
   onOpen: () => void
 }
 

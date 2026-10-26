@@ -71,10 +71,6 @@ export default function Reading() {
   return (
     <div className="space-y-8">
       <PageHeader
-        kicker="minha biblioteca"
-        title="Leitura"
-        subtitle="Seus livros e novas histórias — sem pressa, página por página."
-        icon="book"
         actions={<Button onClick={() => openForm('book')}><Plus size={16} /> Nova leitura</Button>}
       />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">

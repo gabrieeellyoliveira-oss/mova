@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { db, settingsStore, vaultSettingsStore } from '@/store/db'
 import { useCollection } from '@/store/collections'
 import { useStore } from '@/store/createStore'
-import { addDays, monthKey, startOfWeek, today, weekDays } from '@/utils/date'
+import { monthKey, startOfWeek, today, weekDays } from '@/utils/date'
 import { ratio } from '@/utils/format'
 import type { Goal, Habit, Transaction, VaultEntry } from '@/types'
 
@@ -36,17 +36,6 @@ export const goalProgress = (g: Goal) =>
 export const sumBy = (list: Transaction[], type: Transaction['type']) =>
   list.filter((t) => t.type === type).reduce((a, t) => a + t.amount, 0)
 
-export function habitStreak(h: Habit, ref = today()) {
-  const set = new Set(h.log)
-  // se hoje ainda não foi marcado, a sequência conta até ontem (sem punição)
-  let day = set.has(ref) ? ref : addDays(ref, -1)
-  let n = 0
-  while (set.has(day)) {
-    n++
-    day = addDays(day, -1)
-  }
-  return n
-}
 
 export const habitWeekCount = (h: Habit, ref = today()) => {
   const days = new Set(weekDays(ref))

@@ -54,7 +54,7 @@ export function EventForm({ initial, onClose }: { initial?: Partial<CalendarEven
           <Field label="Data"><Input type="date" value={f.date} onChange={(e) => set('date', e.target.value)} /></Field>
           <Field label="Horário"><Input type="time" value={f.time} onChange={(e) => set('time', e.target.value)} /></Field>
         </FormGrid>
-        <Field label="Categoria">
+        <Field group label="Categoria">
           <div className="flex flex-wrap gap-2">
             {(Object.keys(EVENT_CATEGORIES) as EventCategory[]).map((c) => {
               const m = EVENT_CATEGORIES[c]

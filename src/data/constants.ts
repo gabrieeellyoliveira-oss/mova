@@ -30,7 +30,7 @@ export const AREAS: Record<AreaId, AreaMeta> = {
   estudos: { id: 'estudos', label: 'Estudos', path: '/estudos', icon: GraduationCap, sprite: 'laptop', color: '#7A7A4A', soft: '#E6E4CF', tagline: 'Acompanhe seus cursos e progresso' },
   leitura: { id: 'leitura', label: 'Leitura', path: '/leitura', icon: BookOpen, sprite: 'book', color: '#520215', soft: '#EFE3D6', tagline: 'Seus livros e novas histórias' },
   metas: { id: 'metas', label: 'Metas', path: '/metas', icon: Target, sprite: 'target', color: '#961415', soft: '#DFD1D1', tagline: 'Conquiste o que importa' },
-  rotina: { id: 'rotina', label: 'Rotina', path: '/rotina', icon: Repeat, sprite: 'dumbbell', color: '#b8565e', soft: '#f8dcde', tagline: 'Seus hábitos e bem-estar' },
+  rotina: { id: 'rotina', label: 'Rotina', path: '/meu-dia', icon: Repeat, sprite: 'dumbbell', color: '#b8565e', soft: '#f8dcde', tagline: 'Seus hábitos e bem-estar' },
   trabalho: { id: 'trabalho', label: 'Trabalho', path: '/trabalho', icon: Briefcase, sprite: 'briefcase', color: '#6b3f26', soft: '#EFE3D6', tagline: 'Meta do mês e evolução' },
   notas: { id: 'notas', label: 'Notas', path: '/notas', icon: NotebookPen, sprite: 'note', color: '#5f5f37', soft: '#E6E4CF' },
 }
@@ -43,7 +43,6 @@ export const NAV_ITEMS: { label: string; path: string; sprite: SpriteName }[] = 
   { label: 'Meu dia', path: '/meu-dia', sprite: 'day' },
   { label: 'Planejamento', path: '/planejamento', sprite: 'planner' },
   { label: 'Trabalho', path: '/trabalho', sprite: 'briefcase' },
-  { label: 'Rotina', path: '/rotina', sprite: 'sun' },
   { label: 'Metas', path: '/metas', sprite: 'target' },
   { label: 'Finanças', path: '/financas', sprite: 'coins' },
   { label: 'Sair de casa', path: '/sair-de-casa', sprite: 'piggy' },
@@ -117,5 +116,5 @@ export const GOAL_STATUS: Record<GoalStatus, string> = {
 
 export const COURSE_COLORS = ['#961415', '#520215', '#CB757C', '#7A7A4A', '#b8565e', '#5f5f37', '#8a6f5c']
 export const BOOK_COLORS = ['#961415', '#520215', '#CB757C', '#7A7A4A', '#b8565e', '#3a010f', '#5f5f37', '#8a6f5c']
-export const HABIT_COLORS = ['#961415', '#520215', '#CB757C', '#EFAFB3', '#7A7A4A', '#b8565e', '#3a010f']
+export const PROJECT_COLORS = ['#961415', '#520215', '#CB757C', '#EFAFB3', '#7A7A4A', '#b8565e', '#3a010f']
 

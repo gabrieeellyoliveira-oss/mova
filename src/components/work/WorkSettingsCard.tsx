@@ -17,10 +17,10 @@ export function WorkSettingsCard() {
       <Field label="O que você mede">
         <Input value={s.metricName} onChange={(e) => set({ metricName: e.target.value || 'Resultado' })} placeholder="Vendas, clientes, contratos…" />
       </Field>
-      <Field label="A meta é em">
+      <Field group label="A meta é em">
         <Segmented<WorkUnit> value={s.unit} onChange={(unit) => set({ unit })} options={[{ value: 'moeda', label: 'Dinheiro (R$)' }, { value: 'numero', label: 'Quantidade' }]} />
       </Field>
-      <Field label="Dias que eu trabalho" hint="Usados para calcular o ritmo e quanto fazer por dia.">
+      <Field group label="Dias que eu trabalho" hint="Usados para calcular o ritmo e quanto fazer por dia.">
         <div className="flex flex-wrap gap-1.5">
           {WEEKDAYS_SHORT.map((d, i) => <Chip key={d} active={s.workDays.includes(i)} onClick={() => toggleDay(i)}>{d}</Chip>)}
         </div>

@@ -3,7 +3,7 @@ import { PixelIcon, type SpriteName } from '@/components/game/PixelIcon'
 
 /** Áreas principais como botões de menu de jogo. */
 const ITEMS: { label: string; to: string; sprite: SpriteName }[] = [
-  { label: 'Rotina', to: '/rotina', sprite: 'dumbbell' },
+  { label: 'Meu dia', to: '/meu-dia', sprite: 'day' },
   { label: 'Estudos', to: '/estudos', sprite: 'laptop' },
   { label: 'Leitura', to: '/leitura', sprite: 'book' },
   { label: 'Metas', to: '/metas', sprite: 'target' },

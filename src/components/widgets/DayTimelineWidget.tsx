@@ -1,4 +1,4 @@
-import { useEvents } from '@/hooks/useData'
+import { useAgendaEvents } from '@/hooks/useAgenda'
 import { EVENT_CATEGORIES } from '@/data/constants'
 import { openForm } from '@/hooks/useQuickAdd'
 import { today } from '@/utils/date'
@@ -15,7 +15,7 @@ export const EVENT_SPRITES: Record<EventCategory, SpriteName> = {
 
 /** Agenda do dia como timeline de jogo. */
 export function DayTimelineWidget({ date = today(), title = 'Meu dia' }: { date?: string; title?: string }) {
-  const events = useEvents().filter((e) => e.date === date).sort((a, b) => a.time.localeCompare(b.time))
+  const events = useAgendaEvents().filter((e) => e.date === date).sort((a, b) => a.time.localeCompare(b.time))
   const now = new Date().toTimeString().slice(0, 5)
   return (
     <Card className="flex flex-col">
@@ -30,18 +30,18 @@ export function DayTimelineWidget({ date = today(), title = 'Meu dia' }: { date?
         <ol className="relative ml-[54px] space-y-1 border-l-2 border-dashed border-vinho/25">
           {events.map((e) => {
             const cat = EVENT_CATEGORIES[e.category]
-            const past = date === today() && e.time < now
+            const past = date === today() && !e.allDay && (e.endTime ?? e.time) < now
             return (
               <li key={e.id} className="relative">
-                <span className="absolute -left-[58px] top-2 w-11 text-right font-pixel text-[13px] font-semibold tabular-nums text-vinho">{e.time}</span>
+                <span className="absolute -left-[58px] top-2 w-11 text-right font-pixel text-[13px] font-semibold tabular-nums text-vinho">{e.allDay ? 'dia' : e.time}</span>
                 <span className={`absolute -left-[7px] top-3 h-3 w-3 rotate-45 border-2 border-px-line ${past ? 'bg-oliva' : 'bg-rosa'}`} />
-                <button onClick={() => openForm('event', e as never)} className={`ml-3 flex w-[calc(100%-12px)] items-center gap-2.5 rounded-lg border-2 border-transparent px-2 py-1.5 text-left transition hover:border-px-line/30 hover:bg-white/60 ${past ? 'opacity-60' : ''}`}>
-                  <PixelIcon name={EVENT_SPRITES[e.category]} size={18} />
+                <button onClick={() => { if (!e.source) openForm('event', e as never) }} title={e.source ? 'Evento do Google Agenda (edite no Google)' : undefined} className={`ml-3 flex w-[calc(100%-12px)] items-center gap-2.5 rounded-lg border-2 border-transparent px-2 py-1.5 text-left transition hover:border-px-line/30 hover:bg-white/60 ${past ? 'opacity-60' : ''}`}>
+                  <PixelIcon name={e.source ? 'day' : EVENT_SPRITES[e.category]} size={18} />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold text-tinta">{e.title}</span>
-                    {(e.location || e.notes) && <span className="block truncate text-[11px] text-vinho/55">{e.location || e.notes}</span>}
+                    {(e.endTime || e.location || e.notes) && <span className="block truncate text-[11px] text-vinho/55">{[e.endTime && `até ${e.endTime}`, e.location || e.notes].filter(Boolean).join(' · ')}</span>}
                   </span>
-                  <span className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold" style={{ color: cat.color, backgroundColor: cat.soft }}>{cat.label}</span>
+                  {e.source ? <span className="shrink-0 rounded bg-[#E8F0FE] px-1.5 py-0.5 text-[10px] font-bold text-[#1a56c4]">Google</span> : <span className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold" style={{ color: cat.color, backgroundColor: cat.soft }}>{cat.label}</span>}
                 </button>
               </li>
             )

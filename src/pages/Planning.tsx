@@ -1,8 +1,9 @@
+import { useAgendaEvents } from '@/hooks/useAgenda'
 import { useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Inbox } from 'lucide-react'
 import type { ISODate } from '@/types'
 import { db } from '@/store/db'
-import { useEvents, useTasks } from '@/hooks/useData'
+import { useTasks } from '@/hooks/useData'
 import { areaMeta, EVENT_CATEGORIES } from '@/data/constants'
 import { addDays, formatShort, startOfWeek, today, weekDays } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
@@ -17,7 +18,7 @@ import { cn } from '@/lib/cn'
 export default function Planning() {
   const [ref, setRef] = useState(today())
   const tasks = useTasks()
-  const events = useEvents()
+  const events = useAgendaEvents()
   const dragged = useRef<PlannerEntry | null>(null)
   const [dragging, setDragging] = useState(false)
   const days = weekDays(ref)
@@ -27,7 +28,8 @@ export default function Planning() {
     const map: Record<ISODate, PlannerEntry[]> = Object.fromEntries(days.map((d) => [d, []]))
     events.filter((e) => map[e.date]).forEach((e) => {
       const c = EVENT_CATEGORIES[e.category]
-      map[e.date].push({ kind: 'event', key: `e${e.id}`, event: e, title: e.title, time: e.time, color: c.color, label: c.label, onOpen: () => openForm('event', e as never) })
+      if (e.source) map[e.date].push({ kind: 'event', key: `g${e.id}`, event: e, title: e.title, time: e.allDay ? undefined : e.time, color: '#4285F4', label: 'Google Agenda', locked: true, onOpen: () => {} })
+      else map[e.date].push({ kind: 'event', key: `e${e.id}`, event: e, title: e.title, time: e.time, color: c.color, label: c.label, onOpen: () => openForm('event', e as never) })
     })
     tasks.filter((t) => t.date && map[t.date]).forEach((t) => {
       const a = areaMeta(t.area)
@@ -43,7 +45,7 @@ export default function Planning() {
     const e = dragged.current
     dragged.current = null
     setDragging(false)
-    if (!e) return
+    if (!e || e.locked) return
     if (e.kind === 'task') db.tasks.update(e.task.id, { date: date ?? undefined })
     else if (date && e.kind === 'event') db.events.update(e.event.id, { date })
   }
@@ -54,10 +56,6 @@ export default function Planning() {
   return (
     <div className="space-y-8">
       <PageHeader
-        kicker="minha semana"
-        title="Planejamento"
-        subtitle="Arraste as coisas entre os dias até a semana caber direitinho em você."
-        icon="planner"
         actions={
           <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
             <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, -7))} aria-label="Semana anterior"><ChevronLeft size={16} /></Button>

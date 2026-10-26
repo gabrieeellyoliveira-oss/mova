@@ -1,6 +1,6 @@
 import { useGame } from '@/game/useGame'
 import { XP_VALUES, PAGES_PER_READING } from '@/game/config'
-import { PageHeader, StatCard } from '@/components/ui/PageHeader'
+import { StatCard } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Achievement } from '@/components/game/Achievement'
 import { XPBar } from '@/components/game/XPBar'
@@ -14,8 +14,6 @@ export default function Achievements() {
 
   return (
     <div className="space-y-8">
-      <PageHeader icon="trophy" kicker="sala de troféus" title="Conquistas" subtitle="Tudo aqui vem do que você já faz no MOVA. Nada de cobrança: só registro do caminho." />
-
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_repeat(2,minmax(0,1fr))]">
         <Card tone="vinho" className="flex flex-col justify-center gap-2">
           <XPBar variant="sidebar" />

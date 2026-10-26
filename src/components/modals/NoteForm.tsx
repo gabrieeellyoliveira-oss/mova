@@ -68,7 +68,7 @@ export function NoteForm({ initial, onClose }: { initial?: Partial<Note>; onClos
             />
           </div>
         </Field>
-        <Field label="Cor">
+        <Field group label="Cor">
           <div className="flex gap-2">
             {(Object.keys(swatch) as Note['color'][]).map((c) => (
               <button key={c} type="button" onClick={() => set('color', c)} aria-label={c}

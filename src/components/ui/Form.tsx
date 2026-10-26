@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { cn } from '@/lib/cn'
 
 const control =
@@ -29,14 +29,16 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
 ))
 Select.displayName = 'Select'
 
-export function Field({ label, hint, children, className }: { label: string; hint?: string; children: ReactNode; className?: string }) {
-  return (
-    <label className={cn('block', className)}>
-      <span className="mb-1.5 block font-pixel text-[13px] font-semibold uppercase tracking-wide text-vinho/80">{label}</span>
-      {children}
-      {hint && <span className="mt-1 block text-xs text-vinho/50">{hint}</span>}
-    </label>
-  )
+/**
+ * Campo com rótulo. `group` = vários controles (botões, chips, cores): usa um grupo com nome
+ * em vez de <label>, para o clique no rótulo não acionar o primeiro botão.
+ */
+export function Field({ label, hint, children, className, group }: { label: string; hint?: string; children: ReactNode; className?: string; group?: boolean }) {
+  const id = useId()
+  const title = <span id={id} className="mb-1.5 block font-pixel text-[13px] font-semibold uppercase tracking-wide text-vinho/80">{label}</span>
+  const help = hint && <span className="mt-1 block text-xs text-vinho/50">{hint}</span>
+  if (group) return <div role="group" aria-labelledby={id} className={cn('block', className)}>{title}{children}{help}</div>
+  return <label className={cn('block', className)}>{title}{children}{help}</label>
 }
 
 export function FormGrid({ children }: { children: ReactNode }) {

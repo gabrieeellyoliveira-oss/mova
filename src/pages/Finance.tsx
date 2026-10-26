@@ -44,10 +44,6 @@ export default function Finance() {
   return (
     <div className="space-y-8">
       <PageHeader
-        kicker="seu mês"
-        title="Finanças"
-        subtitle="Saber pra onde o dinheiro vai é o primeiro passo pra ele ir aonde você quer."
-        icon="coins"
         actions={
           <>
             <Button variant="olive" onClick={() => openForm('transaction', { type: 'receita', category: 'Salário' })}><ArrowUpRight size={16} /> Receita</Button>

@@ -27,10 +27,6 @@ export default function Notes() {
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="cantinho das ideias"
-        title="Notas"
-        subtitle="Listas, lembretes, receitas e pensamentos soltos."
-        icon="note"
         actions={<Button onClick={() => openForm('note', tag ? { tags: [tag] } : undefined)}><Plus size={16} /> Nova nota</Button>}
       />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

@@ -1,22 +1,16 @@
 import { useMemo } from 'react'
 import gabi from '@/assets/game/gabi-caminhando.webp'
-import { goalProgress, useBooks, useExperiences, useFinancialGoals, useGoals, useHabits, useSettings, useStudyWeek } from '@/hooks/useData'
-import { monthKey, today, weekDays } from '@/utils/date'
+import { goalProgress, useBooks, useExperiences, useFinancialGoals, useGoals, useSettings, useStudyWeek } from '@/hooks/useData'
+import { monthKey, today } from '@/utils/date'
+import { useWork } from '@/hooks/useWork'
 import { ratio } from '@/utils/format'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { PixelIcon, type SpriteName } from './PixelIcon'
-import type { Habit } from '@/types'
 
-const weekPct = (habits: Habit[]) => {
-  const days = new Set(weekDays(today()))
-  const done = habits.reduce((a, h) => a + h.log.filter((d) => days.has(d)).length, 0)
-  const target = habits.reduce((a, h) => a + h.weeklyTarget, 0)
-  return ratio(done, target)
-}
 
 /** "Meu progresso": a personagem caminhando + barras por área (todas a partir dos dados reais). */
 export function ProgressPanel() {
-  const habits = useHabits()
+  const work = useWork(monthKey(today()))
   const study = useStudyWeek()
   const fgoals = useFinancialGoals()
   const goals = useGoals()
@@ -29,15 +23,14 @@ export function ProgressPanel() {
     const year = String(new Date().getFullYear())
     const month = monthKey(today())
     const list: { label: string; sprite: SpriteName; value: number; hint: string }[] = [
-      { label: 'Rotina', sprite: 'sun', value: weekPct(habits), hint: 'hábitos da semana' },
       { label: 'Estudos', sprite: 'laptop', value: study.progress, hint: 'horas da semana x meta' },
       { label: 'Finanças', sprite: 'coins', value: fgoals.length ? fgoals.reduce((a, g) => a + ratio(g.current, g.target), 0) / fgoals.length : 0, hint: 'média das metas financeiras' },
-      { label: 'Bem-estar', sprite: 'heart', value: weekPct(habits.filter((h) => h.health)), hint: 'hábitos de saúde da semana' },
+      { label: 'Trabalho', sprite: 'briefcase', value: work.progress, hint: 'meta do mês no trabalho' },
       { label: 'Vida social', sprite: 'cherry', value: social.length ? social.reduce((a, g) => a + goalProgress(g), 0) / social.length : ratio(exps.filter((e) => monthKey(e.date) === month).length, 4), hint: social.length ? 'metas de vida social' : 'rolês do mês' },
       { label: 'Leitura', sprite: 'book', value: ratio(books.filter((b) => b.status === 'lido' && b.finishedAt?.startsWith(year)).length, yearlyBooksGoal), hint: 'meta de livros do ano' },
     ]
     return list
-  }, [habits, study.progress, fgoals, goals, exps, books, yearlyBooksGoal])
+  }, [work.progress, study.progress, fgoals, goals, exps, books, yearlyBooksGoal])
 
   const avg = rows.reduce((a, r) => a + r.value, 0) / rows.length
   const message = avg >= 70 ? 'Que fase! Continua assim ♥' : avg >= 40 ? 'Você está indo bem! ♥' : 'Um passinho de cada vez ♥'

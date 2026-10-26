@@ -1,9 +1,9 @@
 import type { SpriteName } from '@/components/game/pixelSprites'
-import type { Book, Experience, FinancialGoal, Goal, Habit, Place, Task, FocusSession, VaultCost, VaultEntry } from '@/types'
-import { today } from '@/utils/date'
+import type { Book, Experience, FinancialGoal, Goal, Habit, Place, Task, FocusSession, VaultCost, VaultEntry, WorkProject } from '@/types'
 import { TRAINING_PATTERN } from './config'
 
 export interface GameData {
+  workProjects: WorkProject[]
   tasks: Task[]
   habits: Habit[]
   books: Book[]
@@ -34,14 +34,10 @@ export interface AchievementDef {
 }
 
 export const ACHIEVEMENTS: AchievementDef[] = [
-  { id: 'treino7', title: '7 dias de treino', description: 'Marque um hábito de treino 7 vezes.', sprite: 'dumbbell',
-    progress: (d) => ({ current: d.habits.filter(isTraining).reduce((a, h) => a + h.log.length, 0), target: 7 }) },
   { id: 'livros5', title: '5 livros lidos', description: 'Termine 5 livros da sua estante.', sprite: 'book',
     progress: (d) => ({ current: d.books.filter((b) => b.status === 'lido').length, target: 5 }) },
   { id: 'metafin', title: 'Meta financeira', description: 'Complete uma meta financeira.', sprite: 'coins',
     progress: (d) => ({ current: d.financialGoals.filter((g) => g.current >= g.target).length, target: 1 }) },
-  { id: 'rotina', title: 'Rotina em dia', description: 'Marque todos os hábitos no mesmo dia.', sprite: 'heart',
-    progress: (d) => ({ current: d.habits.filter((h) => h.log.includes(today())).length, target: Math.max(1, d.habits.length) }) },
   { id: 'role', title: 'Saiu pra um rolê', description: 'Realize seu primeiro rolê.', sprite: 'cherry',
     progress: (d) => ({ current: rolesCount(d.places, d.experiences), target: 1 }) },
   { id: 'cafe', title: 'Conheceu um café novo', description: 'Vá a um café da sua lista.', sprite: 'cup',
@@ -58,6 +54,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
       const target = d.vaultCosts.reduce((a, c) => a + c.amount, 0) || 1
       return { current: Math.max(0, Math.round((saved / target) * 100)), target: 50 }
     } },
+  { id: 'projeto1', title: 'Projeto entregue', description: 'Entregue um projeto de trabalho.', sprite: 'briefcase',
+    progress: (d) => ({ current: d.workProjects.filter((p) => p.status === 'concluido').length, target: 1 }) },
   { id: 'nivel10', title: 'Nível 10', description: 'Chegue ao nível 10.', sprite: 'trophy',
     progress: (d) => ({ current: d.level, target: 10 }) },
 ]

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CalendarPlus, ChevronLeft, ChevronRight, Hourglass, ListPlus } from 'lucide-react'
-import { useEvents, useTasks } from '@/hooks/useData'
+import { useTasks } from '@/hooks/useData'
+import { useAgendaEvents } from '@/hooks/useAgenda'
 import { EVENT_CATEGORIES } from '@/data/constants'
 import { openForm } from '@/hooks/useQuickAdd'
 import { setFocusMode } from '@/hooks/useFocusMode'
@@ -18,7 +19,7 @@ import { XP_VALUES } from '@/game/config'
 
 /** Meu dia: agenda como timeline de jogo + missões do dia + calendário. */
 export default function MyDay() {
-  const events = useEvents()
+  const events = useAgendaEvents()
   const tasks = useTasks()
   const [date, setDate] = useState(today())
   const t = today()
@@ -26,7 +27,7 @@ export default function MyDay() {
 
   const dots = useMemo(() => {
     const m: Record<string, string[]> = {}
-    events.forEach((e) => (m[e.date] ??= []).push(EVENT_CATEGORIES[e.category].color))
+    events.forEach((e) => (m[e.date] ??= []).push(e.source ? '#4285F4' : EVENT_CATEGORIES[e.category].color))
     return m
   }, [events])
   const missions = useMemo(
@@ -41,10 +42,6 @@ export default function MyDay() {
   return (
     <div className="space-y-6">
       <PageHeader
-        icon="day"
-        kicker={relativeDay(date)}
-        title="Meu dia"
-        subtitle={formatLong(date)}
         actions={
           <>
             <Button variant="soft" onClick={() => setFocusMode(true)}><Hourglass size={16} /> Modo foco</Button>
@@ -56,6 +53,7 @@ export default function MyDay() {
         <Button size="icon-sm" variant="ghost" onClick={() => setDate(addDays(date, -1))} aria-label="Dia anterior"><ChevronLeft size={16} /></Button>
         <Button size="sm" variant={isToday ? 'primary' : 'soft'} onClick={() => setDate(t)}>Hoje</Button>
         <Button size="icon-sm" variant="ghost" onClick={() => setDate(addDays(date, 1))} aria-label="Próximo dia"><ChevronRight size={16} /></Button>
+        <span className="ml-2 text-sm font-semibold text-vinho first-letter:uppercase">{relativeDay(date)} · {formatLong(date)}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">

@@ -7,9 +7,11 @@ import { Toaster } from './Toaster'
 import { FormHost } from '@/components/modals/FormHost'
 import { GameWatcher } from '@/components/game/GameWatcher'
 import { FocusMode } from '@/components/game/FocusMode'
+import { useGoogleCalendarSync } from '@/lib/googleCalendar'
 
 export function AppShell() {
   const { pathname } = useLocation()
+  useGoogleCalendarSync()
   useEffect(() => {
     window.scrollTo({ top: 0 })
   }, [pathname])

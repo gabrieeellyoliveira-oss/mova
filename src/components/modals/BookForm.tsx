@@ -50,7 +50,7 @@ export function BookForm({ initial, onClose }: { initial?: Partial<Book>; onClos
               </Select>
             </Field>
           </FormGrid>
-          <Field label="Cor da capa">
+          <Field group label="Cor da capa">
             <div className="flex flex-wrap gap-2">
               {BOOK_COLORS.map((c) => (
                 <button key={c} type="button" onClick={() => set('coverColor', c)} aria-label={`Cor ${c}`}

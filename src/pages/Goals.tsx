@@ -46,10 +46,6 @@ export default function Goals() {
   return (
     <div className="space-y-8">
       <PageHeader
-        kicker="o que importa pra mim"
-        title="Metas"
-        subtitle="Conquiste o que importa — uma etapa pequena de cada vez."
-        icon="target"
         actions={<Button onClick={() => setEditing({ category: cat === 'todas' ? 'Pessoal' : cat })}><Plus size={16} /> Nova meta</Button>}
       />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">

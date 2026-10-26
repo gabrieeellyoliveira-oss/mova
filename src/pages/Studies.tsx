@@ -73,10 +73,6 @@ export default function Studies() {
   return (
     <div className="space-y-8">
       <PageHeader
-        kicker="aprender é se mover"
-        title="Estudos"
-        subtitle="No seu ritmo, um pouquinho por dia já vira muita coisa."
-        icon="laptop"
         actions={<Button onClick={() => setEditing('new')}><Plus size={16} /> Novo curso</Button>}
       />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">

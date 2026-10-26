@@ -16,6 +16,7 @@ export function useGame() {
   const sessions = useCollection(db.focusSessions)
   const vaultEntries = useCollection(db.vaultEntries)
   const vaultCosts = useCollection(db.vaultCosts)
+  const workProjects = useCollection(db.workProjects)
 
   return useMemo(() => {
     const trainingLogs = habits.filter(isTraining).reduce((a, h) => a + h.log.length, 0)
@@ -35,13 +36,13 @@ export function useGame() {
     }))
     const total = breakdown.reduce((a, b) => a + b.xp, 0)
     const lvl = levelFromXp(total)
-    const data: GameData = { tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts, level: lvl.level }
+    const data: GameData = { tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts, workProjects, level: lvl.level }
     const achievements = ACHIEVEMENTS.map((a) => {
       const p = a.progress(data)
       return { ...a, ...p, unlocked: p.current >= p.target }
     })
     return { total, ...lvl, breakdown, achievements }
-  }, [tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts])
+  }, [tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts, workProjects])
 }
 
 export type GameState = ReturnType<typeof useGame>

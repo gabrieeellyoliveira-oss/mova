@@ -91,7 +91,7 @@ export function BookDetail({ book, onClose }: { book: Book; onClose: () => void 
             <Field label="Título"><Input value={f.title} onChange={(e) => set('title', e.target.value)} /></Field>
             <Field label="Autor(a)"><Input value={f.author} onChange={(e) => set('author', e.target.value)} /></Field>
             <Field label="Páginas"><Input type="number" value={f.pages} onChange={(e) => set('pages', Math.max(1, Number(e.target.value)))} /></Field>
-            <Field label="Nota"><div className="flex h-11 items-center"><StarRating value={f.rating ?? 0} onChange={(v) => set('rating', v)} size={24} /></div></Field>
+            <Field group label="Nota"><div className="flex h-11 items-center"><StarRating value={f.rating ?? 0} onChange={(v) => set('rating', v)} size={24} /></div></Field>
             <Field label="Comecei em"><Input type="date" value={f.startedAt ?? ''} onChange={(e) => set('startedAt', e.target.value || undefined)} /></Field>
             <Field label="Terminei em"><Input type="date" value={f.finishedAt ?? ''} onChange={(e) => set('finishedAt', e.target.value || undefined)} /></Field>
           </FormGrid>

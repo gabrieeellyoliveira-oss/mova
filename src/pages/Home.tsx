@@ -9,6 +9,7 @@ import { ReadingWidget } from '@/components/widgets/ReadingWidget'
 import { AchievementsWidget } from '@/components/widgets/AchievementsWidget'
 import { StudyWeekWidget } from '@/components/widgets/StudyWeekWidget'
 import { CostsWidget } from '@/components/widgets/CostsWidget'
+import { LinkedInWidget } from '@/components/widgets/LinkedInWidget'
 
 /** Início: o quarto da Gabi como cena de jogo + menus de área e painéis do dia. */
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
         <AchievementsWidget />
         <StudyWeekWidget />
         <CostsWidget />
+        <LinkedInWidget />
       </div>
     </div>
   )

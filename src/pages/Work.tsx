@@ -1,9 +1,9 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, History, LineChart, ListChecks, Plus, Settings2 } from 'lucide-react'
-import type { WorkEntry } from '@/types'
+import type { WorkEntry, WorkProject } from '@/types'
 import { monthKey, today } from '@/utils/date'
 import { formatWork, monthLabel, shiftMonth, useWork } from '@/hooks/useWork'
-import { PageHeader } from '@/components/ui/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { WorkHero } from '@/components/work/WorkHero'
@@ -11,6 +11,9 @@ import { DailyChart, HistoryChart } from '@/components/work/WorkCharts'
 import { WorkEntryList } from '@/components/work/WorkEntryList'
 import { WorkSettingsCard } from '@/components/work/WorkSettingsCard'
 import { WorkEntryForm } from '@/components/work/WorkEntryForm'
+import { ProjectsView } from '@/components/work/ProjectsView'
+import { ProjectForm } from '@/components/work/ProjectForm'
+import { Segmented } from '@/components/ui/Chip'
 
 export default function Work() {
   const current = monthKey(today())
@@ -18,25 +21,37 @@ export default function Work() {
   const [editing, setEditing] = useState<Partial<WorkEntry> | null>(null)
   const w = useWork(month)
   const newEntry = () => setEditing(month === current ? {} : { date: `${month}-01` })
+  const [params, setParams] = useSearchParams()
+  const tab = params.get('aba') === 'meta' ? 'meta' : 'projetos'
+  const [project, setProject] = useState<WorkProject | null | 'new'>(null)
+
+  const tabs = <Segmented value={tab} onChange={(v) => setParams(v === 'meta' ? { aba: 'meta' } : {})} options={[{ value: 'projetos', label: 'Projetos' }, { value: 'meta', label: 'Meta do mês' }]} />
+
+  if (tab === 'projetos')
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {tabs}
+          <Button onClick={() => setProject('new')}><Plus size={16} /> Novo projeto</Button>
+        </div>
+        <ProjectsView onEdit={setProject} />
+        {project && <ProjectForm initial={project === 'new' ? undefined : project} onClose={() => setProject(null)} />}
+      </div>
+    )
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        icon="briefcase"
-        kicker="minha meta do mês"
-        title="Trabalho"
-        subtitle="Acompanhe a meta do mês e como você vem evoluindo."
-        actions={
-          <>
-            <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
-              <Button size="icon-sm" variant="ghost" onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Mês anterior"><ChevronLeft size={16} /></Button>
-              <button onClick={() => setMonth(current)} className="min-w-[128px] px-2 text-sm font-bold capitalize text-vinho">{monthLabel(month)}</button>
-              <Button size="icon-sm" variant="ghost" onClick={() => setMonth(shiftMonth(month, 1))} disabled={month >= current} aria-label="Próximo mês"><ChevronRight size={16} /></Button>
-            </div>
-            <Button onClick={newEntry}><Plus size={16} /> Registrar</Button>
-          </>
-        }
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {tabs}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
+            <Button size="icon-sm" variant="ghost" onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Mês anterior"><ChevronLeft size={16} /></Button>
+            <button onClick={() => setMonth(current)} className="min-w-[128px] px-2 text-sm font-bold capitalize text-vinho">{monthLabel(month)}</button>
+            <Button size="icon-sm" variant="ghost" onClick={() => setMonth(shiftMonth(month, 1))} disabled={month >= current} aria-label="Próximo mês"><ChevronRight size={16} /></Button>
+          </div>
+          <Button onClick={newEntry}><Plus size={16} /> Registrar</Button>
+        </div>
+      </div>
       <WorkHero w={w} onAdd={newEntry} />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>

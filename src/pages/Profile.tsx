@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Download, LogOut, RotateCcw, Upload } from 'lucide-react'
 import { signOut, useSession } from '@/lib/auth'
 import gabi from '@/assets/gabi-e-gata.webp'
@@ -7,17 +7,23 @@ import { exportAll, importAll, resetAll, settingsStore } from '@/store/db'
 import { useSettings } from '@/hooks/useData'
 import { NAV_ITEMS } from '@/data/constants'
 import { toast } from '@/hooks/useToast'
-import { PageHeader } from '@/components/ui/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Field, FormGrid, Input } from '@/components/ui/Form'
 import { PixelIcon } from '@/components/game/PixelIcon'
+import { GoogleCalendarCard } from '@/components/integrations/GoogleCalendarCard'
+import { LinkedInCard } from '@/components/integrations/LinkedInCard'
 
 export default function Profile() {
   const s = useSettings()
   const session = useSession()
   const file = useRef<HTMLInputElement>(null)
   const [confirmReset, setConfirmReset] = useState(false)
+  const [params] = useSearchParams()
+  const connections = useRef<HTMLElement>(null)
+  useEffect(() => {
+    if (params.get('secao') === 'conexoes') connections.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [params])
   const set = <K extends keyof typeof s>(k: K, v: (typeof s)[K]) => settingsStore.set((p) => ({ ...p, [k]: v }))
 
   const download = () => {
@@ -31,8 +37,6 @@ export default function Profile() {
 
   return (
     <div className="space-y-8">
-      <PageHeader kicker="seu jogo, suas regras" title="Configurações" subtitle="Ajustes, metas gerais, acesso e seus dados." icon="gear" />
-
       <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
         <div className="grid items-end gap-6 md:grid-cols-[1fr_360px]">
           <div>
@@ -54,6 +58,14 @@ export default function Profile() {
           ))}
         </div>
       </Card>
+
+      <section ref={connections} className="scroll-mt-6">
+        <h2 className="mb-3 font-heading text-xl uppercase text-vinho">Conexões</h2>
+        <div className="grid items-start gap-6 lg:grid-cols-2">
+          <GoogleCalendarCard />
+          <LinkedInCard />
+        </div>
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
