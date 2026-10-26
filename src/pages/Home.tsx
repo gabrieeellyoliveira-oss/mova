@@ -1,7 +1,6 @@
 import { CharacterScene } from '@/components/game/CharacterScene'
 import { ProgressPanel } from '@/components/game/ProgressPanel'
 import { AreaMenu } from '@/components/widgets/AreaMenu'
-import { MissionsWidget } from '@/components/widgets/MissionsWidget'
 import { GoalsWidget } from '@/components/widgets/GoalsWidget'
 import { FinanceWidget } from '@/components/widgets/FinanceWidget'
 import { VaultWidget } from '@/components/widgets/VaultWidget'
@@ -17,7 +16,6 @@ export default function Home() {
       <CharacterScene />
       <AreaMenu />
       <div className="grid gap-5 lg:grid-cols-2 min-[1360px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,0.95fr)]">
-        <MissionsWidget />
         <ProgressPanel />
         <GoalsWidget />
         <FinanceWidget />
