@@ -20,7 +20,7 @@ export function AuthGameWindow({ children, className }: { children: ReactNode; c
             <span className="px-corners-sm grid h-6 w-6 place-items-center bg-[#F6D9DC] pb-0.5 text-[16px] font-black leading-none text-vinho shadow-[inset_0_-2px_0_rgba(82,2,21,0.25)]">×</span>
           </div>
           <div className="px-corners bg-[#E89AA2] p-[3px]">
-            <div className="px-corners relative bg-[#FFF5F0] px-5 py-5 sm:px-8 sm:py-7 lg:max-h-[calc(100dvh-120px)] lg:overflow-y-auto">
+            <div className="px-corners relative bg-[#FFF5F0] px-5 py-5 sm:px-8 sm:py-7 short:py-4 lg:max-h-[calc(100dvh-96px)] lg:overflow-y-auto">
               <span aria-hidden className="absolute left-3 top-3 animate-twinkle font-pixel text-sm leading-none text-cereja/70">✦</span>
               <span aria-hidden className="absolute bottom-3 left-3 animate-twinkle font-pixel text-xs leading-none text-cereja/60 [animation-delay:1.2s]">✧</span>
               <span aria-hidden className="absolute bottom-3 right-3 animate-twinkle font-pixel text-sm leading-none text-cereja/70 [animation-delay:2s]">✦</span>
@@ -37,10 +37,10 @@ export function AuthGameWindow({ children, className }: { children: ReactNode; c
 export function WindowTitle({ title, subtitle }: { title: string; subtitle: ReactNode }) {
   return (
     <header className="text-center">
-      <h2 className="flex items-center justify-center gap-3 font-pixel text-[28px] font-bold uppercase leading-none tracking-[0.08em] text-vinho sm:text-[32px]">
+      <h2 className="flex items-center justify-center gap-3 font-pixel text-[28px] font-bold uppercase leading-none tracking-[0.08em] text-vinho sm:text-[32px] short:text-[26px]">
         <span aria-hidden className="text-lg text-cereja">✦</span>{title}<span aria-hidden className="text-lg text-cereja">✦</span>
       </h2>
-      <p className="mx-auto mt-2.5 max-w-[320px] text-[15px] leading-snug text-[#5b2a33]">{subtitle}</p>
+      <p className="mx-auto mt-2.5 max-w-[320px] text-[15px] leading-snug text-[#5b2a33] short:mt-1.5 short:text-sm">{subtitle}</p>
     </header>
   )
 }

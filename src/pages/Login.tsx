@@ -13,18 +13,18 @@ export default function Login() {
   return (
     <main className="relative min-h-dvh w-full overflow-x-hidden bg-[#2b0910] lg:h-dvh lg:overflow-hidden">
       {/* desktop: cenário inteiro; celular: cenário fixo com a personagem à vista */}
-      <AuthScene className="absolute inset-0 hidden lg:block" />
-      <AuthScene className="fixed inset-0 lg:hidden" fx={35} fy={64} cx={50} cy={36} zoom={1.15} />
+      <AuthScene className="absolute inset-0 hidden lg:block" fx={50} fy={66} cy={50} />
+      <AuthScene className="fixed inset-0 lg:hidden" fx={35} fy={62} cx={50} cy={36} zoom={1.5} />
       <div aria-hidden className="pointer-events-none fixed inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#2b0910] via-[#2b0910]/70 to-transparent lg:hidden" />
 
       <div className="relative z-10 grid min-h-dvh lg:h-full lg:grid-cols-[60fr_40fr]">
-        <div className="hidden justify-center pt-[7vh] lg:flex">
+        <div className="hidden justify-center pt-[7vh] short:pt-[3vh] lg:flex">
           <MovaBrand className="h-fit" />
         </div>
-        <div className="flex flex-col items-center px-4 pb-6 pt-6 lg:justify-center lg:px-10 lg:py-6">
+        <div className="flex flex-col items-center px-4 pb-6 pt-6 lg:justify-center lg:px-10 lg:py-6 short:py-3">
           <MovaBrand compact className="lg:hidden" />
           {/* espaço para a personagem aparecer no celular */}
-          <div className="h-[34svh] min-h-[180px] shrink-0 lg:hidden" />
+          <div className="h-[44svh] min-h-[230px] shrink-0 lg:hidden" />
           <AuthPanel />
         </div>
       </div>
@@ -57,7 +57,7 @@ function AuthPanel() {
           title={creating ? 'Novo jogo' : 'Continuar jogo'}
           subtitle={creating ? 'Crie seu acesso ao MOVA e comece sua jornada.' : 'Que bom te ver de novo! Entre para continuar sua jornada.'}
         />
-        <form onSubmit={f.submit} className="mt-5 space-y-3.5" noValidate>
+        <form onSubmit={f.submit} className="mt-5 space-y-3.5 short:mt-3 short:space-y-2.5" noValidate>
           <GameInput
             id="login-email" label="E-mail" type="email" autoComplete="email" placeholder="voce@email.com"
             value={f.email} onChange={(e) => f.setEmail(e.target.value)} icon={<Mail size={19} />} invalid={f.error?.field === 'email'}
@@ -93,7 +93,7 @@ function AuthPanel() {
             </PixelButton>
           </div>
         </form>
-        <p className="mt-5 text-center text-[13px] leading-snug text-[#8a5a62]">
+        <p className="mt-5 text-center text-[13px] leading-snug text-[#8a5a62] short:mt-3">
           <span aria-hidden className="text-cereja/70">✦ </span>Seu acesso e seus dados ficam salvos de forma segura neste navegador.<span aria-hidden className="text-cereja/70"> ✦</span>
         </p>
         {creating ? (

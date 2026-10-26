@@ -27,7 +27,7 @@ export const PixelButton = forwardRef<HTMLButtonElement, Props>(function PixelBu
       <span
         className={cn(
           'px-corners relative flex w-full items-center justify-center gap-2.5 whitespace-nowrap overflow-hidden font-pixel font-bold uppercase tracking-[0.08em]',
-          size === 'lg' ? 'h-14 px-4 text-[15px] tracking-[0.05em] sm:px-5 sm:text-lg sm:tracking-[0.08em]' : 'h-11 px-4 text-[15px]',
+          size === 'lg' ? 'h-14 short:h-12 px-4 text-[15px] tracking-[0.05em] sm:px-5 sm:text-lg sm:tracking-[0.08em]' : 'h-11 px-4 text-[15px]',
           tone === 'vinho'
             ? 'bg-vinho text-[#FFF1EA] shadow-[inset_0_0_0_3px_#2b0910,inset_0_0_0_5px_rgba(239,175,179,0.35),inset_0_-6px_0_rgba(0,0,0,0.18)]'
             : 'bg-[#FFF1EA] text-vinho shadow-[inset_0_0_0_3px_#520215,inset_0_-5px_0_rgba(82,2,21,0.1)]',

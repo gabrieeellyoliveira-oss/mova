@@ -3,6 +3,8 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      // telas baixas (notebook com a janela do navegador menor)
+      screens: { short: { raw: '(min-width: 1024px) and (max-height: 760px)' } },
       colors: {
         vinho: { DEFAULT: '#520215', 950: '#22060d', 900: '#3a010f', 800: '#4a1220', 700: '#6b0a22' },
         cereja: { DEFAULT: '#961415', 600: '#7d1011' },

@@ -32,7 +32,12 @@ export function AuthScene({ className, fx = 50, fy = 50, cx = fx, cy = fy, zoom 
     <div aria-hidden className={cn('pointer-events-none overflow-hidden [container-type:size]', className)}>
       <div
         className="absolute"
-        style={{ width: w, height: h, left: `calc(${cx}cqw - ${w} * ${fx / 100})`, top: `calc(${cy}cqh - ${h} * ${fy / 100})` }}
+        style={{
+          width: w, height: h,
+          // clamp: o ponto escolhido vai para o lugar pedido, sem nunca deixar borda vazia
+          left: `clamp(calc(100cqw - ${w}), calc(${cx}cqw - ${w} * ${fx / 100}), 0px)`,
+          top: `clamp(calc(100cqh - ${h}), calc(${cy}cqh - ${h} * ${fy / 100}), 0px)`,
+        }}
       >
         <img src={cenario} alt="" className="absolute inset-0 h-full w-full select-none" draggable={false} />
         {/* sol, luminária, velas e neon */}
