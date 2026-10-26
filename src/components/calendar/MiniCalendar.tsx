@@ -32,7 +32,7 @@ export function MiniCalendar({
               onClick={() => onSelect(d)}
               className={cn(
                 'relative mx-auto grid h-9 w-9 place-items-center rounded-full text-[13px] font-semibold transition',
-                d === selected ? 'bg-cereja text-quente shadow-soft' : d === t ? 'bg-rosa-100 text-cereja' : 'text-tinta/80 hover:bg-rosa-50',
+                d === selected ? 'bg-cereja text-quente shadow-pixel-sm' : d === t ? 'bg-rosa-100 text-cereja' : 'text-tinta/80 hover:bg-rosa-50',
               )}
             >
               {fromISODate(d).getDate()}

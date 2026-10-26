@@ -13,6 +13,10 @@ import { Chip } from '@/components/ui/Chip'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
 import { EmptyState, StarRating } from '@/components/ui/Misc'
+import { PixelIcon } from '@/components/game/PixelIcon'
+import { WidgetHeader } from '@/components/widgets/WidgetHeader'
+import { PAGES_PER_READING, XP_VALUES } from '@/game/config'
+import { cn } from '@/lib/cn'
 import { BookCover } from '@/components/books/BookCover'
 import { BookDetail } from '@/components/books/BookDetail'
 import { BookDoodle } from '@/components/doodles/Doodles'
@@ -43,6 +47,7 @@ export default function Reading() {
   const { yearlyBooksGoal } = useSettings()
   const [params, setParams] = useSearchParams()
   const [shelf, setShelf] = useState<Shelf>('todos')
+  const [slot, setSlot] = useState<string | null>(null)
   const openId = params.get('livro')
   const open = books.find((b) => b.id === openId)
 
@@ -59,6 +64,8 @@ export default function Reading() {
   const count = (s: Shelf) => books.filter((b) => s === 'todos' || (s === 'favoritos' ? b.favorite : b.status === s)).length
   const shelves: Shelf[] = ['todos', 'lendo', 'quero', 'pausado', 'lido', 'favoritos']
   const shelfLabel = (s: Shelf) => (s === 'todos' ? 'Todos' : s === 'favoritos' ? 'Favoritos' : BOOK_STATUS[s])
+  const reading = books.filter((b) => b.status === 'lendo')
+  const current = reading.find((b) => b.id === slot) ?? reading[0]
   const maxMonth = Math.max(1, ...stats.perMonth.map((x) => x.n))
 
   return (
@@ -67,7 +74,7 @@ export default function Reading() {
         kicker="minha biblioteca"
         title="Leitura"
         subtitle="Seus livros e novas histórias — sem pressa, página por página."
-        doodle={<BookDoodle size={56} className="-rotate-6 text-vinho" />}
+        icon="book"
         actions={<Button onClick={() => openForm('book')}><Plus size={16} /> Nova leitura</Button>}
       />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
@@ -76,6 +83,32 @@ export default function Reading() {
         <StatCard tone="rosa" label="Média mensal" value={stats.avg.toFixed(1).replace('.', ',')} hint="livros por mês" />
         <StatCard tone="oliva" label="Lendo agora" value={count('lendo')} hint={`${count('quero')} na fila`} />
       </div>
+      {current && (
+        <Card>
+          <WidgetHeader title="Estou lendo" sprite="book" subtitle={`Inventário · +${XP_VALUES.leitura} XP a cada ${PAGES_PER_READING} páginas`} />
+          <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+            <div className="grid grid-cols-4 gap-2 self-start sm:grid-cols-5">
+              {reading.map((b) => (
+                <button key={b.id} onClick={() => setSlot(b.id)} aria-pressed={b.id === current.id} aria-label={b.title} className={cn('relative rounded-md border-2 p-1 transition', b.id === current.id ? 'border-px-line bg-rosa-100 shadow-pixel-glow' : 'border-px-line/30 bg-px-soft hover:border-px-line')}>
+                  <BookCover book={b} small />
+                  {b.id === current.id && <PixelIcon name="sparkle" size={14} className="absolute -right-1.5 -top-1.5 animate-twinkle" />}
+                </button>
+              ))}
+              {Array.from({ length: Math.max(0, 5 - reading.length) }).map((_, i) => (
+                <button key={`empty${i}`} onClick={() => setShelf('quero')} className="hidden aspect-[2/3] rounded-md border-2 border-dashed border-px-line/25 bg-white/30 sm:block" aria-label="Escolher próxima leitura" />
+              ))}
+            </div>
+            <div className="flex min-w-0 flex-col rounded-lg border-2 border-px-line bg-px-soft p-4">
+              <p className="font-pixel text-[11px] font-semibold uppercase tracking-[0.14em] text-cereja">Item selecionado</p>
+              <p className="mt-1 font-heading text-2xl leading-tight text-vinho">{current.title}</p>
+              <p className="text-sm text-vinho/60">{current.author}</p>
+              <p className="mt-3 text-xs text-vinho/70">Página {current.currentPage} de {current.pages}</p>
+              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#CB757C" height={8} className="flex-1" /><span className="font-pixel text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
+              <Button className="mt-4 self-start" onClick={() => setParams({ livro: current.id })}>Continuar lendo</Button>
+            </div>
+          </div>
+        </Card>
+      )}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section className="min-w-0">
           <div className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">

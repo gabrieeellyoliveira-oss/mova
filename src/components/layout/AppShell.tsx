@@ -5,6 +5,8 @@ import { Topbar } from './Topbar'
 import { BottomNav } from './BottomNav'
 import { Toaster } from './Toaster'
 import { FormHost } from '@/components/modals/FormHost'
+import { GameWatcher } from '@/components/game/GameWatcher'
+import { FocusMode } from '@/components/game/FocusMode'
 
 export function AppShell() {
   const { pathname } = useLocation()
@@ -12,7 +14,7 @@ export function AppShell() {
     window.scrollTo({ top: 0 })
   }, [pathname])
   return (
-    <div className="min-h-dvh bg-creme text-tinta">
+    <div className="min-h-dvh text-tinta">
       <Sidebar />
       <div className="lg:pl-[232px]">
         <Topbar />
@@ -23,6 +25,8 @@ export function AppShell() {
       <BottomNav />
       <FormHost />
       <Toaster />
+      <GameWatcher />
+      <FocusMode />
     </div>
   )
 }

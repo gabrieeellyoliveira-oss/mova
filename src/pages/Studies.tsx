@@ -16,7 +16,6 @@ import { FocusTimer } from '@/components/studies/FocusTimer'
 import { CourseCard } from '@/components/studies/CourseCard'
 import { CourseForm } from '@/components/studies/CourseForm'
 import { TaskItem } from '@/components/tasks/TaskItem'
-import { BookDoodle } from '@/components/doodles/Doodles'
 
 function WeeklyGoal() {
   const w = useStudyWeek()
@@ -77,7 +76,7 @@ export default function Studies() {
         kicker="aprender é se mover"
         title="Estudos"
         subtitle="No seu ritmo, um pouquinho por dia já vira muita coisa."
-        doodle={<BookDoodle size={54} className="rotate-6 text-vinho" />}
+        icon="laptop"
         actions={<Button onClick={() => setEditing('new')}><Plus size={16} /> Novo curso</Button>}
       />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">

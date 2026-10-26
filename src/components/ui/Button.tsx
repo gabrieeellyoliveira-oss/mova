@@ -4,14 +4,16 @@ import { cn } from '@/lib/cn'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'soft' | 'light' | 'danger' | 'olive'
 type Size = 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm'
 
+// botões "de jogo": borda escura, sombra dura embaixo e afundam ao clicar
+const pressable = 'border-2 border-px-line shadow-pixel-sm active:translate-y-[2px] active:shadow-pixel-press'
 const variants: Record<Variant, string> = {
-  primary: 'bg-cereja text-quente hover:bg-cereja-600 shadow-soft',
-  secondary: 'bg-vinho text-quente hover:bg-vinho-700 shadow-soft',
-  soft: 'bg-rosa-100 text-vinho hover:bg-rosa',
-  light: 'bg-quente text-vinho hover:bg-creme-100 shadow-soft',
-  ghost: 'text-vinho hover:bg-vinho/5',
-  danger: 'bg-transparent text-cereja hover:bg-cereja/10',
-  olive: 'bg-oliva text-quente hover:bg-oliva-600 shadow-soft',
+  primary: cn('bg-cereja text-rosa-50 hover:bg-cereja-600', pressable),
+  secondary: cn('bg-vinho text-rosa-50 hover:bg-vinho-700', pressable),
+  soft: cn('bg-rosa-100 text-vinho hover:bg-rosa', pressable),
+  light: cn('bg-px-panel text-vinho hover:bg-rosa-50', pressable),
+  olive: cn('bg-oliva text-rosa-50 hover:bg-oliva-600', pressable),
+  ghost: 'text-vinho hover:bg-vinho/10',
+  danger: 'text-cereja hover:bg-cereja/10',
 }
 const sizes: Record<Size, string> = {
   sm: 'h-8 px-3 text-xs gap-1.5',
@@ -32,9 +34,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       type={type}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full font-semibold transition-all duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-queimado focus-visible:ring-offset-2 focus-visible:ring-offset-creme',
-        'active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex shrink-0 items-center justify-center rounded-lg font-bold transition-[transform,box-shadow,background-color] duration-100',
+        'hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-queimado focus-visible:ring-offset-2 focus-visible:ring-offset-px-field',
+        'disabled:pointer-events-none disabled:opacity-50',
         variants[variant],
         sizes[size],
         className,
@@ -44,3 +46,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ),
 )
 Button.displayName = 'Button'
+
+/** Nome de jogo para o mesmo botão */
+export const PixelButton = Button

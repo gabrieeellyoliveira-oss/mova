@@ -11,7 +11,7 @@ export function VaultWidget() {
   const done = v.remaining <= 0
   return (
     <Card className="flex flex-col p-4 sm:p-5">
-      <WidgetHeader title="Cofre: sair de casa" to="/sair-de-casa" />
+      <WidgetHeader sprite="piggy" title="Cofre: sair de casa" to="/sair-de-casa" />
       <div className="flex flex-1 items-center gap-4">
         <Ring value={v.progress} size={104} stroke={10} color="#961415">
           <span className="text-xl font-extrabold text-vinho">{Math.round(v.progress)}%</span>

@@ -12,13 +12,13 @@ export function WeeklyPriorities({ weekStart }: { weekStart: ISODate }) {
   const items = usePriorities().filter((p) => p.weekStart === weekStart)
   const [title, setTitle] = useState('')
   return (
-    <section className="relative overflow-hidden rounded-4xl bg-rosa-100 p-6 shadow-soft">
+    <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-rosa-100 p-6 shadow-pixel-sm">
       <Cherry size={44} className="absolute -right-1 -top-1 rotate-12" />
       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-queimado">o que não pode faltar</p>
       <h2 className="mb-4 mt-1 font-heading text-xl text-vinho">Prioridades da semana</h2>
       <ol className="space-y-2">
         {items.map((p, i) => (
-          <li key={p.id} className="group flex items-center gap-3 rounded-2xl bg-quente px-3 py-2.5 shadow-soft">
+          <li key={p.id} className="group flex items-center gap-3 rounded-2xl bg-quente px-3 py-2.5 shadow-pixel-sm">
             <span className="w-4 text-center text-lg font-extrabold text-queimado">{i + 1}</span>
             <Checkbox checked={p.done} onChange={(v) => { db.priorities.update(p.id, { done: v }); if (v) celebrate.task() }} label={p.title} />
             <input

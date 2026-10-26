@@ -17,25 +17,76 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------- Tokens do "cozy game" ---------- */
+:root {
+  color-scheme: light;
+  --px-ink: #2b0910;      /* contorno pixel */
+  --px-line: #4a1220;     /* borda dos painéis */
+  --px-panel: #fff5f1;    /* fundo dos painéis */
+  --px-soft: #fbe4e4;     /* painel rosado */
+  --px-field: #f6d3d6;    /* fundo da área principal */
+  --px-border: 2px;       /* espessura padrão das bordas */
+  --px-radius: 10px;      /* cantos dos painéis */
+  --px-step: 4px;         /* "pixel" do layout (espaçamentos múltiplos de 4) */
+  --px-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --px-fast: 120ms;
+  --px-med: 220ms;
+}
+
 @layer base {
-  :root { color-scheme: light; }
   html { -webkit-tap-highlight-color: transparent; }
   body {
-    @apply bg-creme font-sans text-tinta antialiased;
-    /* leve textura de papel */
-    background-image: radial-gradient(rgba(82, 2, 21, 0.035) 1px, transparent 1px);
-    background-size: 18px 18px;
+    @apply font-sans text-tinta antialiased;
+    background-color: var(--px-field);
+    /* textura de pixels bem sutil */
+    background-image:
+      linear-gradient(45deg, rgba(82, 2, 21, 0.03) 25%, transparent 25%, transparent 75%, rgba(82, 2, 21, 0.03) 75%),
+      linear-gradient(45deg, rgba(82, 2, 21, 0.03) 25%, transparent 25%, transparent 75%, rgba(82, 2, 21, 0.03) 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 8px 8px;
   }
   ::selection { @apply bg-rosa text-vinho; }
   input[type='date'], input[type='time'] { @apply cursor-pointer; }
-  * { scrollbar-width: thin; scrollbar-color: rgba(82, 2, 21, 0.2) transparent; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(82, 2, 21, 0.25) transparent; }
+}
+
+@layer components {
+  /* Painel de jogo (base do GameCard) */
+  .px-panel {
+    background: var(--px-panel);
+    border: var(--px-border) solid var(--px-line);
+    border-radius: var(--px-radius);
+    @apply shadow-pixel;
+  }
+  /* Barra de título dos painéis */
+  .px-titlebar {
+    @apply flex items-center gap-2 rounded-md bg-vinho-800 px-3 py-1.5 font-pixel text-[15px] font-semibold uppercase tracking-wide text-rosa-50;
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+  }
+  /* Trilho segmentado das barras de progresso/XP */
+  .px-track {
+    border: var(--px-border) solid var(--px-line);
+    border-radius: 4px;
+    background: #f3dede;
+    overflow: hidden;
+    position: relative;
+  }
+  .px-segments::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(90deg, transparent 0 9px, rgba(43, 9, 16, 0.18) 9px 11px);
+    pointer-events: none;
+  }
+  .px-fill { height: 100%; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.28); }
 }
 
 @layer utilities {
   .font-logo { font-weight: 400; font-synthesis: none; }
-  .font-heading { font-weight: 700; }
-  .font-display { font-weight: 800; letter-spacing: -0.02em; }
+  .font-heading { font-weight: 600; }
+  .font-display { font-weight: 700; letter-spacing: 0.01em; }
   .tabular-nums { font-variant-numeric: tabular-nums; }
+  .pixelated { image-rendering: pixelated; }
 }
 
 @media (prefers-reduced-motion: reduce) {

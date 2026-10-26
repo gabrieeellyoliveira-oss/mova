@@ -10,7 +10,7 @@ export function CostsWidget() {
   const items = v.coverage.slice(0, 4)
   return (
     <Card className="p-4 sm:p-5">
-      <WidgetHeader title="Custos da mudança" to="/sair-de-casa" linkLabel="Ver todos" />
+      <WidgetHeader sprite="planner" title="Custos da mudança" to="/sair-de-casa" linkLabel="Ver todos" />
       {items.length === 0 ? (
         <p className="text-sm text-vinho/60">Liste o que precisa para sair de casa e acompanhe o que o cofre já cobre.</p>
       ) : (

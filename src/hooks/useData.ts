@@ -16,6 +16,8 @@ export const useEvents = () => useCollection(db.events)
 export const useTasks = () => useCollection(db.tasks)
 export const useTransactions = () => useCollection(db.transactions)
 export const useFinancialGoals = () => useCollection(db.financialGoals)
+export const usePlaces = () => useCollection(db.places)
+export const useExperiences = () => useCollection(db.experiences)
 export const useVaultEntries = () => useCollection(db.vaultEntries)
 export const useVaultCosts = () => useCollection(db.vaultCosts)
 export const useVaultSettings = () => useStore(vaultSettingsStore)
@@ -157,4 +159,30 @@ export function useVault() {
 
     return { entries: sorted, costs: orderedCosts, settings, saved, target, remaining, progress, months, monthlyAvg, thisMonth, monthsToGoal, forecast, monthsLeft, neededPerMonth, coverage }
   }, [entries, costs, settings])
+}
+
+/** Próximo rolê: lugar planejado mais próximo ou evento de categoria rolê */
+export function useNextOuting() {
+  const places = usePlaces()
+  const events = useEvents()
+  return useMemo(() => {
+    const t = today()
+    const now = new Date()
+    const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+    const upcoming = (date?: string, time?: string) => !!date && (date > t || (date === t && (!time || time >= hhmm)))
+    const planned = places
+      .filter((p) => p.status === 'planejado' && upcoming(p.plannedFor, p.plannedTime))
+      .sort((a, b) => `${a.plannedFor}${a.plannedTime}`.localeCompare(`${b.plannedFor}${b.plannedTime}`))
+    if (planned[0]) return { kind: 'place' as const, place: planned[0], date: planned[0].plannedFor!, time: planned[0].plannedTime }
+    const ev = events
+      .filter((e) => e.category === 'role' && upcoming(e.date, e.time))
+      .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))[0]
+    if (ev) return { kind: 'event' as const, event: ev, date: ev.date, time: ev.time }
+    return null
+  }, [places, events])
+}
+
+export function useLastExperience() {
+  const exps = useExperiences()
+  return useMemo(() => [...exps].sort((a, b) => b.date.localeCompare(a.date))[0], [exps])
 }

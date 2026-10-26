@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/Misc'
 import { NOTE_TONES } from '@/components/modals/NoteForm'
-import { Squiggle } from '@/components/doodles/Doodles'
 import { cn } from '@/lib/cn'
 
 export default function Notes() {
@@ -31,13 +30,13 @@ export default function Notes() {
         kicker="cantinho das ideias"
         title="Notas"
         subtitle="Listas, lembretes, receitas e pensamentos soltos."
-        doodle={<Squiggle width={90} className="text-queimado" />}
+        icon="note"
         actions={<Button onClick={() => openForm('note', tag ? { tags: [tag] } : undefined)}><Plus size={16} /> Nova nota</Button>}
       />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative max-w-md flex-1">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-vinho/40" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Pesquisar nas notas…" className="h-11 w-full rounded-full border border-vinho/10 bg-quente pl-11 pr-4 text-sm shadow-soft focus:border-queimado focus:outline-none" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Pesquisar nas notas…" className="h-11 w-full rounded-lg border-2 border-px-line/40 bg-px-panel pl-11 pr-4 text-sm shadow-pixel-sm focus:border-queimado focus:outline-none" />
         </div>
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
           <Chip active={favOnly} onClick={() => setFavOnly(!favOnly)}><Star size={12} className={favOnly ? 'fill-rosa-50' : ''} /> Favoritas</Chip>
@@ -53,7 +52,7 @@ export default function Notes() {
             <article
               key={n.id}
               onClick={() => openForm('note', n as never)}
-              className={cn('group relative mb-5 cursor-pointer break-inside-avoid rounded-3xl p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift animate-rise', NOTE_TONES[n.color], i % 3 === 1 && 'sm:rotate-[0.6deg]', i % 3 === 2 && 'sm:-rotate-[0.5deg]')}
+              className={cn('group relative mb-5 cursor-pointer break-inside-avoid rounded-px border-2 border-px-line p-5 shadow-pixel-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-pixel animate-rise', NOTE_TONES[n.color], i % 3 === 1 && 'sm:rotate-[0.6deg]', i % 3 === 2 && 'sm:-rotate-[0.5deg]')}
               style={{ animationDelay: `${i * 30}ms` }}
             >
               <span className="absolute -top-2 left-1/2 h-5 w-16 -translate-x-1/2 rotate-[-2deg] rounded-sm bg-rosa/60" aria-hidden />

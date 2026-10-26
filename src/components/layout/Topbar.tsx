@@ -7,6 +7,7 @@ import { useNotifications } from '@/hooks/useNotifications'
 import { useNow } from '@/hooks/useNow'
 import { GlobalSearch } from './GlobalSearch'
 import { Logo } from './Logo'
+import { LevelBadge } from '@/components/game/XPBar'
 import { cn } from '@/lib/cn'
 
 const SEEN_KEY = 'mova:seen-notices'
@@ -39,21 +40,22 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-vinho/[0.06] bg-creme/90 backdrop-blur lg:hidden">
+    <header className="sticky top-0 z-30 border-b-2 border-black/40 bg-vinho-950 text-rosa-50 lg:hidden">
       <div className="flex h-16 w-full items-center gap-3 px-4 sm:h-[72px] sm:px-6 lg:px-4">
-        <Link to="/" className="pl-2 lg:hidden"><Logo size="sm" /></Link>
+        <Link to="/" className="pl-2 lg:hidden"><Logo size="sm" light /></Link>
+        <LevelBadge className="ml-1" />
         <GlobalSearch className="hidden max-w-md flex-1 md:block" />
         <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
-          <button onClick={() => setMobileSearch(true)} className="grid h-10 w-10 place-items-center rounded-full text-vinho hover:bg-vinho/5 md:hidden" aria-label="Buscar">
+          <button onClick={() => setMobileSearch(true)} className="grid h-10 w-10 place-items-center rounded-md text-rosa-50 hover:bg-white/10 md:hidden" aria-label="Buscar">
             <Search size={20} />
           </button>
           <div ref={bell} className="relative">
-            <button onClick={toggleBell} className="relative grid h-10 w-10 place-items-center rounded-full bg-quente text-vinho shadow-soft hover:bg-rosa-50" aria-label="Notificações">
+            <button onClick={toggleBell} className="relative grid h-10 w-10 place-items-center rounded-md border-2 border-px-line bg-vinho-800 text-rosa-50 hover:bg-vinho-700" aria-label="Notificações">
               <Bell size={19} />
               {unread > 0 && <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-cereja px-1 text-[10px] font-bold text-quente">{unread}</span>}
             </button>
             {openBell && (
-              <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(340px,calc(100vw-32px))] rounded-3xl bg-quente p-2 shadow-lift animate-rise">
+              <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-[min(340px,calc(100vw-32px))] rounded-px border-2 border-px-line bg-quente p-2 shadow-pixel animate-rise">
                 <p className="px-3 pb-1 pt-2 text-sm font-extrabold text-vinho">lembretes gentis</p>
                 {notices.length === 0 ? (
                   <p className="px-3 pb-4 text-sm text-vinho/60">Tudo tranquilo por aqui. Aproveita o dia 🌷</p>

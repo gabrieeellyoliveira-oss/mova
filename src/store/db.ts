@@ -1,6 +1,6 @@
 import type {
   Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
-  Note, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
+  Experience, Note, Place, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
   WorkEntry, WorkGoal, WorkSettings,
 } from '@/types'
 import * as seed from '@/data/seed'
@@ -12,12 +12,15 @@ import { createPersistedStore } from './createStore'
  * em `lib/storage.ts` (hoje LocalStorage).
  */
 const courses = createCollection<Course>('courses', seed.seedCourses)
+const places = createCollection<Place>('places', seed.seedPlaces)
 
 export const db = {
   events: createCollection<CalendarEvent>('events', seed.seedEvents),
   tasks: createCollection<Task>('tasks', seed.seedTasks),
   transactions: createCollection<Transaction>('transactions', seed.seedTransactions),
   financialGoals: createCollection<FinancialGoal>('financialGoals', seed.seedFinancialGoals),
+  places,
+  experiences: createCollection<Experience>('experiences', () => seed.seedExperiences(places.store.get())),
   vaultEntries: createCollection<VaultEntry>('vaultEntries', seed.seedVaultEntries),
   vaultCosts: createCollection<VaultCost>('vaultCosts', seed.seedVaultCosts),
   workGoals: createCollection<WorkGoal>('workGoals', seed.seedWorkGoals),
@@ -61,6 +64,6 @@ export const resetAll = () => {
   settingsStore.reset()
   vaultSettingsStore.reset()
   workSettingsStore.reset()
-  // ordem importa: courses antes de focusSessions
+  // ordem importa: places/courses antes de experiences/focusSessions
   for (const c of Object.values(db)) c.store.reset()
 }

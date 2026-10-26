@@ -13,8 +13,10 @@ import { WeekGrid } from '@/components/habits/WeekGrid'
 import { MonthGrid } from '@/components/habits/MonthGrid'
 import { HabitForm } from '@/components/habits/HabitForm'
 import { toggleHabit } from '@/components/habits/habitActions'
-import { Flower } from '@/components/doodles/Doodles'
 import { cn } from '@/lib/cn'
+import { WidgetHeader } from '@/components/widgets/WidgetHeader'
+import { isTraining } from '@/game/achievements'
+import { XP_VALUES } from '@/game/config'
 
 const gentle = (done: number, total: number) => {
   if (!total) return 'Comece com um hábito só. Tá ótimo.'
@@ -45,7 +47,7 @@ export default function Routine() {
         kicker="cuidar de mim"
         title="Rotina"
         subtitle="Seus hábitos e bem-estar. Sem cobrança — aqui, recomeçar também conta."
-        doodle={<Flower size={50} className="animate-wiggle" />}
+        icon="sun"
         actions={<Button onClick={() => setEditing('new')}><Plus size={16} /> Novo hábito</Button>}
       />
       <div className="grid gap-4 md:grid-cols-[minmax(0,1.3fr)_repeat(3,minmax(0,1fr))]">
@@ -64,13 +66,15 @@ export default function Routine() {
       </div>
 
       <Card>
-        <p className="mb-3 text-sm font-bold text-vinho">Marcar hoje</p>
+        <WidgetHeader title="Missões recorrentes" sprite="sun" subtitle="Toque pra marcar hoje. Sequências só crescem — pular um dia não apaga nada." />
         <div className="flex flex-wrap gap-2">
           {habits.map((h) => {
             const on = h.log.includes(t)
             return (
-              <button key={h.id} onClick={() => toggleHabit(h, t)} className={cn('inline-flex items-center gap-2 rounded-full border-2 px-3.5 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5', on ? cn('animate-pop', h.color === '#EFAFB3' ? 'text-vinho' : 'text-quente') : 'border-vinho/10 bg-quente text-vinho')} style={on ? { backgroundColor: h.color, borderColor: h.color } : undefined}>
+              <button key={h.id} onClick={() => toggleHabit(h, t)} className={cn('inline-flex items-center gap-2 rounded-lg border-2 px-3.5 py-2 text-sm font-semibold shadow-pixel-sm transition-all hover:-translate-y-0.5 active:translate-y-px', on ? cn('animate-pop', h.color === '#EFAFB3' ? 'text-vinho' : 'text-quente') : 'border-px-line/40 bg-px-panel text-vinho')} style={on ? { backgroundColor: h.color, borderColor: h.color } : undefined}>
                 <span>{h.emoji}</span>{h.name}
+                {habitStreak(h) > 0 && <span className="font-pixel text-[11px] opacity-80">🔥{habitStreak(h)}</span>}
+                <span className="font-pixel text-[10px] opacity-70">+{isTraining(h) ? XP_VALUES.treino : XP_VALUES.habito} XP</span>
               </button>
             )
           })}

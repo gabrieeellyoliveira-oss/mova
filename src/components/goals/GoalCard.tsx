@@ -34,7 +34,7 @@ export function GoalCard({ goal, onEdit }: { goal: Goal; onEdit: () => void }) {
   const done = goal.status === 'concluida'
 
   return (
-    <article className={cn('relative flex flex-col overflow-hidden rounded-3xl border bg-quente p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift', done ? 'border-oliva/30' : 'border-vinho/[0.06]')}>
+    <article className={cn('relative flex flex-col overflow-hidden rounded-px border-2 border-px-line border bg-quente p-5 shadow-pixel-sm transition-all hover:-translate-y-0.5 hover:shadow-pixel', done ? 'border-oliva/30' : 'border-vinho/[0.06]')}>
       {done && <Sparkle size={22} className="absolute right-12 top-4 text-oliva" />}
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-3">

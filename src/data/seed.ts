@@ -1,6 +1,6 @@
 import type {
   Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
-  Note, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
+  Experience, Note, Place, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
   WorkEntry, WorkGoal, WorkSettings,
 } from '@/types'
 import { addDays, startOfWeek, today, toISODate, weekdayIndex } from '@/utils/date'
@@ -99,6 +99,30 @@ export const seedFinancialGoals = (): FinancialGoal[] => [
   { ...base(), name: 'Viagem para Lisboa', current: 3200, target: 8000, emoji: '✈️', deadline: d(240) },
   { ...base(), name: 'Notebook novo', current: 1450, target: 6500, emoji: '💻' },
 ]
+
+export const seedPlaces = (): Place[] => [
+  { ...base(), name: 'Café Florinda', category: 'Cafés', neighborhood: 'Meireles', price: 35, status: 'planejado', favorite: true, moods: ['cafe', 'relaxar'], goodFor: 'tanto faz', plannedFor: d(0), plannedTime: '17:00', notes: 'Pedir o bolo de laranja' },
+  { ...base(), name: 'Museu da Cultura Cearense', category: 'Museus', neighborhood: 'Centro Dragão do Mar', price: 0, status: 'quero', favorite: false, moods: ['conhecer', 'cultura'], goodFor: 'tanto faz' },
+  { ...base(), name: 'Parque do Cocó', category: 'Parques', neighborhood: 'Cocó', price: 0, status: 'voltar', favorite: true, moods: ['relaxar', 'passear'], goodFor: 'sozinha' },
+  { ...base(), name: 'Cantina da Vó Lia', category: 'Restaurantes', neighborhood: 'Varjota', price: 80, status: 'quero', favorite: false, moods: ['comer'], goodFor: 'acompanhada' },
+  { ...base(), name: 'Feirinha de vinil', category: 'Eventos', neighborhood: 'Benfica', price: 20, status: 'quero', favorite: true, moods: ['diferente', 'comprar', 'cultura'], goodFor: 'tanto faz' },
+  { ...base(), name: 'Sessão de cinema clássico', category: 'Cinema', neighborhood: 'Praia de Iracema', price: 24, status: 'planejado', favorite: false, moods: ['cultura', 'relaxar'], goodFor: 'acompanhada', plannedFor: d(3), plannedTime: '20:00' },
+  { ...base(), name: 'Brechó da Aldeota', category: 'Compras', neighborhood: 'Aldeota', price: 60, status: 'quero', favorite: false, moods: ['comprar', 'passear'], goodFor: 'sozinha' },
+  { ...base(), name: 'Pôr do sol na Ponte dos Ingleses', category: 'Passeios', neighborhood: 'Praia de Iracema', price: 0, status: 'fui', favorite: true, moods: ['passear', 'relaxar'], goodFor: 'tanto faz' },
+  { ...base(), name: 'Aula de cerâmica', category: 'Experiências', neighborhood: 'Fátima', price: 120, status: 'quero', favorite: true, moods: ['diferente', 'conhecer'], goodFor: 'acompanhada' },
+  { ...base(), name: 'Jardim japonês', category: 'Lugares diferentes', neighborhood: 'Dionísio Torres', price: 0, status: 'quero', favorite: false, moods: ['relaxar', 'conhecer'], goodFor: 'sozinha' },
+  { ...base(), name: 'Doceria Pistache', category: 'Cafés', neighborhood: 'Papicu', price: 28, status: 'fui', favorite: false, moods: ['cafe', 'comer'], goodFor: 'acompanhada' },
+]
+
+export const seedExperiences = (places: Place[]): Experience[] => {
+  const ponte = places.find((p) => p.name.startsWith('Pôr do sol'))
+  const doceria = places.find((p) => p.name.startsWith('Doceria'))
+  return [
+    { ...base(), placeId: ponte?.id, title: 'Pôr do sol na Ponte dos Ingleses', date: d(-6), photos: [], rating: 5, spent: 18, with: 'Lu e Rafa', comment: 'O céu ficou cor de cereja. Levar canga da próxima vez.', wouldReturn: true },
+    { ...base(), placeId: doceria?.id, title: 'Doceria Pistache', date: d(-15), photos: [], rating: 4, spent: 42, with: 'Mãe', comment: 'Croissant de pistache absurdo, café ok.', wouldReturn: true },
+    { ...base(), title: 'Exposição de fotografia', date: d(-27), photos: [], rating: 4, spent: 0, with: 'Sozinha', comment: 'Fui sem planejar e foi a melhor parte do mês.', wouldReturn: false },
+  ]
+}
 
 export const seedVaultSettings = (): VaultSettings => ({
   manualTarget: 15000,
@@ -211,26 +235,26 @@ export const seedGoals = (): Goal[] => {
 }
 
 export const seedHabits = (): Habit[] => {
-  const mk = (name: string, emoji: string, color: string, weeklyTarget: number, chance: number): Habit => {
+  const mk = (name: string, emoji: string, color: string, weeklyTarget: number, chance: number, extra: Partial<Habit> = {}): Habit => {
     const log: string[] = []
     // histórico determinístico dos últimos 45 dias
     for (let i = 1; i <= 45; i++) {
       const v = Math.abs(Math.sin(i * (name.length + 3))) // pseudo-aleatório estável
       if (v < chance) log.push(d(-i))
     }
-    return { ...base(), name, emoji, color, weeklyTarget, log }
+    return { ...base(), name, emoji, color, weeklyTarget, log, ...extra }
   }
-  const water = mk('Beber água', '💧', '#CB757C', 7, 1.1)
-  const skincare = mk('Skincare', '🧴', '#EFAFB3', 7, 0.8)
+  const water = mk('Beber água', '💧', '#CB757C', 7, 1.1, { health: true })
+  const skincare = mk('Skincare', '🧴', '#EFAFB3', 7, 0.8, { health: true })
   return [
     { ...water, log: [d(0), ...water.log] },
     { ...skincare, log: [d(0), ...skincare.log] },
-    mk('Academia', '🏋️', '#961415', 3, 0.45),
+    mk('Academia', '🏋️', '#961415', 3, 0.45, { health: true, training: true }),
     mk('Estudar', '📚', '#520215', 5, 0.7),
     mk('Ler', '📖', '#7A7A4A', 5, 0.65),
     mk('Sair de casa', '🌷', '#CB757C', 3, 0.4),
     mk('Organizar quarto', '🧺', '#b8565e', 2, 0.3),
-    mk('Dormir cedo', '🌙', '#3a010f', 5, 0.5),
+    mk('Dormir cedo', '🌙', '#3a010f', 5, 0.5, { health: true }),
   ]
 }
 

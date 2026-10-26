@@ -22,12 +22,13 @@ export default function Work() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="briefcase"
         kicker="minha meta do mês"
         title="Trabalho"
         subtitle="Acompanhe a meta do mês e como você vem evoluindo."
         actions={
           <>
-            <div className="flex items-center gap-1 rounded-full bg-quente p-1 shadow-soft">
+            <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
               <Button size="icon-sm" variant="ghost" onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Mês anterior"><ChevronLeft size={16} /></Button>
               <button onClick={() => setMonth(current)} className="min-w-[128px] px-2 text-sm font-bold capitalize text-vinho">{monthLabel(month)}</button>
               <Button size="icon-sm" variant="ghost" onClick={() => setMonth(shiftMonth(month, 1))} disabled={month >= current} aria-label="Próximo mês"><ChevronRight size={16} /></Button>

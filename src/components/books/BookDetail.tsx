@@ -75,7 +75,7 @@ export function BookDetail({ book, onClose }: { book: Book; onClose: () => void 
         </div>
         <div className="space-y-5">
           <Segmented value={f.status} onChange={setStatus} options={(Object.keys(BOOK_STATUS) as BookStatus[]).map((s) => ({ value: s, label: BOOK_STATUS[s] }))} />
-          <div className="rounded-3xl bg-creme-100 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-creme-100 p-4">
             <div className="mb-2 flex items-end justify-between">
               <p className="text-sm text-vinho/70">Página <b className="text-vinho">{f.currentPage}</b> de {f.pages}</p>
               <p className="text-2xl font-extrabold text-cereja">{Math.round(p)}%</p>

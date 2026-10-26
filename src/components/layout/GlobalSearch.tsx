@@ -50,7 +50,7 @@ export function GlobalSearch({ className, autoFocus, onDone }: { className?: str
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => { if (e.key === 'Enter' && results[0]) choose(results[0]); if (e.key === 'Escape') { setOpen(false); onDone?.() } }}
         placeholder="Buscar tarefas, livros, notas, custos…"
-        className="h-11 w-full rounded-full border border-vinho/10 bg-quente pl-11 pr-10 text-sm text-tinta shadow-soft placeholder:text-vinho/40 focus:border-queimado focus:outline-none focus:ring-2 focus:ring-rosa/50"
+        className="h-11 w-full rounded-lg border-2 border-px-line/40 bg-px-panel pl-11 pr-10 text-sm text-tinta shadow-pixel-sm placeholder:text-vinho/40 focus:border-queimado focus:outline-none focus:ring-2 focus:ring-rosa/50"
         aria-label="Busca global"
       />
       {q && (
@@ -59,7 +59,7 @@ export function GlobalSearch({ className, autoFocus, onDone }: { className?: str
         </button>
       )}
       {open && q.trim().length >= 2 && (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 max-h-[60vh] overflow-y-auto rounded-3xl bg-quente p-2 shadow-lift animate-rise">
+        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 max-h-[60vh] overflow-y-auto rounded-px border-2 border-px-line bg-quente p-2 shadow-pixel animate-rise">
           {results.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-vinho/60">Nada por aqui com “{q}”.</p>
           ) : (

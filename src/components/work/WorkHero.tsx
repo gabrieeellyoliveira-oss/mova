@@ -38,7 +38,7 @@ export function WorkHero({ w, onAdd }: { w: Work; onAdd: () => void }) {
   const hit = w.target > 0 && w.achieved >= w.target
   const ahead = w.pace >= 0
   return (
-    <section className="relative overflow-hidden rounded-4xl bg-vinho p-6 text-rosa-50 shadow-lift sm:p-8">
+    <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
       <div className="grid items-center gap-8 lg:grid-cols-[auto_minmax(0,1fr)]">
         <div className="flex flex-col items-center gap-5 sm:flex-row lg:flex-col xl:flex-row">
           <Ring value={w.progress} size={190} stroke={14} color="#EFAFB3" track="rgba(239,175,179,0.16)">
@@ -61,7 +61,7 @@ export function WorkHero({ w, onAdd }: { w: Work; onAdd: () => void }) {
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-3xl bg-vinho-900/50 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-vinho-900/50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa-50/70">{w.status === 'passado' ? 'Resultado do mês' : 'Ritmo até hoje'}</p>
             {w.status === 'passado' ? (
               <p className="mt-1 text-2xl font-extrabold">{hit ? 'Meta batida' : `${Math.round(w.progress)}% da meta`}</p>
@@ -72,17 +72,17 @@ export function WorkHero({ w, onAdd }: { w: Work; onAdd: () => void }) {
               </>
             )}
           </div>
-          <div className="rounded-3xl bg-vinho-900/50 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-vinho-900/50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa-50/70">{w.status === 'passado' ? 'Total do mês' : 'Projeção do mês'}</p>
             <p className="mt-1 text-2xl font-extrabold">{f(w.projection)}</p>
             {w.status !== 'passado' && w.target > 0 && <p className="text-xs text-rosa-50/60">{Math.round((w.projection / w.target) * 100)}% da meta no ritmo atual</p>}
           </div>
-          <div className="rounded-3xl bg-rosa p-4 text-vinho">
+          <div className="rounded-lg border-2 border-black/25 bg-rosa p-4 text-vinho">
             <p className="text-xs font-semibold uppercase tracking-wide text-vinho/70">Por dia útil para bater</p>
             <p className="mt-1 text-2xl font-extrabold">{hit ? '—' : w.neededPerDay !== null ? f(w.neededPerDay) : '—'}</p>
             <p className="text-xs text-vinho/70">{hit ? 'já bateu a meta' : w.daysLeft ? `nos próximos ${w.daysLeft} dias úteis` : 'mês encerrado'}</p>
           </div>
-          <div className="rounded-3xl bg-vinho-900/50 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-vinho-900/50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa-50/70">Dias úteis</p>
             <p className="mt-1 text-2xl font-extrabold">{w.doneDays} de {w.workDaysTotal}</p>
             <p className="text-xs text-rosa-50/60">{w.daysLeft} restantes</p>

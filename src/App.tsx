@@ -12,6 +12,12 @@ import Routine from '@/pages/Routine'
 import Notes from '@/pages/Notes'
 import Profile from '@/pages/Profile'
 import Login from '@/pages/Login'
+import MyDay from '@/pages/MyDay'
+import Social from '@/pages/Social'
+import Health from '@/pages/Health'
+import Explore from '@/pages/Explore'
+import City from '@/pages/City'
+import Achievements from '@/pages/Achievements'
 import { useSession } from '@/lib/auth'
 
 // HashRouter: funciona em qualquer hospedagem estática, sem configurar rewrites.
@@ -23,6 +29,7 @@ export default function App() {
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<Home />} />
+          <Route path="meu-dia" element={<MyDay />} />
           <Route path="planejamento" element={<Planning />} />
           <Route path="trabalho" element={<Work />} />
           <Route path="financas" element={<Finance />} />
@@ -31,6 +38,11 @@ export default function App() {
           <Route path="leitura" element={<Reading />} />
           <Route path="metas" element={<Goals />} />
           <Route path="rotina" element={<Routine />} />
+          <Route path="vida-social" element={<Social />} />
+          <Route path="saude" element={<Health />} />
+          <Route path="explorar" element={<Explore />} />
+          <Route path="minha-cidade" element={<City />} />
+          <Route path="conquistas" element={<Achievements />} />
           <Route path="notas" element={<Notes />} />
           <Route path="perfil" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace />} />

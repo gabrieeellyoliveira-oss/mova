@@ -1,0 +1,53 @@
+import { useEvents } from '@/hooks/useData'
+import { EVENT_CATEGORIES } from '@/data/constants'
+import { openForm } from '@/hooks/useQuickAdd'
+import { today } from '@/utils/date'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { PixelIcon, type SpriteName } from '@/components/game/PixelIcon'
+import type { EventCategory } from '@/types'
+import { Plus } from 'lucide-react'
+import { WidgetHeader } from './WidgetHeader'
+
+export const EVENT_SPRITES: Record<EventCategory, SpriteName> = {
+  trabalho: 'briefcase', estudos: 'laptop', role: 'cherry', saude: 'dumbbell', pessoal: 'heart', casa: 'home',
+}
+
+/** Agenda do dia como timeline de jogo. */
+export function DayTimelineWidget({ date = today(), title = 'Meu dia' }: { date?: string; title?: string }) {
+  const events = useEvents().filter((e) => e.date === date).sort((a, b) => a.time.localeCompare(b.time))
+  const now = new Date().toTimeString().slice(0, 5)
+  return (
+    <Card className="flex flex-col">
+      <WidgetHeader title={title} sprite="day" to="/meu-dia" linkLabel="Ver todos" action={<button onClick={() => openForm('event', { date })} className="text-rosa-50/80 hover:text-rosa" aria-label="Novo compromisso"><Plus size={15} /></button>} />
+      {events.length === 0 ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-6 text-center">
+          <PixelIcon name="cup" size={36} />
+          <p className="text-sm text-vinho/65">Nada na agenda. Que tal fazer algo diferente?</p>
+          <Button size="sm" variant="soft" onClick={() => openForm('event', { date })}><Plus size={14} /> Compromisso</Button>
+        </div>
+      ) : (
+        <ol className="relative ml-[54px] space-y-1 border-l-2 border-dashed border-vinho/25">
+          {events.map((e) => {
+            const cat = EVENT_CATEGORIES[e.category]
+            const past = date === today() && e.time < now
+            return (
+              <li key={e.id} className="relative">
+                <span className="absolute -left-[58px] top-2 w-11 text-right font-pixel text-[13px] font-semibold tabular-nums text-vinho">{e.time}</span>
+                <span className={`absolute -left-[7px] top-3 h-3 w-3 rotate-45 border-2 border-px-line ${past ? 'bg-oliva' : 'bg-rosa'}`} />
+                <button onClick={() => openForm('event', e as never)} className={`ml-3 flex w-[calc(100%-12px)] items-center gap-2.5 rounded-lg border-2 border-transparent px-2 py-1.5 text-left transition hover:border-px-line/30 hover:bg-white/60 ${past ? 'opacity-60' : ''}`}>
+                  <PixelIcon name={EVENT_SPRITES[e.category]} size={18} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold text-tinta">{e.title}</span>
+                    {(e.location || e.notes) && <span className="block truncate text-[11px] text-vinho/55">{e.location || e.notes}</span>}
+                  </span>
+                  <span className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold" style={{ color: cat.color, backgroundColor: cat.soft }}>{cat.label}</span>
+                </button>
+              </li>
+            )
+          })}
+        </ol>
+      )}
+    </Card>
+  )
+}

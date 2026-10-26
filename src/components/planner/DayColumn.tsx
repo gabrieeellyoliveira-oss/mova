@@ -56,8 +56,8 @@ export function DayColumn({
       onDragLeave={() => setOver(false)}
       onDrop={() => { setOver(false); onDrop(date) }}
       className={cn(
-        'flex min-h-[220px] flex-col rounded-3xl border-2 p-3 transition-all xl:p-2',
-        isToday ? 'border-cereja/40 bg-quente shadow-soft' : 'border-transparent bg-quente/70',
+        'flex min-h-[220px] flex-col rounded-px border-2 p-3 transition-all xl:p-2',
+        isToday ? 'border-px-line bg-px-panel shadow-pixel-sm' : 'border-px-line/25 bg-px-panel/70',
         over && 'border-dashed border-queimado bg-rosa-50',
         dragging && !over && 'border-dashed border-vinho/10',
       )}
@@ -72,7 +72,7 @@ export function DayColumn({
             key={e.key}
             draggable
             onDragStart={() => onDragStart(e)}
-            className={cn('group cursor-grab rounded-2xl border-l-4 bg-creme-100 px-2.5 py-2 text-[13px] shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft active:cursor-grabbing', e.done && 'opacity-50')}
+            className={cn('group cursor-grab rounded-2xl border-l-4 bg-creme-100 px-2.5 py-2 text-[13px] shadow-sm transition hover:-translate-y-0.5 hover:shadow-pixel-sm active:cursor-grabbing', e.done && 'opacity-50')}
             style={{ borderLeftColor: e.color }}
           >
             <div className="flex items-start gap-1.5">

@@ -14,7 +14,7 @@ export function CourseCard({ course, minutes, onEdit }: { course: Course; minute
     if (lessonsDone === course.lessonsTotal && n > 0) celebrate.goal()
   }
   return (
-    <article className={`relative overflow-hidden rounded-3xl border border-vinho/[0.06] bg-quente p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift ${course.active ? '' : 'opacity-70'}`}>
+    <article className={`relative overflow-hidden rounded-px border-2 border-px-line bg-quente p-5 shadow-pixel-sm transition-all hover:-translate-y-0.5 hover:shadow-pixel ${course.active ? '' : 'opacity-70'}`}>
       <span className="absolute inset-y-0 left-0 w-1.5" style={{ backgroundColor: course.color }} />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">

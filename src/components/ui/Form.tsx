@@ -2,7 +2,7 @@ import { forwardRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAt
 import { cn } from '@/lib/cn'
 
 const control =
-  'w-full rounded-2xl border border-vinho/15 bg-quente px-3.5 text-sm text-tinta placeholder:text-vinho/35 transition focus:border-queimado focus:outline-none focus:ring-2 focus:ring-rosa/60'
+  'w-full rounded-lg border-2 border-vinho/25 bg-white/80 px-3.5 text-sm text-tinta placeholder:text-vinho/35 transition focus:border-px-line focus:outline-none focus:ring-2 focus:ring-rosa/70'
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(({ className, ...p }, ref) => (
   <input ref={ref} className={cn(control, 'h-11', className)} {...p} />
@@ -32,7 +32,7 @@ Select.displayName = 'Select'
 export function Field({ label, hint, children, className }: { label: string; hint?: string; children: ReactNode; className?: string }) {
   return (
     <label className={cn('block', className)}>
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-vinho/70">{label}</span>
+      <span className="mb-1.5 block font-pixel text-[13px] font-semibold uppercase tracking-wide text-vinho/80">{label}</span>
       {children}
       {hint && <span className="mt-1 block text-xs text-vinho/50">{hint}</span>}
     </label>
@@ -52,8 +52,8 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
       onClick={() => onChange(!checked)}
       className="flex items-center gap-3 text-sm text-tinta"
     >
-      <span className={cn('relative h-6 w-11 rounded-full transition', checked ? 'bg-cereja' : 'bg-nevoa')}>
-        <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-quente shadow transition-all', checked ? 'left-[22px]' : 'left-0.5')} />
+      <span className={cn('relative h-6 w-11 rounded-md border-2 border-px-line transition', checked ? 'bg-cereja' : 'bg-nevoa')}>
+        <span className={cn('absolute top-0.5 h-4 w-4 rounded-sm border-2 border-px-line bg-px-panel transition-all', checked ? 'left-[20px]' : 'left-0.5')} />
       </span>
       {label}
     </button>

@@ -8,10 +8,10 @@ export function Chip({
     <button
       type="button"
       className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all',
+        'inline-flex shrink-0 items-center gap-1.5 rounded-md border-2 px-3 py-1 text-xs font-bold transition-[transform,background-color] duration-100 active:translate-y-px',
         active
-          ? 'border-vinho bg-vinho text-rosa-50 shadow-soft'
-          : 'border-vinho/15 bg-quente text-vinho hover:border-queimado hover:bg-rosa-50',
+          ? 'border-px-line bg-vinho-800 text-rosa-50 shadow-pixel-sm'
+          : 'border-vinho/20 bg-px-panel text-vinho hover:-translate-y-px hover:border-px-line hover:bg-rosa-50',
         className,
       )}
       {...p}
@@ -24,7 +24,7 @@ export function Chip({
 export function Badge({ color, soft, children, className }: { color: string; soft?: string; children: ReactNode; className?: string }) {
   return (
     <span
-      className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold', className)}
+      className={cn('inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] font-bold', className)}
       style={{ color, backgroundColor: soft ?? `${color}1f` }}
     >
       {children}
@@ -36,15 +36,15 @@ export function Segmented<T extends string>({
   options, value, onChange, className,
 }: { options: { value: T; label: ReactNode }[]; value: T; onChange: (v: T) => void; className?: string }) {
   return (
-    <div className={cn('inline-flex rounded-full bg-creme-200 p-1', className)}>
+    <div className={cn('inline-flex rounded-lg border-2 border-px-line bg-vinho-800 p-0.5', className)}>
       {options.map((o) => (
         <button
           key={o.value}
           type="button"
           onClick={() => onChange(o.value)}
           className={cn(
-            'rounded-full px-3.5 py-1.5 text-xs font-semibold transition',
-            value === o.value ? 'bg-quente text-vinho shadow-soft' : 'text-vinho/60 hover:text-vinho',
+            'rounded-md px-3 py-1 text-xs font-bold transition',
+            value === o.value ? 'bg-rosa text-vinho shadow-[inset_0_-2px_0_rgba(0,0,0,0.15)]' : 'text-rosa-50/70 hover:text-rosa-50',
           )}
         >
           {o.label}

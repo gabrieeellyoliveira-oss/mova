@@ -12,6 +12,7 @@ export default function Vault() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon="piggy"
         kicker="meu cofre"
         title="Sair de casa"
         subtitle="Guardando para a casa nova, um depósito de cada vez."

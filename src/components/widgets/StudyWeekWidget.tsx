@@ -19,7 +19,7 @@ export function StudyWeekWidget() {
   return (
     <Card className="relative overflow-hidden p-4 sm:p-5">
       <Flower size={44} className="absolute bottom-6 right-4 opacity-90" />
-      <WidgetHeader title="Estudos da semana" to="/estudos" linkLabel="Ver todos" subtitle={`${w.hours.toFixed(1).replace('.', ',')}h de ${w.goalHours}h estudadas`} />
+      <WidgetHeader sprite="laptop" title="Estudos da semana" to="/estudos" linkLabel="Ver todos" subtitle={`${w.hours.toFixed(1).replace('.', ',')}h de ${w.goalHours}h estudadas`} />
       {list.length ? (
         <ul className="space-y-3 pr-10">
           {list.map((t) => (

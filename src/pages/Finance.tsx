@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowDownRight, ArrowUpRight, Check, Pencil, PiggyBank, Plus, Wallet } from 'lucide-react'
+import { ArrowUpRight, Check, Pencil, Plus } from 'lucide-react'
 import { settingsStore } from '@/store/db'
 import { useFinanceSummary, useTransactions } from '@/hooks/useData'
 import { money } from '@/utils/format'
@@ -12,16 +12,16 @@ import { MonthlyChart } from '@/components/finance/MonthlyChart'
 import { CategoryDonut } from '@/components/finance/CategoryDonut'
 import { TransactionList } from '@/components/finance/TransactionList'
 import { FinancialGoals } from '@/components/finance/FinancialGoals'
-import { Coin } from '@/components/doodles/Doodles'
+import { PixelIcon } from '@/components/game/PixelIcon'
 
 function BudgetCard() {
   const s = useFinanceSummary()
   const [edit, setEdit] = useState(false)
   const [v, setV] = useState(String(s.budget))
   return (
-    <div className="rounded-3xl border border-oliva/20 bg-oliva-100 p-5 text-oliva-600 shadow-soft">
+    <div className="rounded-px border-2 border-px-line bg-oliva-100 p-5 text-oliva-600 shadow-pixel-sm">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Orçamento disponível</p>
+        <p className="flex items-center gap-1.5 font-pixel text-xs font-semibold uppercase tracking-wide opacity-80"><PixelIcon name="piggy" size={18} /> Orçamento disponível</p>
         <button onClick={() => { if (edit) settingsStore.set((p) => ({ ...p, monthlyBudget: Number(v) || p.monthlyBudget })); setEdit(!edit) }} className="opacity-70 hover:opacity-100" aria-label="Editar orçamento">
           {edit ? <Check size={16} /> : <Pencil size={14} />}
         </button>
@@ -47,7 +47,7 @@ export default function Finance() {
         kicker="seu mês"
         title="Finanças"
         subtitle="Saber pra onde o dinheiro vai é o primeiro passo pra ele ir aonde você quer."
-        doodle={<Coin size={48} className="rotate-12" />}
+        icon="coins"
         actions={
           <>
             <Button variant="olive" onClick={() => openForm('transaction', { type: 'receita', category: 'Salário' })}><ArrowUpRight size={16} /> Receita</Button>
@@ -56,24 +56,24 @@ export default function Finance() {
         }
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard tone="vinho" label="Saldo atual" value={money(s.balance)} hint="tudo que entrou menos tudo que saiu" icon={<Wallet size={18} />} />
-        <StatCard label="Entradas do mês" value={money(s.income)} icon={<ArrowUpRight size={18} className="text-oliva" />} />
-        <StatCard tone="rosa" label="Gastos do mês" value={money(s.expenses)} hint={`${s.monthTx.filter((t) => t.type === 'despesa').length} movimentações`} icon={<ArrowDownRight size={18} />} />
+        <StatCard tone="vinho" label="Saldo atual" value={money(s.balance)} hint="tudo que entrou menos tudo que saiu" icon={<PixelIcon name="coins" size={22} />} />
+        <StatCard label="Entradas do mês" value={money(s.income)} icon={<PixelIcon name="star" size={22} />} />
+        <StatCard tone="rosa" label="Gastos do mês" value={money(s.expenses)} hint={`${s.monthTx.filter((t) => t.type === 'despesa').length} movimentações`} icon={<PixelIcon name="cup" size={22} />} />
         <BudgetCard />
       </div>
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
         <Card>
-          <CardHeader icon={<PiggyBank size={18} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />
+          <CardHeader icon={<PixelIcon name="piggy" size={20} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />
           <MonthlyChart />
         </Card>
         <Card>
-          <CardHeader icon={<Coin size={20} />} title="Para onde foi o dinheiro" subtitle="gastos do mês por categoria" />
+          <CardHeader icon={<PixelIcon name="coins" size={20} />} title="Para onde foi o dinheiro" subtitle="gastos do mês por categoria" />
           <CategoryDonut transactions={s.monthTx} />
         </Card>
       </div>
       <FinancialGoals />
       <Card>
-        <CardHeader title="Movimentações" subtitle="toque em uma para editar" action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
+        <CardHeader icon={<PixelIcon name="note" size={20} />} title="Movimentações" subtitle="toque em uma para editar" action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
         <TransactionList transactions={tx} />
       </Card>
     </div>

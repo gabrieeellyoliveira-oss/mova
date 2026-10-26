@@ -18,6 +18,9 @@ export type AreaId =
   | 'metas'
   | 'rotina'
   | 'notas'
+  | 'social'
+  | 'saude'
+  | 'trabalho'
 
 /* ---------- Agenda ---------- */
 export type EventCategory = 'trabalho' | 'estudos' | 'role' | 'saude' | 'pessoal' | 'casa'
@@ -78,6 +81,60 @@ export interface FinancialGoal extends Entity {
   target: number
   deadline?: ISODate
   emoji?: string
+}
+
+/* ---------- Explorar / Vida social (lugares e rolês) ---------- */
+export type PlaceCategory =
+  | 'Cafés'
+  | 'Restaurantes'
+  | 'Museus'
+  | 'Parques'
+  | 'Eventos'
+  | 'Cinema'
+  | 'Compras'
+  | 'Passeios'
+  | 'Experiências'
+  | 'Lugares diferentes'
+export type PlaceStatus = 'quero' | 'planejado' | 'fui' | 'voltar'
+export type PriceLevel = 0 | 30 | 50 | 100 | 200
+export type Mood =
+  | 'comer'
+  | 'cafe'
+  | 'conhecer'
+  | 'relaxar'
+  | 'diferente'
+  | 'passear'
+  | 'comprar'
+  | 'cultura'
+export type Company = 'sozinha' | 'acompanhada' | 'tanto faz'
+
+export interface Place extends Entity {
+  name: string
+  category: PlaceCategory
+  neighborhood: string
+  city?: string
+  /** Preço estimado por pessoa em R$ */
+  price: number
+  status: PlaceStatus
+  favorite: boolean
+  photo?: string
+  moods: Mood[]
+  goodFor: Company
+  plannedFor?: ISODate
+  plannedTime?: Time
+  notes?: string
+}
+
+export interface Experience extends Entity {
+  placeId?: string
+  title: string
+  date: ISODate
+  photos: string[]
+  rating: number
+  spent: number
+  with: string
+  comment: string
+  wouldReturn: boolean
 }
 
 /* ---------- Sair de casa (cofre da mudança) ---------- */
@@ -204,6 +261,10 @@ export interface Habit extends Entity {
   log: ISODate[]
   /** Meta de vezes por semana */
   weeklyTarget: number
+  /** Conta para a área Saúde & bem-estar */
+  health?: boolean
+  /** É treino (vale mais XP) */
+  training?: boolean
 }
 
 /* ---------- Planejamento ---------- */

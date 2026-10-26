@@ -19,7 +19,7 @@ export function FocusTimer() {
   const started = t.remaining < total
 
   return (
-    <div className="relative overflow-hidden rounded-4xl bg-vinho p-6 text-rosa-50 shadow-lift sm:p-7">
+    <div className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-7">
       <Cup size={46} className="absolute right-5 top-5 -rotate-6" />
       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">um tempinho só pra você</p>
       <h2 className="mt-1 font-display text-5xl leading-[1.05]">Foco</h2>

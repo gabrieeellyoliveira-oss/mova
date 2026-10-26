@@ -12,7 +12,7 @@ export function VaultHero() {
   const v = useVault()
   const done = v.remaining <= 0
   return (
-    <section className="relative overflow-hidden rounded-4xl bg-vinho p-6 text-rosa-50 shadow-lift sm:p-8">
+    <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
       <div className="grid items-center gap-8 lg:grid-cols-[auto_minmax(0,1fr)]">
         <div className="flex flex-col items-center gap-5 sm:flex-row lg:flex-col xl:flex-row">
           <Ring value={v.progress} size={190} stroke={14} color="#EFAFB3" track="rgba(239,175,179,0.16)">
@@ -33,16 +33,16 @@ export function VaultHero() {
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-3xl bg-vinho-900/50 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-vinho-900/50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa-50/70">Guardado este mês</p>
             <p className="mt-1 text-2xl font-extrabold">{money(v.thisMonth)}</p>
           </div>
-          <div className="rounded-3xl bg-vinho-900/50 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-vinho-900/50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa-50/70">Média por mês</p>
             <p className="mt-1 text-2xl font-extrabold">{money(v.monthlyAvg)}</p>
             <p className="text-xs text-rosa-50/60">últimos {Math.min(6, v.months.length)} meses</p>
           </div>
-          <div className="rounded-3xl bg-vinho-900/50 p-4">
+          <div className="rounded-lg border-2 border-black/25 bg-vinho-900/50 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-rosa-50/70">No ritmo atual, chego lá em</p>
             <p className="mt-1 text-2xl font-extrabold first-letter:uppercase">
               {done ? 'já cheguei!' : v.forecast ? monthYear(v.forecast) : '—'}
@@ -50,7 +50,7 @@ export function VaultHero() {
             {!done && v.monthsToGoal !== null && <p className="text-xs text-rosa-50/60">daqui a {v.monthsToGoal} {v.monthsToGoal === 1 ? 'mês' : 'meses'}</p>}
             {!done && v.monthsToGoal === null && <p className="text-xs text-rosa-50/60">guarde um valor para ver a previsão</p>}
           </div>
-          <div className="rounded-3xl bg-rosa p-4 text-vinho">
+          <div className="rounded-lg border-2 border-black/25 bg-rosa p-4 text-vinho">
             <label htmlFor="vault-target-date" className="text-xs font-semibold uppercase tracking-wide text-vinho/70">Quero sair de casa até</label>
             <input
               id="vault-target-date"

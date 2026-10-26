@@ -11,7 +11,7 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Field, FormGrid, Input } from '@/components/ui/Form'
-import { Flower } from '@/components/doodles/Doodles'
+import { PixelIcon } from '@/components/game/PixelIcon'
 
 export default function Profile() {
   const s = useSettings()
@@ -31,9 +31,9 @@ export default function Profile() {
 
   return (
     <div className="space-y-8">
-      <PageHeader kicker="esse cantinho é seu" title="Perfil" subtitle="Ajustes, metas gerais e seus dados." doodle={<Flower size={46} />} />
+      <PageHeader kicker="seu jogo, suas regras" title="Configurações" subtitle="Ajustes, metas gerais, acesso e seus dados." icon="gear" />
 
-      <section className="relative overflow-hidden rounded-4xl bg-vinho p-6 text-rosa-50 shadow-lift sm:p-8">
+      <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
         <div className="grid items-end gap-6 md:grid-cols-[1fr_360px]">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">oi, {s.name}!</p>
@@ -47,9 +47,9 @@ export default function Profile() {
       <Card className="lg:hidden">
         <CardHeader title="Todas as áreas" />
         <div className="grid grid-cols-3 gap-2">
-          {NAV_ITEMS.map(({ label, path, icon: Icon }) => (
+          {NAV_ITEMS.map(({ label, path, sprite }) => (
             <Link key={path} to={path} className="flex flex-col items-center gap-1.5 rounded-2xl bg-creme-100 px-2 py-3 text-center text-xs font-semibold text-vinho active:scale-95">
-              <Icon size={20} className="text-cereja" />{label}
+              <PixelIcon name={sprite} size={24} />{label}
             </Link>
           ))}
         </div>

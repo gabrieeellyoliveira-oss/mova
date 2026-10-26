@@ -12,7 +12,6 @@ import { Card, CardHeader } from '@/components/ui/Card'
 import { DayColumn } from '@/components/planner/DayColumn'
 import { WeeklyPriorities } from '@/components/planner/WeeklyPriorities'
 import type { PlannerEntry } from '@/components/planner/types'
-import { Heart } from '@/components/doodles/Doodles'
 import { cn } from '@/lib/cn'
 
 export default function Planning() {
@@ -58,9 +57,9 @@ export default function Planning() {
         kicker="minha semana"
         title="Planejamento"
         subtitle="Arraste as coisas entre os dias até a semana caber direitinho em você."
-        doodle={<Heart size={42} className="rotate-12 fill-rosa text-cereja" />}
+        icon="planner"
         actions={
-          <div className="flex items-center gap-1 rounded-full bg-quente p-1 shadow-soft">
+          <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
             <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, -7))} aria-label="Semana anterior"><ChevronLeft size={16} /></Button>
             <button onClick={() => setRef(today())} className="px-2 text-sm font-bold text-vinho">{formatShort(days[0])} – {formatShort(days[6])}</button>
             <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, 7))} aria-label="Próxima semana"><ChevronRight size={16} /></Button>
