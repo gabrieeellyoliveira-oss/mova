@@ -14,10 +14,12 @@ import Login from '@/pages/Login'
 import MyDay from '@/pages/MyDay'
 import Achievements from '@/pages/Achievements'
 import { useSession } from '@/lib/auth'
+import { BootScreen } from '@/components/auth/BootScreen'
 
 // HashRouter: funciona em qualquer hospedagem estática, sem configurar rewrites.
 export default function App() {
   const session = useSession()
+  if (session === undefined) return <BootScreen />
   if (!session) return <Login />
   return (
     <HashRouter>

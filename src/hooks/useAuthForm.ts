@@ -1,17 +1,25 @@
-import { useState, type FormEvent } from 'react'
-import { createAccount, hasAccount, resetAccount, signIn } from '@/lib/auth'
+import { useEffect, useState, type FormEvent } from 'react'
+import { cloudEnabled, createAccount, hasAccount, requestPasswordReset, resetAccount, signIn, updatePassword, useRecovery } from '@/lib/auth'
 
-export type AuthMode = 'criar' | 'entrar' | 'esqueci'
+/**
+ * criar / entrar · esqueci (nuvem: pede o e-mail; local: explica) · confirmar (nuvem: link
+ * de confirmação enviado) · enviado (link de recuperação enviado) · nova-senha (voltou pelo link)
+ */
+export type AuthMode = 'criar' | 'entrar' | 'esqueci' | 'confirmar' | 'enviado' | 'nova-senha'
+type Field = 'email' | 'password' | 'confirm'
 
-/** Lógica da tela de acesso (sem visual): campos, validação e chamadas ao acesso local. */
+/** Lógica da tela de acesso (sem visual): campos, validação e chamadas ao acesso. */
 export function useAuthForm() {
-  const [mode, setMode] = useState<AuthMode>(() => (hasAccount() ? 'entrar' : 'criar'))
+  const recovery = useRecovery()
+  const [mode, setMode] = useState<AuthMode>(() => (recovery ? 'nova-senha' : hasAccount() ? 'entrar' : 'criar'))
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [remember, setRemember] = useState(true)
-  const [error, setError] = useState<{ field?: 'email' | 'password' | 'confirm'; message: string } | null>(null)
+  const [error, setError] = useState<{ field?: Field; message: string } | null>(null)
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => { if (recovery) setMode('nova-senha') }, [recovery])
 
   const go = (m: AuthMode) => {
     setMode(m)
@@ -19,30 +27,42 @@ export function useAuthForm() {
     setPassword('')
     setConfirm('')
   }
+  const fail = (message: string, field?: Field) => setError({ field, message })
+  const validEmail = () => /^\S+@\S+\.\S+$/.test(email.trim())
+  const run = async (fn: () => Promise<void>) => {
+    setBusy(true)
+    try { await fn() } catch { fail('Não foi possível continuar agora. Tente atualizar a página.') } finally { setBusy(false) }
+  }
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) return setError({ field: 'email', message: 'Digite um e-mail válido.' })
-    if (mode === 'criar') {
-      if (password.length < 6) return setError({ field: 'password', message: 'A senha precisa ter pelo menos 6 caracteres.' })
-      if (password !== confirm) return setError({ field: 'confirm', message: 'As senhas não coincidem.' })
-    } else if (!password) return setError({ field: 'password', message: 'Digite sua senha.' })
-    setBusy(true)
-    try {
-      if (mode === 'criar') await createAccount(email, password, remember)
-      else {
-        const err = await signIn(email, password, remember)
-        if (err) setError({ field: err.includes('Senha') ? 'password' : 'email', message: err })
-      }
-    } catch {
-      setError({ message: 'Não foi possível entrar neste navegador. Tente atualizar a página.' })
-    } finally {
-      setBusy(false)
+    if (mode === 'nova-senha') {
+      if (password.length < 6) return fail('A senha precisa ter pelo menos 6 caracteres.', 'password')
+      if (password !== confirm) return fail('As senhas não coincidem.', 'confirm')
+      return run(async () => { const err = await updatePassword(password); if (err) fail(err, 'password') })
     }
+    if (!validEmail()) return fail('Digite um e-mail válido.', 'email')
+    if (mode === 'esqueci') {
+      return run(async () => { const err = await requestPasswordReset(email); if (err) fail(err, 'email'); else go('enviado') })
+    }
+    if (mode === 'criar') {
+      if (password.length < 6) return fail('A senha precisa ter pelo menos 6 caracteres.', 'password')
+      if (password !== confirm) return fail('As senhas não coincidem.', 'confirm')
+      return run(async () => {
+        const r = await createAccount(email, password, remember)
+        if (r.error) fail(r.error, 'email')
+        else if (r.confirm) go('confirmar')
+      })
+    }
+    if (!password) return fail('Digite sua senha.', 'password')
+    return run(async () => {
+      const err = await signIn(email, password, remember)
+      if (err) fail(err, /senha/i.test(err) ? 'password' : 'email')
+    })
   }
 
-  /** Esqueci a senha: apaga só o acesso (os dados do MOVA continuam) e volta para "Novo jogo". */
+  /** Local: "esqueci a senha" apaga só o acesso (os dados do MOVA continuam) e volta para "Novo jogo". */
   const startOver = () => {
     resetAccount()
     go('criar')
@@ -50,6 +70,6 @@ export function useAuthForm() {
 
   return {
     mode, go, email, setEmail, password, setPassword, confirm, setConfirm, remember, setRemember,
-    error, busy, submit, startOver, canCreate: !hasAccount(),
+    error, busy, submit, startOver, cloud: cloudEnabled, canCreate: cloudEnabled || !hasAccount(),
   }
 }

@@ -4,3 +4,7 @@ dist-single
 *.log
 .DS_Store
 *.tsbuildinfo
+
+# variáveis locais (Supabase etc.)
+.env.local
+.env.*.local

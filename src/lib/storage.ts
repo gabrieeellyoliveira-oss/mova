@@ -1,10 +1,9 @@
 /**
  * Camada de persistência do MOVA.
  *
- * Toda leitura/escrita passa por um `StorageAdapter`. Hoje usamos o LocalStorage;
- * para migrar para o Supabase basta implementar o mesmo contrato (ex.: uma tabela
- * por coleção, ou uma tabela `collections(key, value jsonb)`) e trocar o
- * `activeAdapter` abaixo — páginas e componentes não precisam mudar.
+ * Toda leitura/escrita passa por um `StorageAdapter` (LocalStorage), então o app abre
+ * na hora e funciona sem internet. Quando o Supabase está ligado, cada gravação também
+ * vai para a tabela `mova_store` (ver `lib/cloudSync.ts`).
  */
 export interface StorageAdapter {
   load<T>(key: string): T | undefined
@@ -14,6 +13,19 @@ export interface StorageAdapter {
 }
 
 const PREFIX = 'mova:v1:'
+
+/** Quem quer saber de cada gravação (a sincronização com o Supabase). */
+let cloudSink: ((key: string) => void) | null = null
+export const setCloudSink = (sink: ((key: string) => void) | null) => { cloudSink = sink }
+
+/** Grava só no navegador, sem avisar a nuvem (usado ao baixar dados do Supabase). */
+export function writeLocal<T>(key: string, value: T) {
+  try {
+    window.localStorage.setItem(PREFIX + key, JSON.stringify(value))
+  } catch (err) {
+    console.warn('[MOVA] não foi possível salvar', key, err)
+  }
+}
 
 export const localStorageAdapter: StorageAdapter = {
   load<T>(key: string) {
@@ -25,11 +37,8 @@ export const localStorageAdapter: StorageAdapter = {
     }
   },
   save<T>(key: string, value: T) {
-    try {
-      window.localStorage.setItem(PREFIX + key, JSON.stringify(value))
-    } catch (err) {
-      console.warn('[MOVA] não foi possível salvar', key, err)
-    }
+    writeLocal(key, value)
+    cloudSink?.(key)
   },
   remove(key: string) {
     try {

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Download, LogOut, RotateCcw, Upload } from 'lucide-react'
-import { signOut, useSession } from '@/lib/auth'
+import { cloudEnabled, signOut, useSession } from '@/lib/auth'
+import { syncStatus } from '@/lib/cloudSync'
+import { useStore } from '@/store/createStore'
 import gabi from '@/assets/gabi-e-gata.webp'
 import { exportAll, importAll, resetAll, settingsStore } from '@/store/db'
 import { useSettings } from '@/hooks/useData'
@@ -19,6 +21,7 @@ export default function Profile() {
   const session = useSession()
   const file = useRef<HTMLInputElement>(null)
   const [confirmReset, setConfirmReset] = useState(false)
+  const sync = useStore(syncStatus)
   const [params] = useSearchParams()
   const connections = useRef<HTMLElement>(null)
   useEffect(() => {
@@ -80,13 +83,23 @@ export default function Profile() {
         <Card className="lg:col-span-2 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm font-bold text-vinho">Acesso</p>
-            <p className="text-xs text-vinho/60">Entrou como {session}</p>
+            <p className="text-xs text-vinho/60">Entrou como {session}{cloudEnabled ? ' · conta na nuvem (Supabase)' : ' · acesso só deste navegador'}</p>
           </div>
           <Button variant="soft" onClick={signOut}><LogOut size={16} /> Sair</Button>
         </Card>
         <Card tone="creme">
-          <CardHeader title="Seus dados" subtitle="ficam guardados neste navegador" />
-          <p className="mb-4 text-sm text-vinho/70">Faça um backup de vez em quando — ou leve tudo para outro aparelho.</p>
+          <CardHeader title="Seus dados" subtitle={cloudEnabled ? 'salvos na nuvem e neste aparelho' : 'ficam guardados neste navegador'} />
+          {cloudEnabled ? (
+            <p className="mb-4 text-sm text-vinho/70">
+              {sync.state === 'ok' ? `Tudo salvo na nuvem ✓${sync.at ? ` · ${new Date(sync.at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}`
+                : sync.state === 'syncing' ? 'Salvando na nuvem…'
+                : sync.state === 'offline' ? 'Sem conexão com a nuvem agora — está tudo salvo aqui e eu envio assim que voltar.'
+                : 'Entre na sua conta para sincronizar.'}
+              {' '}Abra o MOVA em outro aparelho com o mesmo e-mail e seus dados estarão lá.
+            </p>
+          ) : (
+            <p className="mb-4 text-sm text-vinho/70">Faça um backup de vez em quando — ou leve tudo para outro aparelho.</p>
+          )}
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={download}><Download size={16} /> Exportar backup</Button>
             <Button variant="soft" onClick={() => file.current?.click()}><Upload size={16} /> Importar</Button>
