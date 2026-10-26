@@ -30,7 +30,8 @@ export function GameWatcher() {
   useEffect(() => {
     if (prevTotal.current !== null && g.total > prevTotal.current) {
       const id = Date.now()
-      setFloats((f) => [...f.slice(-2), { id, amount: g.total - prevTotal.current! }])
+      const amount = g.total - prevTotal.current // calcula antes: o ref muda logo abaixo
+      setFloats((f) => [...f.slice(-2), { id, amount }])
       setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), 1700)
     }
     prevTotal.current = g.total

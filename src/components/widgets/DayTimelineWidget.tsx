@@ -19,7 +19,7 @@ export function DayTimelineWidget({ date = today(), title = 'Meu dia' }: { date?
   const now = new Date().toTimeString().slice(0, 5)
   return (
     <Card className="flex flex-col">
-      <WidgetHeader title={title} sprite="day" to="/meu-dia" linkLabel="Ver todos" action={<button onClick={() => openForm('event', { date })} className="text-rosa-50/80 hover:text-rosa" aria-label="Novo compromisso"><Plus size={15} /></button>} />
+      <WidgetHeader title={title} sprite="day" to="/agenda" linkLabel="Semana" action={<button onClick={() => openForm('event', { date })} className="text-rosa-50/80 hover:text-rosa" aria-label="Novo compromisso"><Plus size={15} /></button>} />
       {events.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-6 text-center">
           <PixelIcon name="cup" size={36} />
