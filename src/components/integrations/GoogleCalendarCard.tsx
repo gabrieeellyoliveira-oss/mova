@@ -49,7 +49,7 @@ export function GoogleCalendarCard() {
             <p className="text-sm text-vinho/65">{cache.fetchedAt ? `${week} ${week === 1 ? 'evento' : 'eventos'} nos próximos 7 dias · atualizado ${since(cache.fetchedAt)}` : 'Lendo a agenda…'}</p>
             {cache.error && <p role="alert" className="mt-2 text-sm font-medium text-cereja"><span className="font-pixel font-bold">! </span>{cache.error}</p>}
           </div>
-          <p className="text-xs text-vinho/55">Os eventos aparecem em Meu dia e no Planejamento, com a marca “Google”. Para editar, use o próprio Google Agenda — aqui atualiza sozinho a cada 15 minutos.</p>
+          <p className="text-xs text-vinho/55">Os eventos aparecem em Meu dia e na Agenda, com a marca “Google”. Para editar, use o próprio Google Agenda — aqui atualiza sozinho a cada 15 minutos.</p>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" onClick={refresh} disabled={busy}>{busy ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />} Atualizar agora</Button>
             <Button size="sm" variant="soft" onClick={() => { setLink(googleCalendarUrl); setEditing(true) }}>Trocar link</Button>

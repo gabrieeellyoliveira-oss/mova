@@ -3,11 +3,12 @@ import { cn } from '@/lib/cn'
 
 /** Medalha de conquista: bloqueada (cinza + cadeado + progresso) ou desbloqueada (brilho). */
 export function Achievement({
-  title, description, sprite, unlocked, current, target, size = 'md',
-}: { title: string; description?: string; sprite: SpriteName; unlocked: boolean; current: number; target: number; size?: 'sm' | 'md' }) {
+  title, description, sprite, unlocked, current, target, size = 'md', onClick,
+}: { title: string; description?: string; sprite: SpriteName; unlocked: boolean; current: number; target: number; size?: 'sm' | 'md'; onClick?: () => void }) {
   const pct = Math.min(100, (current / target) * 100)
+  const Tag = onClick ? 'button' : 'div'
   return (
-    <div className={cn('group flex flex-col items-center text-center', size === 'sm' ? 'gap-1.5' : 'gap-2')} title={description}>
+    <Tag type={onClick ? 'button' : undefined} onClick={onClick} className={cn('group flex flex-col items-center text-center', size === 'sm' ? 'gap-1.5' : 'gap-2', onClick && 'cursor-pointer rounded-lg p-1 hover:bg-white/50')} title={description}>
       <div
         className={cn(
           'relative grid place-items-center border-2 border-px-line transition-transform duration-200 group-hover:-translate-y-0.5',
@@ -29,6 +30,6 @@ export function Achievement({
           <p className="mt-0.5 text-[10px] tabular-nums text-vinho/50">{Math.min(current, target)} / {target}</p>
         </div>
       )}
-    </div>
+    </Tag>
   )
 }

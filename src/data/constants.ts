@@ -41,7 +41,7 @@ export const areaMeta = (id: string): AreaMeta => AREAS[id as AreaId] ?? AREAS.g
 export const NAV_ITEMS: { label: string; path: string; sprite: SpriteName }[] = [
   { label: 'Início', path: '/', sprite: 'home' },
   { label: 'Meu dia', path: '/meu-dia', sprite: 'day' },
-  { label: 'Planejamento', path: '/planejamento', sprite: 'planner' },
+  { label: 'Agenda', path: '/agenda', sprite: 'planner' },
   { label: 'Trabalho', path: '/trabalho', sprite: 'briefcase' },
   { label: 'Metas', path: '/metas', sprite: 'target' },
   { label: 'Finanças', path: '/financas', sprite: 'coins' },

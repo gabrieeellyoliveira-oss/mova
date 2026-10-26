@@ -7,7 +7,6 @@ import { FinanceWidget } from '@/components/widgets/FinanceWidget'
 import { VaultWidget } from '@/components/widgets/VaultWidget'
 import { ReadingWidget } from '@/components/widgets/ReadingWidget'
 import { AchievementsWidget } from '@/components/widgets/AchievementsWidget'
-import { StudyWeekWidget } from '@/components/widgets/StudyWeekWidget'
 import { CostsWidget } from '@/components/widgets/CostsWidget'
 import { LinkedInWidget } from '@/components/widgets/LinkedInWidget'
 
@@ -25,7 +24,6 @@ export default function Home() {
         <ReadingWidget />
         <VaultWidget />
         <AchievementsWidget />
-        <StudyWeekWidget />
         <CostsWidget />
         <LinkedInWidget />
       </div>

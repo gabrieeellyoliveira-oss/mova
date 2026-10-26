@@ -1,7 +1,7 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import Home from '@/pages/Home'
-import Planning from '@/pages/Planning'
+import Agenda from '@/pages/Agenda'
 import Work from '@/pages/Work'
 import Finance from '@/pages/Finance'
 import Vault from '@/pages/Vault'
@@ -27,7 +27,8 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route index element={<Home />} />
           <Route path="meu-dia" element={<MyDay />} />
-          <Route path="planejamento" element={<Planning />} />
+          <Route path="agenda" element={<Agenda />} />
+          <Route path="planejamento" element={<Navigate to="/agenda" replace />} />
           <Route path="trabalho" element={<Work />} />
           <Route path="financas" element={<Finance />} />
           <Route path="sair-de-casa" element={<Vault />} />

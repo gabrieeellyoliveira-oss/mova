@@ -1,4 +1,10 @@
+import { useState } from 'react'
+import { Plus } from 'lucide-react'
+import type { CustomAchievement } from '@/types'
 import { useGame } from '@/game/useGame'
+import { db } from '@/store/db'
+import { useCollection } from '@/store/collections'
+import { CustomAchievementForm } from '@/components/game/CustomAchievementForm'
 import { XP_VALUES, PAGES_PER_READING } from '@/game/config'
 import { StatCard } from '@/components/ui/PageHeader'
 import { Card } from '@/components/ui/Card'
@@ -9,8 +15,12 @@ import { WidgetHeader } from '@/components/widgets/WidgetHeader'
 /** Conquistas: nível, de onde vem o XP e as medalhas (bloqueadas e desbloqueadas). */
 export default function Achievements() {
   const g = useGame()
+  const customs = useCollection(db.customAchievements)
+  const [editing, setEditing] = useState<CustomAchievement | 'new' | null>(null)
   const unlocked = g.achievements.filter((a) => a.unlocked)
-  const locked = g.achievements.filter((a) => !a.unlocked).sort((a, b) => b.current / b.target - a.current / a.target)
+  const mine = g.achievements.filter((a) => a.customId).sort((a, b) => Number(b.unlocked) - Number(a.unlocked))
+  const game = g.achievements.filter((a) => !a.customId)
+  const gameSorted = [...game.filter((a) => a.unlocked), ...game.filter((a) => !a.unlocked).sort((a, b) => b.current / b.target - a.current / a.target)]
 
   return (
     <div className="space-y-8">
@@ -24,11 +34,26 @@ export default function Achievements() {
       </div>
 
       <Card>
-        <WidgetHeader title="Medalhas" sprite="trophy" />
+        <WidgetHeader title="Minhas conquistas" sprite="heart" action={<button onClick={() => setEditing('new')} className="inline-flex items-center gap-1 font-medium text-rosa-50/80 hover:text-rosa"><Plus size={14} /> Nova</button>} />
         <div className="grid grid-cols-3 gap-x-3 gap-y-6 sm:grid-cols-4 lg:grid-cols-6">
-          {[...unlocked, ...locked].map((a) => <Achievement key={a.id} {...a} />)}
+          {mine.map((a) => <Achievement key={a.id} {...a} onClick={() => setEditing(customs.find((c) => c.id === a.customId) ?? null)} />)}
+          <button onClick={() => setEditing('new')} className="group flex flex-col items-center gap-2 text-center">
+            <span className="grid h-20 w-20 place-items-center border-2 border-dashed border-px-line/40 bg-white/40 text-vinho/50 transition group-hover:-translate-y-0.5 group-hover:border-px-line group-hover:text-vinho" style={{ clipPath: 'polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%)' }}>
+              <Plus size={28} />
+            </span>
+            <span className="font-pixel text-sm font-semibold text-vinho/70">Nova conquista</span>
+          </button>
+        </div>
+        {!mine.length && <p className="mt-4 text-sm text-vinho/60">Crie medalhas para o que importa pra você — algo que já conquistou ou uma meta pra desbloquear.</p>}
+      </Card>
+
+      <Card>
+        <WidgetHeader title="Medalhas do jogo" sprite="trophy" />
+        <div className="grid grid-cols-3 gap-x-3 gap-y-6 sm:grid-cols-4 lg:grid-cols-6">
+          {gameSorted.map((a) => <Achievement key={a.id} {...a} />)}
         </div>
       </Card>
+      {editing && <CustomAchievementForm initial={editing === 'new' ? undefined : editing} onClose={() => setEditing(null)} />}
 
       <Card>
         <WidgetHeader title="De onde vem seu XP" sprite="star" />

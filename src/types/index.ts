@@ -218,6 +218,18 @@ export interface WorkProject extends Entity {
   notes?: string
 }
 
+/* ---------- Conquistas criadas pela Gabi ---------- */
+export interface CustomAchievement extends Entity {
+  title: string
+  description?: string
+  /** Nome do sprite pixel (ver pixelSprites) */
+  sprite: string
+  /** Progresso: desbloqueia quando current >= target ("já conquistei" = 1 de 1) */
+  current: number
+  target: number
+  unlockedAt?: ISODate
+}
+
 /* ---------- Conexões ---------- */
 export interface Integrations {
   /** Link da agenda do Google (secreto/público iCal, compartilhamento ou incorporar) */

@@ -3,8 +3,21 @@ import { db } from '@/store/db'
 import { useCollection } from '@/store/collections'
 import { PAGES_PER_READING, XP_LABELS, XP_VALUES, levelFromXp, type XPSource } from './config'
 import { ACHIEVEMENTS, isTraining, rolesCount, type GameData } from './achievements'
+import type { SpriteName } from '@/components/game/pixelSprites'
 
 /** Estado do "jogo": XP, nível e conquistas — tudo derivado dos dados reais. */
+export interface GameAchievement {
+  id: string
+  /** id da conquista criada pela Gabi (as do jogo não têm) */
+  customId?: string
+  title: string
+  description: string
+  sprite: SpriteName
+  current: number
+  target: number
+  unlocked: boolean
+}
+
 export function useGame() {
   const tasks = useCollection(db.tasks)
   const habits = useCollection(db.habits)
@@ -17,6 +30,7 @@ export function useGame() {
   const vaultEntries = useCollection(db.vaultEntries)
   const vaultCosts = useCollection(db.vaultCosts)
   const workProjects = useCollection(db.workProjects)
+  const custom = useCollection(db.customAchievements)
 
   return useMemo(() => {
     const trainingLogs = habits.filter(isTraining).reduce((a, h) => a + h.log.length, 0)
@@ -37,12 +51,19 @@ export function useGame() {
     const total = breakdown.reduce((a, b) => a + b.xp, 0)
     const lvl = levelFromXp(total)
     const data: GameData = { tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts, workProjects, level: lvl.level }
-    const achievements = ACHIEVEMENTS.map((a) => {
-      const p = a.progress(data)
-      return { ...a, ...p, unlocked: p.current >= p.target }
-    })
+    const achievements: GameAchievement[] = [
+      ...ACHIEVEMENTS.map(({ id, title, description, sprite, progress }) => {
+        const p = progress(data)
+        return { id, title, description, sprite, ...p, unlocked: p.current >= p.target }
+      }),
+      // criadas pela Gabi
+      ...custom.map((c) => ({
+        id: `c:${c.id}`, customId: c.id, title: c.title, description: c.description ?? '', sprite: c.sprite as SpriteName,
+        current: c.current, target: Math.max(1, c.target), unlocked: c.current >= Math.max(1, c.target),
+      })),
+    ]
     return { total, ...lvl, breakdown, achievements }
-  }, [tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts, workProjects])
+  }, [tasks, habits, books, goals, financialGoals, places, experiences, sessions, vaultEntries, vaultCosts, workProjects, custom])
 }
 
 export type GameState = ReturnType<typeof useGame>
