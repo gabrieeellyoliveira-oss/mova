@@ -4,7 +4,7 @@ import { settingsStore } from '@/store/db'
 import { useFinanceSummary, useTransactions } from '@/hooks/useData'
 import { money } from '@/utils/format'
 import { openForm } from '@/hooks/useQuickAdd'
-import { PageHeader, StatCard } from '@/components/ui/PageHeader'
+import { StatCard } from '@/components/ui/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
@@ -43,16 +43,14 @@ export default function Finance() {
   const tx = useTransactions()
   return (
     <div className="space-y-8">
-      <PageHeader
-        actions={
-          <>
-            <Button variant="olive" onClick={() => openForm('transaction', { type: 'receita', category: 'Salário' })}><ArrowUpRight size={16} /> Receita</Button>
-            <Button onClick={() => openForm('transaction', { type: 'despesa' })}><Plus size={16} /> Despesa</Button>
-          </>
-        }
-      />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard tone="vinho" label="Saldo atual" value={money(s.balance)} hint="tudo que entrou menos tudo que saiu" icon={<PixelIcon name="coins" size={22} />} />
+        <StatCard
+          tone="vinho" label="Saldo atual" value={money(s.balance)} hint="tudo que entrou menos tudo que saiu" icon={<PixelIcon name="coins" size={22} />}
+          action={<>
+            <Button size="sm" variant="light" onClick={() => openForm('transaction', { type: 'receita', category: 'Salário' })}><ArrowUpRight size={14} /> Receita</Button>
+            <Button size="sm" variant="light" onClick={() => openForm('transaction', { type: 'despesa' })}><Plus size={14} /> Despesa</Button>
+          </>}
+        />
         <StatCard label="Entradas do mês" value={money(s.income)} icon={<PixelIcon name="star" size={22} />} />
         <StatCard tone="rosa" label="Gastos do mês" value={money(s.expenses)} hint={`${s.monthTx.filter((t) => t.type === 'despesa').length} movimentações`} icon={<PixelIcon name="cup" size={22} />} />
         <BudgetCard />

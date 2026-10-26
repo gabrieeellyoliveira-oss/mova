@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import type { Goal, GoalCategory } from '@/types'
 import { GOAL_CATEGORIES } from '@/data/constants'
 import { goalProgress, useGoals } from '@/hooks/useData'
-import { PageHeader, StatCard } from '@/components/ui/PageHeader'
+import { StatCard } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Chip, Segmented } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/Misc'
@@ -45,11 +45,8 @@ export default function Goals() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        actions={<Button onClick={() => setEditing({ category: cat === 'todas' ? 'Pessoal' : cat })}><Plus size={16} /> Nova meta</Button>}
-      />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <StatCard tone="vinho" label="Em movimento" value={moving.length} hint="metas acontecendo" />
+        <StatCard tone="vinho" label="Em movimento" value={moving.length} hint="metas acontecendo" action={<Button size="sm" variant="light" onClick={() => setEditing({ category: cat === 'todas' ? 'Pessoal' : cat })}><Plus size={14} /> Nova meta</Button>} />
         <StatCard tone="oliva" label="Conquistadas" value={goals.length - moving.length} hint="partes da vida que você moveu" />
         <StatCard label="Caminho andado" value={`${Math.round(avg)}%`} hint="média das metas ativas" />
         <StatCard tone="rosa" label="Etapas feitas" value={`${steps.filter((s) => s.done).length}/${steps.length}`} hint="cada passinho conta" />

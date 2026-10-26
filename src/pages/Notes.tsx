@@ -5,7 +5,6 @@ import { useNotes } from '@/hooks/useData'
 import { normalize } from '@/utils/format'
 import { relativeDay, toISODate } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
-import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/Misc'
@@ -26,9 +25,6 @@ export default function Notes() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        actions={<Button onClick={() => openForm('note', tag ? { tags: [tag] } : undefined)}><Plus size={16} /> Nova nota</Button>}
-      />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative max-w-md flex-1">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-vinho/40" />
@@ -39,6 +35,7 @@ export default function Notes() {
           <Chip active={!tag} onClick={() => setTag(null)}>Todas</Chip>
           {tags.map((t) => <Chip key={t} active={tag === t} onClick={() => setTag(tag === t ? null : t)}>#{t}</Chip>)}
         </div>
+        <Button className="shrink-0 sm:ml-auto" onClick={() => openForm('note', tag ? { tags: [tag] } : undefined)}><Plus size={16} /> Nova nota</Button>
       </div>
       {list.length === 0 ? (
         <EmptyState title={q ? `Nada com “${q}”` : 'Nenhuma nota ainda'} text="Escreve qualquer coisa — depois você organiza." action={<Button size="sm" onClick={() => openForm('note')}>Criar nota</Button>} />

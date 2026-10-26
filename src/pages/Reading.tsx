@@ -7,7 +7,7 @@ import { useBooks, useSettings } from '@/hooks/useData'
 import { ratio } from '@/utils/format'
 import { MONTHS_SHORT } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
-import { PageHeader, StatCard } from '@/components/ui/PageHeader'
+import { StatCard } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { Card, CardHeader } from '@/components/ui/Card'
@@ -70,11 +70,8 @@ export default function Reading() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        actions={<Button onClick={() => openForm('book')}><Plus size={16} /> Nova leitura</Button>}
-      />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <StatCard tone="vinho" label={`Lidos em ${year}`} value={stats.readYear} hint={`meta: ${yearlyBooksGoal} livros`} />
+        <StatCard tone="vinho" label={`Lidos em ${year}`} value={stats.readYear} hint={`meta: ${yearlyBooksGoal} livros`} action={<Button size="sm" variant="light" onClick={() => openForm('book')}><Plus size={14} /> Nova leitura</Button>} />
         <StatCard label="Páginas lidas" value={stats.pages.toLocaleString('pt-BR')} hint="neste ano" />
         <StatCard tone="rosa" label="Média mensal" value={stats.avg.toFixed(1).replace('.', ',')} hint="livros por mês" />
         <StatCard tone="oliva" label="Lendo agora" value={count('lendo')} hint={`${count('quero')} na fila`} />

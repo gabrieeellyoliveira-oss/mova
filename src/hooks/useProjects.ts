@@ -1,10 +1,13 @@
 import { useMemo } from 'react'
 import type { ProjectMetric, ProjectStatus, WorkProject } from '@/types'
-import { db } from '@/store/db'
+import { db, workSettingsStore } from '@/store/db'
 import { useCollection } from '@/store/collections'
-import { useWorkSettings } from './useWork'
+import { useStore } from '@/store/createStore'
 import { addDays, daysBetween, today, weekdayIndex } from '@/utils/date'
 import { money, ratio } from '@/utils/format'
+
+/** Dias úteis (0 = segunda … 6 = domingo) — guardados em workSettings */
+export const useWorkSettings = () => useStore(workSettingsStore)
 
 export const PROJECT_STATUS: Record<ProjectStatus, { label: string; color: string; soft: string }> = {
   planejado: { label: 'Planejado', color: '#8a6f5c', soft: '#F3E9DF' },

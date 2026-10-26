@@ -6,7 +6,7 @@ import { EVENT_CATEGORIES } from '@/data/constants'
 import { openForm } from '@/hooks/useQuickAdd'
 import { setFocusMode } from '@/hooks/useFocusMode'
 import { addDays, formatLong, relativeDay, today } from '@/utils/date'
-import { PageHeader, StatCard } from '@/components/ui/PageHeader'
+import { StatCard } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/Misc'
@@ -41,19 +41,15 @@ export default function MyDay() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        actions={
-          <>
-            <Button variant="soft" onClick={() => setFocusMode(true)}><Hourglass size={16} /> Modo foco</Button>
-            <Button onClick={() => openForm('event', { date })}><CalendarPlus size={16} /> Compromisso</Button>
-          </>
-        }
-      />
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         <Button size="icon-sm" variant="ghost" onClick={() => setDate(addDays(date, -1))} aria-label="Dia anterior"><ChevronLeft size={16} /></Button>
         <Button size="sm" variant={isToday ? 'primary' : 'soft'} onClick={() => setDate(t)}>Hoje</Button>
         <Button size="icon-sm" variant="ghost" onClick={() => setDate(addDays(date, 1))} aria-label="Próximo dia"><ChevronRight size={16} /></Button>
         <span className="ml-2 text-sm font-semibold text-vinho first-letter:uppercase">{relativeDay(date)} · {formatLong(date)}</span>
+        <div className="ml-auto flex flex-wrap gap-2">
+          <Button variant="soft" onClick={() => setFocusMode(true)}><Hourglass size={16} /> Modo foco</Button>
+          <Button onClick={() => openForm('event', { date })}><CalendarPlus size={16} /> Compromisso</Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">

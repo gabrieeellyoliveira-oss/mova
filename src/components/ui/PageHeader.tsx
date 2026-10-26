@@ -1,13 +1,8 @@
 import type { ReactNode } from 'react'
 
-/** Barra de ações no topo das telas (sem título: o menu já diz onde a Gabi está). */
-export function PageHeader({ actions }: { actions: ReactNode }) {
-  return <div className="mb-5 flex flex-wrap items-center justify-end gap-2">{actions}</div>
-}
-
 export function StatCard({
-  label, value, hint, icon, tone = 'quente',
-}: { label: string; value: ReactNode; hint?: ReactNode; icon?: ReactNode; tone?: 'quente' | 'vinho' | 'rosa' | 'oliva' }) {
+  label, value, hint, icon, action, tone = 'quente',
+}: { label: string; value: ReactNode; hint?: ReactNode; icon?: ReactNode; action?: ReactNode; tone?: 'quente' | 'vinho' | 'rosa' | 'oliva' }) {
   const tones = {
     quente: 'bg-px-panel text-tinta',
     vinho: 'bg-vinho-900 text-rosa-50',
@@ -22,6 +17,7 @@ export function StatCard({
       </div>
       <p className="mt-2 text-2xl font-extrabold tracking-tight sm:text-[28px]">{value}</p>
       {hint && <p className="mt-1 text-xs opacity-70">{hint}</p>}
+      {action && <div className="mt-3 flex flex-wrap gap-2">{action}</div>}
     </div>
   )
 }

@@ -7,7 +7,6 @@ import { useTasks } from '@/hooks/useData'
 import { areaMeta, EVENT_CATEGORIES } from '@/data/constants'
 import { addDays, formatShort, startOfWeek, today, weekDays } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
-import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { DayColumn } from '@/components/planner/DayColumn'
@@ -55,15 +54,6 @@ export default function Planning() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        actions={
-          <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
-            <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, -7))} aria-label="Semana anterior"><ChevronLeft size={16} /></Button>
-            <button onClick={() => setRef(today())} className="px-2 text-sm font-bold text-vinho">{formatShort(days[0])} – {formatShort(days[6])}</button>
-            <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, 7))} aria-label="Próxima semana"><ChevronRight size={16} /></Button>
-          </div>
-        }
-      />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <WeeklyPriorities weekStart={ws} />
         <Card
@@ -90,7 +80,14 @@ export default function Planning() {
         </Card>
       </div>
       <section>
-        <p className="mb-3 text-sm text-vinho/60">{total} coisas planejadas nesta semana</p>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm text-vinho/60">{total} coisas planejadas nesta semana</p>
+        <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
+          <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, -7))} aria-label="Semana anterior"><ChevronLeft size={16} /></Button>
+          <button onClick={() => setRef(today())} className="px-2 text-sm font-bold text-vinho">{formatShort(days[0])} – {formatShort(days[6])}</button>
+          <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, 7))} aria-label="Próxima semana"><ChevronRight size={16} /></Button>
+        </div>
+        </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 xl:gap-2">
           {days.map((d) => (
             <DayColumn key={d} date={d} days={days} entries={byDay[d]} onDrop={drop} dragging={dragging} onDragStart={start} />

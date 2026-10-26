@@ -6,7 +6,7 @@ import { useCourses, useEvents, useFocusSessions, useStudyWeek, useTasks } from 
 import { WEEKDAYS_SHORT, formatShort, relativeDay, today } from '@/utils/date'
 import { ratio } from '@/utils/format'
 import { openForm } from '@/hooks/useQuickAdd'
-import { PageHeader, StatCard } from '@/components/ui/PageHeader'
+import { StatCard } from '@/components/ui/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
@@ -72,9 +72,6 @@ export default function Studies() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        actions={<Button onClick={() => setEditing('new')}><Plus size={16} /> Novo curso</Button>}
-      />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard tone="vinho" label="Nesta semana" value={`${w.hours.toFixed(1).replace('.', ',')}h`} hint="de estudo focado" />
         <StatCard label="Cursos ativos" value={active.length} hint={`${courses.length - active.length} concluídos/pausados`} />
@@ -85,7 +82,7 @@ export default function Studies() {
         <div className="min-w-0 space-y-6">
           <WeeklyGoal />
           <section>
-            <SectionTitle action={<Segmented value={filter} onChange={setFilter} options={[{ value: 'ativos', label: 'Ativos' }, { value: 'todos', label: 'Todos' }]} />}>Meus cursos</SectionTitle>
+            <SectionTitle action={<div className="flex flex-wrap items-center gap-2"><Segmented value={filter} onChange={setFilter} options={[{ value: 'ativos', label: 'Ativos' }, { value: 'todos', label: 'Todos' }]} /><Button size="sm" onClick={() => setEditing('new')}><Plus size={14} /> Novo curso</Button></div>}>Meus cursos</SectionTitle>
             {shown.length === 0 ? (
               <EmptyState title="Nenhum curso por aqui" action={<Button size="sm" onClick={() => setEditing('new')}>Adicionar curso</Button>} />
             ) : (
