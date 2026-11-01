@@ -47,7 +47,7 @@ export function GoogleCalendarCard() {
           <div className="rounded-lg border-2 border-px-line/20 bg-white/60 p-3">
             <p className="font-semibold text-tinta">{cache.name ?? 'Sua agenda'}</p>
             <p className="text-sm text-vinho/65">{cache.fetchedAt ? `${week} ${week === 1 ? 'evento' : 'eventos'} nos próximos 7 dias · atualizado ${since(cache.fetchedAt)}` : 'Lendo a agenda…'}</p>
-            {cache.error && <p role="alert" className="mt-2 text-sm font-medium text-cereja"><span className="font-pixel font-bold">! </span>{cache.error}</p>}
+            {cache.error && <p role="alert" className="mt-2 text-sm font-medium text-cereja"><span className="font-bold">! </span>{cache.error}</p>}
           </div>
           <p className="text-xs text-vinho/55">Os eventos aparecem em Meu dia e na Agenda, com a marca “Google”. Para editar, use o próprio Google Agenda — aqui atualiza sozinho a cada 15 minutos.</p>
           <div className="flex flex-wrap gap-2">
@@ -62,7 +62,7 @@ export function GoogleCalendarCard() {
             <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="Cole aqui o link da sua agenda" aria-label="Link do Google Agenda" className="flex-1" />
             <Button type="submit" disabled={!link.trim() || busy}>{busy && <Loader2 size={14} className="animate-spin" />} Conectar</Button>
           </form>
-          {error && <p role="alert" className="text-sm font-medium text-cereja"><span className="font-pixel font-bold">! </span>{error}</p>}
+          {error && <p role="alert" className="text-sm font-medium text-cereja"><span className="font-bold">! </span>{error}</p>}
           {editing && <button type="button" onClick={() => setEditing(false)} className="text-xs font-semibold text-cereja hover:underline">Cancelar</button>}
           <details className="rounded-lg bg-white/50 p-3 text-sm text-vinho/80">
             <summary className="cursor-pointer font-semibold text-vinho">Como pegar o link</summary>

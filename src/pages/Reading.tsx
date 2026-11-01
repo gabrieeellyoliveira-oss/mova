@@ -13,9 +13,8 @@ import { Chip } from '@/components/ui/Chip'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
 import { EmptyState, StarRating } from '@/components/ui/Misc'
-import { PixelIcon } from '@/components/game/PixelIcon'
+import { Icon } from '@/components/ui/Icon'
 import { WidgetHeader } from '@/components/widgets/WidgetHeader'
-import { PAGES_PER_READING, XP_VALUES } from '@/game/config'
 import { cn } from '@/lib/cn'
 import { BookCover } from '@/components/books/BookCover'
 import { BookDetail } from '@/components/books/BookDetail'
@@ -78,13 +77,13 @@ export default function Reading() {
       </div>
       {current && (
         <Card>
-          <WidgetHeader title="Estou lendo" sprite="book" subtitle={`Inventário · +${XP_VALUES.leitura} XP a cada ${PAGES_PER_READING} páginas`} />
+          <WidgetHeader title="Estou lendo" sprite="book" subtitle={`${reading.length} ${reading.length === 1 ? 'livro aberto' : 'livros abertos'}`} />
           <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
             <div className="grid grid-cols-4 gap-2 self-start sm:grid-cols-5">
               {reading.map((b) => (
                 <button key={b.id} onClick={() => setSlot(b.id)} aria-pressed={b.id === current.id} aria-label={b.title} className={cn('relative rounded-md border-2 p-1 transition', b.id === current.id ? 'border-px-line bg-rosa-100 shadow-pixel-glow' : 'border-px-line/30 bg-px-soft hover:border-px-line')}>
                   <BookCover book={b} small />
-                  {b.id === current.id && <PixelIcon name="sparkle" size={14} className="absolute -right-1.5 -top-1.5 animate-twinkle" />}
+                  {b.id === current.id && <Icon name="sparkle" size={14} className="absolute -right-1.5 -top-1.5" />}
                 </button>
               ))}
               {Array.from({ length: Math.max(0, 5 - reading.length) }).map((_, i) => (
@@ -92,11 +91,11 @@ export default function Reading() {
               ))}
             </div>
             <div className="flex min-w-0 flex-col rounded-lg border-2 border-px-line bg-px-soft p-4">
-              <p className="font-pixel text-[11px] font-semibold uppercase tracking-[0.14em] text-cereja">Item selecionado</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-cereja">Livro atual</p>
               <p className="mt-1 font-heading text-2xl leading-tight text-vinho">{current.title}</p>
               <p className="text-sm text-vinho/60">{current.author}</p>
               <p className="mt-3 text-xs text-vinho/70">Página {current.currentPage} de {current.pages}</p>
-              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#CB757C" height={8} className="flex-1" /><span className="font-pixel text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
+              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#B58AA8" height={8} className="flex-1" /><span className="text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
               <Button className="mt-4 self-start" onClick={() => setParams({ livro: current.id })}>Continuar lendo</Button>
             </div>
           </div>
@@ -120,7 +119,7 @@ export default function Reading() {
         <aside className="space-y-6">
           <Card>
             <CardHeader title={`Meta de ${year}`} subtitle={`${stats.readYear} de ${yearlyBooksGoal} livros`} />
-            <Progress value={ratio(stats.readYear, yearlyBooksGoal)} height={10} color="#7A7A4A" />
+            <Progress value={ratio(stats.readYear, yearlyBooksGoal)} height={10} color="#5E9474" />
             <div className="mt-5 flex h-24 items-end gap-1">
               {stats.perMonth.map((x) => (
                 <div key={x.m} className="flex flex-1 flex-col items-center gap-1">

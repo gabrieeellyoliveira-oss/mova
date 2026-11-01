@@ -38,7 +38,7 @@ export function ProjectCard({ project: p, stats: s, onEdit, onRecord }: { projec
   return (
     <article className={cn('flex flex-col rounded-px border-2 border-px-line bg-px-panel p-4 shadow-pixel transition-transform duration-200 hover:-translate-y-0.5', done && 'opacity-80')}>
       <div className="flex items-start gap-3">
-        <span className="mt-1 h-3.5 w-3.5 shrink-0 rotate-45 border-2 border-px-line" style={{ backgroundColor: p.color }} />
+        <span className="mt-1.5 h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: p.color }} />
         <div className="min-w-0 flex-1">
           <h3 className="font-heading text-lg leading-tight text-vinho">{p.name}</h3>
           <p className="text-xs text-vinho/60">{[p.client, deadlineText(s, p)].filter(Boolean).join(' · ')}</p>
@@ -50,10 +50,10 @@ export function ProjectCard({ project: p, stats: s, onEdit, onRecord }: { projec
       <div className="mt-3">
         <div className="mb-1 flex items-baseline justify-between gap-2">
           <span className="text-sm font-bold text-tinta">{p.metric === 'etapas' ? s.achieved : f(s.achieved)} <span className="font-medium text-vinho/55">de {f(s.total)}</span></span>
-          <span className="font-pixel text-sm font-semibold text-vinho">{Math.round(s.progress)}%</span>
+          <span className="text-sm font-semibold text-vinho">{Math.round(s.progress)}%</span>
         </div>
         <div className="relative">
-          <Progress value={s.progress} color={done ? '#7A7A4A' : p.color} height={9} />
+          <Progress value={s.progress} color={done ? '#5E9474' : p.color} height={9} />
           {s.expectedPct !== null && !done && (
             <span className="absolute -top-1 bottom-[-4px] w-[3px] bg-tinta/70" style={{ left: `calc(${s.expectedPct}% - 1px)` }} title="onde o ritmo esperado diz que você estaria hoje" />
           )}

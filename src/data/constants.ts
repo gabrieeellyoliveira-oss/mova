@@ -3,7 +3,7 @@ import {
   BookOpen, GraduationCap, Home, LucideIcon,
   Briefcase, NotebookPen, PiggyBank, Repeat, Target, Wallet,
 } from 'lucide-react'
-import type { SpriteName } from '@/components/game/pixelSprites'
+import type { IconName } from '@/components/ui/Icon'
 import type {
   AreaId, BookStatus, EventCategory, FinanceCategory, GoalCategory, GoalStatus,
   PaymentMethod, Priority,
@@ -15,7 +15,7 @@ export interface AreaMeta {
   path: string
   icon: LucideIcon
   /** ícone em pixel art */
-  sprite: SpriteName
+  sprite: IconName
   /** cor de destaque */
   color: string
   /** fundo suave */
@@ -24,22 +24,22 @@ export interface AreaMeta {
 }
 
 export const AREAS: Record<AreaId, AreaMeta> = {
-  geral: { id: 'geral', label: 'Geral', path: '/', icon: Home, sprite: 'home', color: '#520215', soft: '#F6EDE3' },
-  financas: { id: 'financas', label: 'Finanças', path: '/financas', icon: Wallet, sprite: 'coins', color: '#961415', soft: '#f8dcde', tagline: 'Controle seus gastos e metas' },
-  sair: { id: 'sair', label: 'Sair de casa', path: '/sair-de-casa', icon: PiggyBank, sprite: 'piggy', color: '#CB757C', soft: '#fcefef', tagline: 'Seu cofre para a casa nova' },
-  estudos: { id: 'estudos', label: 'Estudos', path: '/estudos', icon: GraduationCap, sprite: 'laptop', color: '#7A7A4A', soft: '#E6E4CF', tagline: 'Acompanhe seus cursos e progresso' },
-  leitura: { id: 'leitura', label: 'Leitura', path: '/leitura', icon: BookOpen, sprite: 'book', color: '#520215', soft: '#EFE3D6', tagline: 'Seus livros e novas histórias' },
-  metas: { id: 'metas', label: 'Metas', path: '/metas', icon: Target, sprite: 'target', color: '#961415', soft: '#DFD1D1', tagline: 'Conquiste o que importa' },
-  rotina: { id: 'rotina', label: 'Rotina', path: '/meu-dia', icon: Repeat, sprite: 'dumbbell', color: '#b8565e', soft: '#f8dcde', tagline: 'Seus hábitos e bem-estar' },
-  trabalho: { id: 'trabalho', label: 'Trabalho', path: '/trabalho', icon: Briefcase, sprite: 'briefcase', color: '#6b3f26', soft: '#EFE3D6', tagline: 'Meta do mês e evolução' },
-  notas: { id: 'notas', label: 'Notas', path: '/notas', icon: NotebookPen, sprite: 'note', color: '#5f5f37', soft: '#E6E4CF' },
+  geral: { id: 'geral', label: 'Geral', path: '/', icon: Home, sprite: 'home', color: '#5B2448', soft: '#F7F2F6' },
+  financas: { id: 'financas', label: 'Finanças', path: '/financas', icon: Wallet, sprite: 'coins', color: '#6E2E58', soft: '#F2E7EF', tagline: 'Controle seus gastos e metas' },
+  sair: { id: 'sair', label: 'Sair de casa', path: '/sair-de-casa', icon: PiggyBank, sprite: 'piggy', color: '#B58AA8', soft: '#F9F4F8', tagline: 'Seu cofre para a casa nova' },
+  estudos: { id: 'estudos', label: 'Estudos', path: '/estudos', icon: GraduationCap, sprite: 'laptop', color: '#5E9474', soft: '#E2F1E8', tagline: 'Acompanhe seus cursos e progresso' },
+  leitura: { id: 'leitura', label: 'Leitura', path: '/leitura', icon: BookOpen, sprite: 'book', color: '#5B2448', soft: '#F1EAF0', tagline: 'Seus livros e novas histórias' },
+  metas: { id: 'metas', label: 'Metas', path: '/metas', icon: Target, sprite: 'target', color: '#6E2E58', soft: '#E7DEE5', tagline: 'Conquiste o que importa' },
+  rotina: { id: 'rotina', label: 'Rotina', path: '/meu-dia', icon: Repeat, sprite: 'dumbbell', color: '#9B5C86', soft: '#F2E7EF', tagline: 'Seus hábitos e bem-estar' },
+  trabalho: { id: 'trabalho', label: 'Trabalho', path: '/trabalho', icon: Briefcase, sprite: 'briefcase', color: '#6b3f26', soft: '#F1EAF0', tagline: 'Meta do mês e evolução' },
+  notas: { id: 'notas', label: 'Notas', path: '/notas', icon: NotebookPen, sprite: 'note', color: '#3F6E52', soft: '#E2F1E8' },
 }
 /** Área de uma tarefa (cai em "Geral" se a área não existir mais). */
 export const areaMeta = (id: string): AreaMeta => AREAS[id as AreaId] ?? AREAS.geral
 
-/** Menu principal (ordem do redesign; Trabalho, Sair de casa e Notas continuam). */
-export const NAV_ITEMS: { label: string; path: string; sprite: SpriteName }[] = [
-  { label: 'Início', path: '/', sprite: 'home' },
+/** Menu principal (as três últimas ficam em "Mais" no topo). */
+export const NAV_ITEMS: { label: string; path: string; sprite: IconName }[] = [
+  { label: 'Visão geral', path: '/', sprite: 'home' },
   { label: 'Meu dia', path: '/meu-dia', sprite: 'day' },
   { label: 'Agenda', path: '/agenda', sprite: 'planner' },
   { label: 'Trabalho', path: '/trabalho', sprite: 'briefcase' },
@@ -54,18 +54,18 @@ export const NAV_ITEMS: { label: string; path: string; sprite: SpriteName }[] = 
 ]
 
 export const EVENT_CATEGORIES: Record<EventCategory, { label: string; color: string; soft: string }> = {
-  trabalho: { label: 'Trabalho', color: '#520215', soft: '#EFE3D6' },
-  estudos: { label: 'Estudos', color: '#7A7A4A', soft: '#E6E4CF' },
-  role: { label: 'Rolê', color: '#CB757C', soft: '#fcefef' },
-  saude: { label: 'Saúde', color: '#961415', soft: '#f8dcde' },
-  pessoal: { label: 'Pessoal', color: '#b8565e', soft: '#f8dcde' },
-  casa: { label: 'Casa', color: '#8a6f5c', soft: '#F6EDE3' },
+  trabalho: { label: 'Trabalho', color: '#5B2448', soft: '#F1EAF0' },
+  estudos: { label: 'Estudos', color: '#5E9474', soft: '#E2F1E8' },
+  role: { label: 'Rolê', color: '#B58AA8', soft: '#F9F4F8' },
+  saude: { label: 'Saúde', color: '#6E2E58', soft: '#F2E7EF' },
+  pessoal: { label: 'Pessoal', color: '#9B5C86', soft: '#F2E7EF' },
+  casa: { label: 'Casa', color: '#8a6f5c', soft: '#F7F2F6' },
 }
 
 export const PRIORITIES: Record<Priority, { label: string; color: string }> = {
-  alta: { label: 'Alta', color: '#961415' },
-  media: { label: 'Média', color: '#CB757C' },
-  baixa: { label: 'Baixa', color: '#7A7A4A' },
+  alta: { label: 'Alta', color: '#6E2E58' },
+  media: { label: 'Média', color: '#B58AA8' },
+  baixa: { label: 'Baixa', color: '#5E9474' },
 }
 
 export const EXPENSE_CATEGORIES: FinanceCategory[] = [
@@ -74,17 +74,17 @@ export const EXPENSE_CATEGORIES: FinanceCategory[] = [
 export const INCOME_CATEGORIES: FinanceCategory[] = ['Salário', 'Freela', 'Outros']
 
 export const FINANCE_COLORS: Record<FinanceCategory, string> = {
-  Casa: '#520215',
-  Alimentação: '#961415',
-  Transporte: '#CB757C',
-  Lazer: '#EFAFB3',
-  Estudos: '#7A7A4A',
-  Assinaturas: '#b8565e',
+  Casa: '#5B2448',
+  Alimentação: '#6E2E58',
+  Transporte: '#B58AA8',
+  Lazer: '#E9D7E5',
+  Estudos: '#5E9474',
+  Assinaturas: '#9B5C86',
   Compras: '#8a6f5c',
-  Saúde: '#5f5f37',
+  Saúde: '#3F6E52',
   Outros: '#bfaeae',
-  Salário: '#7A7A4A',
-  Freela: '#CB757C',
+  Salário: '#5E9474',
+  Freela: '#B58AA8',
 }
 
 export const PAYMENT_METHODS: PaymentMethod[] = ['Pix', 'Crédito', 'Débito', 'Dinheiro', 'Boleto', 'Transferência']
@@ -97,13 +97,13 @@ export const BOOK_STATUS: Record<BookStatus, string> = {
 }
 
 export const GOAL_CATEGORIES: { id: GoalCategory; emoji: string; icon: LucideIcon; color: string }[] = [
-  { id: 'Saúde & bem-estar', emoji: '🌿', icon: Dumbbell, color: '#CB757C' },
-  { id: 'Vida financeira', emoji: '🪙', icon: Coins, color: '#7A7A4A' },
-  { id: 'Vida social', emoji: '💌', icon: Users, color: '#CB757C' },
-  { id: 'Desenvolvimento', emoji: '🌱', icon: Sprout, color: '#520215' },
-  { id: 'Estudos', emoji: '📚', icon: GradCap, color: '#961415' },
-  { id: 'Experiências', emoji: '✈️', icon: Plane, color: '#b8565e' },
-  { id: 'Pessoal', emoji: '🍒', icon: Heart, color: '#961415' },
+  { id: 'Saúde & bem-estar', emoji: '🌿', icon: Dumbbell, color: '#B58AA8' },
+  { id: 'Vida financeira', emoji: '🪙', icon: Coins, color: '#5E9474' },
+  { id: 'Vida social', emoji: '💌', icon: Users, color: '#B58AA8' },
+  { id: 'Desenvolvimento', emoji: '🌱', icon: Sprout, color: '#5B2448' },
+  { id: 'Estudos', emoji: '📚', icon: GradCap, color: '#6E2E58' },
+  { id: 'Experiências', emoji: '✈️', icon: Plane, color: '#9B5C86' },
+  { id: 'Pessoal', emoji: '🍒', icon: Heart, color: '#6E2E58' },
 ]
 export const goalCategoryMeta = (c: GoalCategory) => GOAL_CATEGORIES.find((g) => g.id === c) ?? GOAL_CATEGORIES[0]
 
@@ -114,7 +114,12 @@ export const GOAL_STATUS: Record<GoalStatus, string> = {
   concluida: 'Concluída',
 }
 
-export const COURSE_COLORS = ['#961415', '#520215', '#CB757C', '#7A7A4A', '#b8565e', '#5f5f37', '#8a6f5c']
-export const BOOK_COLORS = ['#961415', '#520215', '#CB757C', '#7A7A4A', '#b8565e', '#3a010f', '#5f5f37', '#8a6f5c']
-export const PROJECT_COLORS = ['#961415', '#520215', '#CB757C', '#EFAFB3', '#7A7A4A', '#b8565e', '#3a010f']
+export const COURSE_COLORS = ['#6E2E58', '#5B2448', '#B58AA8', '#5E9474', '#9B5C86', '#3F6E52', '#8a6f5c']
+export const BOOK_COLORS = ['#6E2E58', '#5B2448', '#B58AA8', '#5E9474', '#9B5C86', '#3E1631', '#3F6E52', '#8a6f5c']
+export const PROJECT_COLORS = ['#6E2E58', '#5B2448', '#B58AA8', '#E9D7E5', '#5E9474', '#9B5C86', '#3E1631']
 
+/** Ícone de cada categoria de meta */
+export const GOAL_ICONS: Record<GoalCategory, IconName> = {
+  'Saúde & bem-estar': 'dumbbell', 'Vida financeira': 'coins', 'Vida social': 'heart', Desenvolvimento: 'tree',
+  Estudos: 'laptop', Experiências: 'map', Pessoal: 'star',
+}

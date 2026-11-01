@@ -12,11 +12,11 @@ export function WorkDaysPicker() {
   }
   return (
     <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Dias que eu trabalho">
-      <span className="font-pixel text-[13px] font-semibold uppercase tracking-wide text-vinho/80">Dias úteis</span>
-      <div className="inline-flex rounded-lg border-2 border-px-line bg-vinho-800 p-0.5">
+      <span className="text-sm font-semibold text-tinta/70">Dias úteis</span>
+      <div className="inline-flex rounded-full bg-rosa-100 p-1">
         {WEEKDAYS_SHORT.map((d, i) => (
           <button key={d} type="button" aria-pressed={workDays.includes(i)} onClick={() => toggle(i)}
-            className={cn('rounded-md px-2 py-1 text-[11px] font-bold transition', workDays.includes(i) ? 'bg-rosa text-vinho' : 'text-rosa-50/60 hover:text-rosa-50')}>
+            className={cn('rounded-full px-2.5 py-1 text-[11px] font-semibold transition', workDays.includes(i) ? 'bg-vinho text-white' : 'text-vinho/50 hover:text-vinho')}>
             {d}
           </button>
         ))}

@@ -90,7 +90,7 @@ export function FinancialGoals() {
                 <button onClick={() => setEditing(g)} className="grid h-8 w-8 place-items-center rounded-full text-vinho/50 hover:bg-vinho/5" aria-label="Editar meta"><Pencil size={14} /></button>
               </div>
               <p className="text-sm text-vinho/70"><b className="text-lg text-vinho">{money(g.current).replace(',00', '')}</b> / {money(g.target).replace(',00', '')}</p>
-              <Progress value={p} height={10} color={p >= 100 ? '#7A7A4A' : '#961415'} />
+              <Progress value={p} height={10} color={p >= 100 ? '#5E9474' : '#6E2E58'} />
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-cereja">{Math.round(p)}%{p >= 100 && ' · conquistada ✨'}</span>
                 <Deposit goal={g} />

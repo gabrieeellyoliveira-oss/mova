@@ -2,12 +2,12 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 import { clamp } from '@/utils/format'
 
-/** Barra de progresso no estilo de jogo: trilho com borda e segmentos. */
+/** Barra de progresso arredondada. */
 export function Progress({
-  value, color = '#961415', track, className, height = 8, segmented = true,
+  value, color = '#5B2448', track, className, height = 8, segmented = false,
 }: { value: number; color?: string; track?: string; className?: string; height?: number; segmented?: boolean }) {
   return (
-    <div className={cn('px-track w-full', segmented && 'px-segments', className)} style={{ height: height + 4, backgroundColor: track }}>
+    <div className={cn('px-track w-full', segmented && 'px-segments', className)} style={{ height, backgroundColor: track }}>
       <div
         className="px-fill transition-[width] duration-700 ease-out"
         style={{ width: `${clamp(value)}%`, backgroundColor: color }}
@@ -21,7 +21,7 @@ export function Progress({
 }
 
 /** Anel de progresso (usado no cofre, trabalho, estudos e rotina) */
-export function Ring({ value, size = 64, stroke = 7, color = '#961415', track = 'rgba(82,2,21,0.12)', children }: { value: number; size?: number; stroke?: number; color?: string; track?: string; children?: ReactNode }) {
+export function Ring({ value, size = 64, stroke = 7, color = '#5B2448', track = 'rgba(91,36,72,0.12)', children }: { value: number; size?: number; stroke?: number; color?: string; track?: string; children?: ReactNode }) {
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   return (

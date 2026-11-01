@@ -30,7 +30,7 @@ export function LinkedInWidget() {
     <Card className="flex flex-col">
       <WidgetHeader title="LinkedIn" to="/perfil?secao=conexoes" linkLabel="Editar" />
       <div className="flex items-start gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md border-2 border-px-line bg-[#0A66C2] text-white shadow-pixel-sm"><Linkedin size={22} /></span>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#0A66C2] text-white"><Linkedin size={22} /></span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold text-tinta">{d.name ?? d.profileUrl.replace(/^https:\/\/www\.linkedin\.com\/(in|company)\//, '')}</p>
           {d.headline && <p className="truncate text-xs text-vinho/60">{d.headline}</p>}
@@ -38,11 +38,11 @@ export function LinkedInWidget() {
         <a href={d.profileUrl} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-cereja hover:underline">Abrir <ExternalLink size={12} /></a>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-lg bg-white/60 p-2.5"><p className="font-pixel text-[11px] font-semibold uppercase text-vinho/60">Seguidores</p><p className="text-xl font-extrabold text-vinho">{d.followers?.toLocaleString('pt-BR') ?? '—'}</p></div>
-        <div className="rounded-lg bg-white/60 p-2.5"><p className="font-pixel text-[11px] font-semibold uppercase text-vinho/60">Conexões</p><p className="text-xl font-extrabold text-vinho">{d.connections?.toLocaleString('pt-BR') ?? '—'}</p></div>
+        <div className="rounded-2xl bg-rosa-50 p-3"><p className="text-[11px] font-semibold uppercase text-vinho/60">Seguidores</p><p className="text-xl font-extrabold text-vinho">{d.followers?.toLocaleString('pt-BR') ?? '—'}</p></div>
+        <div className="rounded-2xl bg-rosa-50 p-3"><p className="text-[11px] font-semibold uppercase text-vinho/60">Conexões</p><p className="text-xl font-extrabold text-vinho">{d.connections?.toLocaleString('pt-BR') ?? '—'}</p></div>
       </div>
       <div className="mt-3">
-        <div className="flex items-center justify-between text-xs"><span className="font-semibold text-vinho">Posts no mês</span><span className="font-pixel font-semibold text-vinho">{posts}/{d.postsGoal}</span></div>
+        <div className="flex items-center justify-between text-xs"><span className="font-semibold text-vinho">Posts no mês</span><span className="font-semibold text-vinho">{posts}/{d.postsGoal}</span></div>
         <Progress value={ratio(posts, d.postsGoal)} color="#0A66C2" height={7} className="mt-1" />
       </div>
       <div className="mt-3 flex items-center gap-2">

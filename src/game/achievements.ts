@@ -1,4 +1,4 @@
-import type { SpriteName } from '@/components/game/pixelSprites'
+import type { IconName } from '@/components/ui/Icon'
 import type { Book, Experience, FinancialGoal, Goal, Habit, Place, Task, FocusSession, VaultCost, VaultEntry, WorkProject } from '@/types'
 import { TRAINING_PATTERN } from './config'
 
@@ -29,7 +29,7 @@ export interface AchievementDef {
   id: string
   title: string
   description: string
-  sprite: SpriteName
+  sprite: IconName
   progress: (d: GameData) => { current: number; target: number }
 }
 
@@ -56,6 +56,4 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     } },
   { id: 'projeto1', title: 'Projeto entregue', description: 'Entregue um projeto de trabalho.', sprite: 'briefcase',
     progress: (d) => ({ current: d.workProjects.filter((p) => p.status === 'concluido').length, target: 1 }) },
-  { id: 'nivel10', title: 'Nível 10', description: 'Chegue ao nível 10.', sprite: 'trophy',
-    progress: (d) => ({ current: d.level, target: 10 }) },
 ]

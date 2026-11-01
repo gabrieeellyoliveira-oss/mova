@@ -48,8 +48,8 @@ export function GoalCard({ goal, onEdit }: { goal: Goal; onEdit: () => void }) {
       </div>
       {goal.description && <p className="mt-2 text-sm text-vinho/65">{goal.description}</p>}
       <div className="mt-4 flex items-center gap-3">
-        <Progress value={p} color={done ? '#7A7A4A' : meta.color} height={10} className="flex-1" />
-        <span className="text-sm font-extrabold" style={{ color: done ? '#5f5f37' : meta.color }}>{Math.round(p)}%</span>
+        <Progress value={p} color={done ? '#5E9474' : meta.color} height={10} className="flex-1" />
+        <span className="text-sm font-extrabold" style={{ color: done ? '#3F6E52' : meta.color }}>{Math.round(p)}%</span>
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-vinho/60">
         <span className={cn('rounded-full px-2.5 py-0.5 font-bold', done ? 'bg-oliva-100 text-oliva-600' : 'bg-creme-200 text-vinho')}>{GOAL_STATUS[goal.status]}</span>

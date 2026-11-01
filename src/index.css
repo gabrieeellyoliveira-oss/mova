@@ -1,103 +1,59 @@
-/* Sooky 70s (Slidehack): usada só no logo MOVA. */
-@font-face {
-  font-family: 'Sooky 70s';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('./assets/fonts/Sooky70s.woff2') format('woff2'), url('./assets/fonts/Sooky70s.woff') format('woff');
-  size-adjust: 135%;
-  /* o arquivo traz métricas diferentes para Windows (usWin) e Mac/Linux (hhea);
-     fixar evita o logo subir/cortar no Windows */
-  ascent-override: 76%;
-  descent-override: 22%;
-  line-gap-override: 0%;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ---------- Tokens do "cozy game" ---------- */
+/* ---------- Tokens do MOVA ---------- */
 :root {
   color-scheme: light;
-  --px-ink: #2b0910;      /* contorno pixel */
-  --px-line: #4a1220;     /* borda dos painéis */
-  --px-panel: #fff5f1;    /* fundo dos painéis */
-  --px-soft: #fbe4e4;     /* painel rosado */
-  --px-field: #f6d3d6;    /* fundo da área principal */
-  --px-border: 2px;       /* espessura padrão das bordas */
-  --px-radius: 10px;      /* cantos dos painéis */
-  --px-step: 4px;         /* "pixel" do layout (espaçamentos múltiplos de 4) */
-  --px-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --px-fast: 120ms;
-  --px-med: 220ms;
+  --mova-bg: #f7f2f6;     /* fundo da página (lilás bem claro) */
+  --mova-card: #ffffff;   /* cards */
+  --mova-line: #ede4eb;   /* bordas suaves */
+  --mova-plum: #5b2448;   /* cor principal */
+  --mova-radius: 20px;    /* cantos dos cards */
+  --mova-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @layer base {
   html { -webkit-tap-highlight-color: transparent; }
   body {
     @apply font-sans text-tinta antialiased;
-    background-color: var(--px-field);
-    /* textura de pixels bem sutil */
-    background-image:
-      linear-gradient(45deg, rgba(82, 2, 21, 0.03) 25%, transparent 25%, transparent 75%, rgba(82, 2, 21, 0.03) 75%),
-      linear-gradient(45deg, rgba(82, 2, 21, 0.03) 25%, transparent 25%, transparent 75%, rgba(82, 2, 21, 0.03) 75%);
-    background-size: 16px 16px;
-    background-position: 0 0, 8px 8px;
+    background-color: var(--mova-bg);
   }
   ::selection { @apply bg-rosa text-vinho; }
   input[type='date'], input[type='time'] { @apply cursor-pointer; }
-  * { scrollbar-width: thin; scrollbar-color: rgba(82, 2, 21, 0.25) transparent; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(91, 36, 72, 0.22) transparent; }
 }
 
 @layer components {
-  /* Painel de jogo (base do GameCard) */
+  /* Card base */
   .px-panel {
-    background: var(--px-panel);
-    border: var(--px-border) solid var(--px-line);
-    border-radius: var(--px-radius);
+    background: var(--mova-card);
+    border: 1px solid var(--mova-line);
+    border-radius: var(--mova-radius);
     @apply shadow-pixel;
   }
-  /* Barra de título dos painéis */
+  /* Cabeçalho dos cards: título forte, sem faixa */
   .px-titlebar {
-    @apply flex items-center gap-2 rounded-md bg-vinho-800 px-3 py-1.5 font-pixel text-[15px] font-semibold uppercase tracking-wide text-rosa-50;
-    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+    @apply flex items-center gap-2 text-[17px] font-bold text-tinta;
   }
-  /* Trilho segmentado das barras de progresso/XP */
+  /* Trilho das barras de progresso */
   .px-track {
-    border: var(--px-border) solid var(--px-line);
-    border-radius: 4px;
-    background: #f3dede;
+    border-radius: 999px;
+    background: #efe6ee;
     overflow: hidden;
     position: relative;
   }
-  .px-segments::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(90deg, transparent 0 9px, rgba(43, 9, 16, 0.18) 9px 11px);
-    pointer-events: none;
-  }
-  .px-fill { height: 100%; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.28); }
+  .px-segments::after { content: none; }
+  .px-fill { height: 100%; border-radius: 999px; }
 }
 
 @layer utilities {
-  .font-logo { font-weight: 400; font-synthesis: none; }
-  .font-heading { font-weight: 600; }
-  .font-display { font-weight: 700; letter-spacing: 0.01em; }
-  /* cantos "pixel" em degrau (8px) — usar com drop-shadow no elemento pai para a sombra sólida */
-  .px-corners {
-    clip-path: polygon(0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
-      100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%,
-      8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px));
-  }
-  .px-corners-sm {
-    clip-path: polygon(0 4px, 2px 4px, 2px 2px, 4px 2px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px,
-      100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%,
-      4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px));
-  }
+  .font-logo { font-weight: 800; letter-spacing: 0.02em; }
+  .font-heading { font-weight: 700; }
+  .font-display { font-weight: 800; letter-spacing: -0.02em; }
   .tabular-nums { font-variant-numeric: tabular-nums; }
-  .pixelated { image-rendering: pixelated; }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

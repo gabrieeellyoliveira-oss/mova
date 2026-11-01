@@ -1,17 +1,13 @@
-import { AuthScene } from './AuthScene'
-import { MovaBrand } from './MovaBrand'
+import { Logo } from '@/components/layout/Logo'
 
 /** Enquanto confere a conta e baixa os dados da nuvem. */
 export function BootScreen() {
   return (
-    <main className="relative grid h-dvh w-full place-items-center overflow-hidden bg-[#2b0910]" aria-busy="true">
-      <AuthScene className="absolute inset-0" fx={50} fy={66} cy={50} />
-      <div className="absolute inset-0 bg-[#2b0910]/45" />
-      <div className="relative flex flex-col items-center gap-5">
-        <MovaBrand />
-        <p className="flex items-center gap-2 font-pixel text-lg font-semibold text-[#FFF1EA] [text-shadow:0_2px_0_#2b0910]">
-          Carregando seu jogo<span className="animate-pulse">…</span>
-        </p>
+    <main className="grid h-dvh w-full place-items-center bg-creme" aria-busy="true">
+      <div className="flex flex-col items-center gap-4">
+        <Logo />
+        <span className="h-1.5 w-28 overflow-hidden rounded-full bg-rosa-100"><span className="block h-full w-1/3 animate-shine rounded-full bg-vinho" /></span>
+        <p className="text-sm text-tinta/60">Carregando seu MOVA…</p>
       </div>
     </main>
   )

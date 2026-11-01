@@ -2,7 +2,7 @@ import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type Selec
 import { cn } from '@/lib/cn'
 
 const control =
-  'w-full rounded-lg border-2 border-vinho/25 bg-white/80 px-3.5 text-sm text-tinta placeholder:text-vinho/35 transition focus:border-px-line focus:outline-none focus:ring-2 focus:ring-rosa/70'
+  'w-full rounded-xl border border-px-line bg-white px-3.5 text-sm text-tinta placeholder:text-vinho/35 transition focus:border-queimado focus:outline-none focus:ring-2 focus:ring-rosa/70'
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(({ className, ...p }, ref) => (
   <input ref={ref} className={cn(control, 'h-11', className)} {...p} />
@@ -19,7 +19,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
     ref={ref}
     className={cn(
       control,
-      'h-11 cursor-pointer appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%278%27 fill=%27none%27 stroke=%27%23520215%27 stroke-width=%271.8%27 stroke-linecap=%27round%27%3E%3Cpath d=%27M1 1.5l5 5 5-5%27/%3E%3C/svg%3E")] bg-[right_14px_center] bg-no-repeat pr-9',
+      'h-11 cursor-pointer appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%278%27 fill=%27none%27 stroke=%27%235B2448%27 stroke-width=%271.8%27 stroke-linecap=%27round%27%3E%3Cpath d=%27M1 1.5l5 5 5-5%27/%3E%3C/svg%3E")] bg-[right_14px_center] bg-no-repeat pr-9',
       className,
     )}
     {...p}
@@ -35,7 +35,7 @@ Select.displayName = 'Select'
  */
 export function Field({ label, hint, children, className, group }: { label: string; hint?: string; children: ReactNode; className?: string; group?: boolean }) {
   const id = useId()
-  const title = <span id={id} className="mb-1.5 block font-pixel text-[13px] font-semibold uppercase tracking-wide text-vinho/80">{label}</span>
+  const title = <span id={id} className="mb-1.5 block text-[13px] font-semibold text-vinho/80">{label}</span>
   const help = hint && <span className="mt-1 block text-xs text-vinho/50">{hint}</span>
   if (group) return <div role="group" aria-labelledby={id} className={cn('block', className)}>{title}{children}{help}</div>
   return <label className={cn('block', className)}>{title}{children}{help}</label>
@@ -54,8 +54,8 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
       onClick={() => onChange(!checked)}
       className="flex items-center gap-3 text-sm text-tinta"
     >
-      <span className={cn('relative h-6 w-11 rounded-md border-2 border-px-line transition', checked ? 'bg-cereja' : 'bg-nevoa')}>
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-sm border-2 border-px-line bg-px-panel transition-all', checked ? 'left-[20px]' : 'left-0.5')} />
+      <span className={cn('relative h-6 w-11 rounded-full transition', checked ? 'bg-vinho' : 'bg-nevoa')}>
+        <span className={cn('absolute top-1 h-4 w-4 rounded-full bg-white shadow transition-all', checked ? 'left-[24px]' : 'left-1')} />
       </span>
       {label}
     </button>

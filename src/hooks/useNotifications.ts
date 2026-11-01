@@ -1,7 +1,8 @@
 import { useAgendaEvents } from './useAgenda'
 import { useMemo } from 'react'
-import { useCourses, useFinanceSummary, useVault } from './useData'
-import { daysBetween, relativeDay, today } from '@/utils/date'
+import { useCourses, useFinanceSummary, useTransactions, useVault } from './useData'
+import { daysBetween, fromISODate, monthKey, relativeDay, toISODate, today } from '@/utils/date'
+import { money } from '@/utils/format'
 
 export interface Notice {
   id: string
@@ -17,6 +18,7 @@ export function useNotifications(now: Date): Notice[] {
   const courses = useCourses()
   const fin = useFinanceSummary()
   const vault = useVault()
+  const tx = useTransactions()
 
   return useMemo(() => {
     const t = today()
@@ -29,6 +31,20 @@ export function useNotifications(now: Date): Notice[] {
     if (fin.budgetUsed >= 80) list.push({ id: 'budget', emoji: '🪙', title: `Você já usou ${Math.round(fin.budgetUsed)}% do orçamento`, text: 'Que tal um rolê grátis essa semana?', path: '/financas' })
     courses.filter((c) => c.active && c.deadline && daysBetween(t, c.deadline) >= 0 && daysBetween(t, c.deadline) <= 10).forEach((c) =>
       list.push({ id: `course-${c.id}`, emoji: '📚', title: `${c.name}`, text: `prazo ${relativeDay(c.deadline!)}`, path: '/estudos' }))
+    // contas fixas que vencem nos próximos 3 dias (pelo dia do mês da última vez) e ainda não foram lançadas no mês
+    const latest = new Map<string, (typeof tx)[number]>()
+    tx.filter((x) => x.type === 'despesa' && x.recurring).forEach((x) => {
+      const prev = latest.get(x.description)
+      if (!prev || x.date > prev.date) latest.set(x.description, x)
+    })
+    latest.forEach((x) => {
+      if (monthKey(x.date) === monthKey(t)) return
+      const n = fromISODate(t)
+      const last = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate()
+      const due = toISODate(new Date(n.getFullYear(), n.getMonth(), Math.min(fromISODate(x.date).getDate(), last)))
+      const d = daysBetween(t, due)
+      if (d >= 0 && d <= 3) list.push({ id: `bill-${x.description}-${monthKey(t)}`, emoji: '🧾', title: `${money(x.amount)} · ${x.description}`, text: d === 0 ? 'vence hoje' : `em ${d} ${d === 1 ? 'dia' : 'dias'} (${relativeDay(due)})`, path: '/financas' })
+    })
     return list
-  }, [events, courses, fin.budgetUsed, vault, now])
+  }, [events, courses, fin.budgetUsed, vault, tx, now])
 }

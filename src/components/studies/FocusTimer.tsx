@@ -24,7 +24,7 @@ export function FocusTimer() {
       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">um tempinho só pra você</p>
       <h2 className="mt-1 font-display text-5xl leading-[1.05]">Foco</h2>
       <div className="my-6 flex justify-center">
-        <Ring value={(1 - t.remaining / total) * 100} size={200} stroke={12} color="#EFAFB3" track="rgba(239,175,179,0.16)">
+        <Ring value={(1 - t.remaining / total) * 100} size={200} stroke={12} color="#E9D7E5" track="rgba(239,175,179,0.16)">
           <div className="text-center">
             <p className="text-5xl font-extrabold tabular-nums tracking-tight text-rosa-50">{mm}:{ss}</p>
             <p className="mt-1 text-xs text-rosa-50/60">{t.running ? 'respira e vai' : started ? 'pausado' : `${t.duration} minutos`}</p>

@@ -1,28 +1,24 @@
-import { CharacterScene } from '@/components/game/CharacterScene'
-import { ProgressPanel } from '@/components/game/ProgressPanel'
-import { AreaMenu } from '@/components/widgets/AreaMenu'
-import { GoalsWidget } from '@/components/widgets/GoalsWidget'
-import { FinanceWidget } from '@/components/widgets/FinanceWidget'
-import { VaultWidget } from '@/components/widgets/VaultWidget'
-import { ReadingWidget } from '@/components/widgets/ReadingWidget'
-import { AchievementsWidget } from '@/components/widgets/AchievementsWidget'
-import { CostsWidget } from '@/components/widgets/CostsWidget'
+import { DateWeather, FinanceCard, HeroCard, InProgress, MyDayCard, StatTiles, WeekChart } from '@/components/home/HomeCards'
 import { LinkedInWidget } from '@/components/widgets/LinkedInWidget'
 
-/** Início: o quarto da Gabi como cena de jogo + menus de área e painéis do dia. */
+/** Visão geral: saudação, números do dia, meu dia, evolução, finanças, o que está em andamento e o LinkedIn. */
 export default function Home() {
   return (
-    <div className="space-y-5">
-      <CharacterScene />
-      <AreaMenu />
-      <div className="grid gap-5 lg:grid-cols-2 min-[1360px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,0.95fr)]">
-        <ProgressPanel />
-        <GoalsWidget />
-        <FinanceWidget />
-        <ReadingWidget />
-        <VaultWidget />
-        <AchievementsWidget />
-        <CostsWidget />
+    <div className="space-y-6">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <HeroCard />
+        <div className="flex flex-col gap-4">
+          <DateWeather />
+          <StatTiles />
+        </div>
+      </div>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <MyDayCard />
+        <WeekChart />
+        <FinanceCard />
+      </div>
+      <InProgress />
+      <div className="grid gap-6 lg:grid-cols-3">
         <LinkedInWidget />
       </div>
     </div>

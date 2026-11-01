@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import type { Goal, GoalCategory } from '@/types'
-import { GOAL_CATEGORIES } from '@/data/constants'
+import { GOAL_CATEGORIES, GOAL_ICONS } from '@/data/constants'
 import { goalProgress, useGoals } from '@/hooks/useData'
 import { StatCard } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
@@ -10,7 +10,6 @@ import { EmptyState } from '@/components/ui/Misc'
 import { GoalCard } from '@/components/goals/GoalCard'
 import { GoalForm } from '@/components/goals/GoalForm'
 import { Quest } from '@/components/game/Quest'
-import { GOAL_SPRITES } from '@/components/widgets/GoalsWidget'
 import { SectionTitle } from '@/components/ui/Misc'
 import { relativeDay } from '@/utils/date'
 
@@ -34,7 +33,7 @@ export default function Goals() {
     const done = g.steps.filter((x) => x.done).length
     return {
       title: g.name,
-      sprite: GOAL_SPRITES[g.category] ?? 'star',
+      sprite: GOAL_ICONS[g.category] ?? 'star',
       progress: goalProgress(g),
       current: g.steps.length ? done : undefined,
       total: g.steps.length || undefined,
@@ -56,13 +55,13 @@ export default function Goals() {
           <Quest kind="main" {...questProps(main)} />
           {sides.length > 0 && (
             <div className="grid content-start gap-3">
-              <p className="font-pixel text-sm font-semibold uppercase tracking-[0.14em] text-vinho">Side quests</p>
+              <p className="text-sm font-semibold text-tinta/70">Próximas metas</p>
               {sides.slice(0, 3).map((g) => <Quest key={g.id} {...questProps(g)} />)}
             </div>
           )}
         </section>
       )}
-      <SectionTitle kicker="todas as quests, com etapas">Diário de quests</SectionTitle>
+      <SectionTitle kicker="todas as metas, com etapas">Minhas metas</SectionTitle>
       <div className="-mt-2 space-y-3">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
           <Chip active={cat === 'todas'} onClick={() => setCat('todas')}>Todas as áreas</Chip>

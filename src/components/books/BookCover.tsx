@@ -1,6 +1,6 @@
 import type { Book } from '@/types'
 import { cn } from '@/lib/cn'
-import { Cherry, Flower, Sparkle, Star } from '@/components/doodles/Doodles'
+import { Flower, Sparkle, Star } from '@/components/doodles/Doodles'
 
 /** Capa real (se houver) ou capa tipográfica no estilo editorial retrô. */
 export function BookCover({ book, className, small }: { book: Pick<Book, 'title' | 'author' | 'cover' | 'coverColor'>; className?: string; small?: boolean }) {
@@ -8,7 +8,7 @@ export function BookCover({ book, className, small }: { book: Pick<Book, 'title'
     return <img src={book.cover} alt={book.title} className={cn('aspect-[2/3] w-full rounded-r-xl rounded-l-md object-cover shadow-lift', className)} loading="lazy" />
   }
   const seed = [...book.title].reduce((a, c) => a + c.charCodeAt(0), 0)
-  const D = [Cherry, Flower, Star, Sparkle][seed % 4]
+  const D = [Flower, Star, Sparkle][seed % 3]
   return (
     <div
       className={cn('relative flex aspect-[2/3] w-full flex-col justify-between overflow-hidden rounded-l-md rounded-r-xl p-3 text-rosa-50 shadow-lift', className)}

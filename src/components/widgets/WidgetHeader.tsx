@@ -1,27 +1,27 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import { PixelIcon, type SpriteName } from '@/components/game/PixelIcon'
+import { Icon, type IconName } from '@/components/ui/Icon'
 
-/** Barra de título dos widgets (janela de jogo) com "Ver mais →". */
-export function WidgetHeader({ title, to, linkLabel = 'Ver mais', subtitle, action, sprite }: { title: string; to?: string; linkLabel?: string; subtitle?: ReactNode; action?: ReactNode; sprite?: SpriteName }) {
+/** Cabeçalho dos cards: ícone num quadradinho suave, título e "Ver mais →". */
+export function WidgetHeader({ title, to, linkLabel = 'Ver mais', subtitle, action, sprite }: { title: string; to?: string; linkLabel?: string; subtitle?: ReactNode; action?: ReactNode; sprite?: IconName }) {
   return (
-    <div className="mb-3">
-      <div className="px-titlebar justify-between">
-        <span className="flex min-w-0 items-center gap-2">
-          {sprite && <PixelIcon name={sprite} size={18} />}
-          <span className="truncate">{title}</span>
-        </span>
-        <span className="flex shrink-0 items-center gap-2 font-sans text-xs normal-case tracking-normal">
-          {action}
-          {to && (
-            <Link to={to} className="group inline-flex items-center gap-1 font-medium text-rosa-50/75 hover:text-rosa">
-              {linkLabel} <ArrowRight size={13} className="transition group-hover:translate-x-0.5" />
-            </Link>
-          )}
-        </span>
+    <div className="mb-4 flex items-start justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-3">
+        {sprite && <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-rosa-50"><Icon name={sprite} size={20} /></span>}
+        <div className="min-w-0">
+          <h3 className="truncate text-lg font-bold text-tinta">{title}</h3>
+          {subtitle && <p className="truncate text-xs text-vinho/60">{subtitle}</p>}
+        </div>
       </div>
-      {subtitle && <p className="mt-1.5 px-1 text-xs text-vinho/60">{subtitle}</p>}
+      <span className="flex shrink-0 items-center gap-2 text-xs">
+        {action}
+        {to && (
+          <Link to={to} className="group inline-flex items-center gap-1 rounded-full bg-rosa-50 px-3 py-1.5 font-semibold text-vinho hover:bg-rosa-100">
+            {linkLabel} <ArrowRight size={13} className="transition group-hover:translate-x-0.5" />
+          </Link>
+        )}
+      </span>
     </div>
   )
 }

@@ -15,7 +15,7 @@ export const NOTE_TONES: Record<Note['color'], string> = {
   oliva: 'bg-oliva-100 text-oliva-600 border border-oliva/20',
   nevoa: 'bg-nevoa/70 text-vinho border border-nevoa',
 }
-const swatch: Record<Note['color'], string> = { creme: '#FFFCF8', rosa: '#f8dcde', vinho: '#520215', oliva: '#E6E4CF', nevoa: '#DFD1D1' }
+const swatch: Record<Note['color'], string> = { creme: '#FFFCF8', rosa: '#F2E7EF', vinho: '#5B2448', oliva: '#E2F1E8', nevoa: '#E7DEE5' }
 
 export function NoteForm({ initial, onClose }: { initial?: Partial<Note>; onClose: () => void }) {
   const [f, setF] = useState({ title: '', content: '', tags: [] as string[], favorite: false, color: 'creme' as Note['color'], ...initial })

@@ -109,7 +109,7 @@ export function ProjectForm({ initial, onClose }: { initial?: WorkProject; onClo
 
         <Field group label="Cor">
           <div className="flex gap-2">
-            {PROJECT_COLORS.map((c) => <button key={c} type="button" onClick={() => set('color', c)} aria-label={`Cor ${c}`} className={cn('h-8 w-8 rotate-45 border-2', f.color === c ? 'scale-110 border-tinta' : 'border-transparent')} style={{ backgroundColor: c }} />)}
+            {PROJECT_COLORS.map((c) => <button key={c} type="button" onClick={() => set('color', c)} aria-label={`Cor ${c}`} className={cn('h-8 w-8 rounded-full border-2', f.color === c ? 'scale-110 border-tinta' : 'border-transparent')} style={{ backgroundColor: c }} />)}
           </div>
         </Field>
         <Field label="Notas (opcional)"><Textarea rows={2} value={f.notes ?? ''} onChange={(e) => set('notes', e.target.value)} placeholder="Links, combinados, contatos…" /></Field>

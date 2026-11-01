@@ -1,33 +1,25 @@
-import { PixelIcon, type SpriteName } from './PixelIcon'
+import { Lock } from 'lucide-react'
+import { Icon, type IconName } from '@/components/ui/Icon'
 import { cn } from '@/lib/cn'
 
-/** Medalha de conquista: bloqueada (cinza + cadeado + progresso) ou desbloqueada (brilho). */
+/** Conquista: desbloqueada (círculo colorido) ou ainda não (cinza, cadeado e progresso). */
 export function Achievement({
   title, description, sprite, unlocked, current, target, size = 'md', onClick,
-}: { title: string; description?: string; sprite: SpriteName; unlocked: boolean; current: number; target: number; size?: 'sm' | 'md'; onClick?: () => void }) {
+}: { title: string; description?: string; sprite: IconName; unlocked: boolean; current: number; target: number; size?: 'sm' | 'md'; onClick?: () => void }) {
   const pct = Math.min(100, (current / target) * 100)
   const Tag = onClick ? 'button' : 'div'
   return (
-    <Tag type={onClick ? 'button' : undefined} onClick={onClick} className={cn('group flex flex-col items-center text-center', size === 'sm' ? 'gap-1.5' : 'gap-2', onClick && 'cursor-pointer rounded-lg p-1 hover:bg-white/50')} title={description}>
-      <div
-        className={cn(
-          'relative grid place-items-center border-2 border-px-line transition-transform duration-200 group-hover:-translate-y-0.5',
-          size === 'sm' ? 'h-14 w-14' : 'h-20 w-20',
-          unlocked ? 'bg-cereja shadow-pixel-glow' : 'bg-nevoa shadow-pixel-sm',
-        )}
-        style={{ clipPath: 'polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%)' }}
-      >
-        <div className={cn('grid place-items-center', !unlocked && 'opacity-40 grayscale')}>
-          <PixelIcon name={sprite} size={size === 'sm' ? 28 : 40} />
-        </div>
-        {!unlocked && <PixelIcon name="lock" size={size === 'sm' ? 14 : 18} className="absolute bottom-1 right-2" />}
+    <Tag type={onClick ? 'button' : undefined} onClick={onClick} className={cn('group flex flex-col items-center text-center', size === 'sm' ? 'gap-1.5' : 'gap-2', onClick && 'cursor-pointer rounded-2xl p-1 hover:bg-rosa-50')} title={description}>
+      <div className={cn('relative grid place-items-center rounded-full transition-transform duration-200 group-hover:-translate-y-0.5', size === 'sm' ? 'h-14 w-14' : 'h-[72px] w-[72px]', unlocked ? 'bg-gradient-to-br from-rosa to-[#F6D9C9] shadow-soft' : 'bg-creme-100')}>
+        <Icon name={sprite} size={size === 'sm' ? 24 : 30} className={unlocked ? 'text-vinho' : 'text-vinho/30'} />
+        {!unlocked && <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full bg-white shadow-pixel-sm"><Lock size={12} className="text-vinho/50" /></span>}
       </div>
-      <p className={cn('font-pixel font-semibold leading-tight', size === 'sm' ? 'text-[11px]' : 'text-sm', unlocked ? 'text-vinho' : 'text-vinho/50')}>{title}</p>
-      {size === 'md' && description && <p className="max-w-[140px] text-[11px] leading-snug text-vinho/55">{description}</p>}
+      <p className={cn('font-semibold leading-tight', size === 'sm' ? 'text-[11px]' : 'text-sm', unlocked ? 'text-tinta' : 'text-tinta/50')}>{title}</p>
+      {size === 'md' && description && <p className="max-w-[150px] text-[11px] leading-snug text-tinta/55">{description}</p>}
       {!unlocked && size === 'md' && (
-        <div className="w-full max-w-[96px]">
-          <div className="h-1.5 overflow-hidden rounded-sm bg-vinho/15"><div className="h-full bg-queimado" style={{ width: `${pct}%` }} /></div>
-          <p className="mt-0.5 text-[10px] tabular-nums text-vinho/50">{Math.min(current, target)} / {target}</p>
+        <div className="w-full max-w-[100px]">
+          <div className="h-1.5 overflow-hidden rounded-full bg-creme-200"><div className="h-full rounded-full bg-queimado" style={{ width: `${pct}%` }} /></div>
+          <p className="mt-0.5 text-[10px] tabular-nums text-tinta/50">{Math.min(current, target)} / {target}</p>
         </div>
       )}
     </Tag>

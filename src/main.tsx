@@ -1,9 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import '@fontsource-variable/dm-sans/index.css'
-import '@fontsource/pixelify-sans/latin-500.css'
-import '@fontsource/pixelify-sans/latin-600.css'
-import '@fontsource/pixelify-sans/latin-700.css'
+import '@fontsource-variable/dm-sans/wght-italic.css'
 import './index.css'
 import App from './App'
 

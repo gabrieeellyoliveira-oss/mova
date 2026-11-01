@@ -1,8 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { uid } from '@/utils/id'
 
-import type { SpriteName } from '@/components/game/pixelSprites'
-import { burst } from '@/game/fx'
+import type { IconName } from '@/components/ui/Icon'
 
 export type ToastKind = 'check' | 'sparkle' | 'heart' | 'info' | 'achievement'
 export interface Toast {
@@ -10,14 +9,14 @@ export interface Toast {
   title: string
   text?: string
   kind: ToastKind
-  sprite?: SpriteName
+  sprite?: IconName
 }
 
 let toasts: Toast[] = []
 const listeners = new Set<() => void>()
 const emit = () => listeners.forEach((l) => l())
 
-export function toast(title: string, opts: { text?: string; kind?: ToastKind; duration?: number; sprite?: SpriteName } = {}) {
+export function toast(title: string, opts: { text?: string; kind?: ToastKind; duration?: number; sprite?: IconName } = {}) {
   const t: Toast = { id: uid(), title, text: opts.text, kind: opts.kind ?? 'check', sprite: opts.sprite }
   toasts = [...toasts.slice(-2), t]
   emit()
@@ -41,9 +40,9 @@ export function useToasts() {
 
 /** Mensagens carinhosas dos marcos do MOVA */
 export const celebrate = {
-  task: () => toast('Missão concluída!', { kind: 'check', duration: 1800 }),
+  task: () => toast('Tarefa concluída ✓', { kind: 'check', duration: 1800 }),
   book: (title: string) => toast('Livro concluído ✨', { text: `“${title}” agora faz parte de você.`, kind: 'sparkle' }),
-  goal: () => { toast('Você moveu mais uma parte da sua vida.', { kind: 'sparkle', duration: 4000 }); burst() },
-  project: (name: string) => { toast('Projeto entregue! ✦', { text: name, kind: 'achievement', sprite: 'briefcase', duration: 4500 }); burst() },
+  goal: () => { toast('Você moveu mais uma parte da sua vida.', { kind: 'sparkle', duration: 4000 }) },
+  project: (name: string) => { toast('Projeto entregue! ✦', { text: name, kind: 'achievement', sprite: 'briefcase', duration: 4500 }) },
   focus: (min: number) => toast(`${min} minutos de foco ✨`, { text: 'Sessão registrada nos seus estudos.', kind: 'sparkle' }),
 }

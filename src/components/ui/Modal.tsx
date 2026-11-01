@@ -2,7 +2,6 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { PixelIcon } from '@/components/game/PixelIcon'
 
 interface ModalProps {
   open: boolean
@@ -16,7 +15,7 @@ interface ModalProps {
 
 const widths = { sm: 'sm:max-w-md', md: 'sm:max-w-lg', lg: 'sm:max-w-3xl' }
 
-/** Janela de jogo: barra de título escura, painel claro, rodapé com ações. */
+/** Janela por cima da tela: título, conteúdo e rodapé com ações. */
 export function Modal({ open, onClose, title, subtitle, children, footer, size = 'md' }: ModalProps) {
   const panel = useRef<HTMLDivElement>(null)
 
@@ -38,26 +37,23 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-vinho-950/55 animate-[rise_.15s_ease-out]" onClick={onClose} />
+      <div className="absolute inset-0 bg-vinho-950/40 backdrop-blur-[2px] animate-[rise_.15s_ease-out]" onClick={onClose} />
       <div
         ref={panel}
         className={cn(
-          'relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-px border-2 border-px-line bg-px-panel shadow-pixel animate-level-in sm:rounded-px',
+          'relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[28px] bg-white shadow-lift animate-rise sm:rounded-[28px]',
           widths[size],
         )}
       >
-        <div className="flex items-center justify-between gap-3 bg-vinho-800 px-4 py-2.5 text-rosa-50" style={{ boxShadow: 'inset 0 -3px 0 rgba(0,0,0,0.25)' }}>
-          <div className="flex min-w-0 items-center gap-2">
-            <PixelIcon name="cherry" size={20} />
-            <h2 className="truncate font-pixel text-lg font-semibold uppercase tracking-wide">{title}</h2>
-          </div>
-          <button onClick={onClose} className="grid h-8 w-8 shrink-0 place-items-center rounded-md border-2 border-rosa-50/30 text-rosa-50 hover:bg-white/10" aria-label="Fechar">
+        <div className="flex items-center justify-between gap-3 px-6 pb-1 pt-5">
+          <h2 className="truncate text-xl font-bold text-tinta">{title}</h2>
+          <button onClick={onClose} className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-rosa-50 text-vinho hover:bg-rosa-100" aria-label="Fechar">
             <X size={16} />
           </button>
         </div>
-        {subtitle && <p className="border-b-2 border-dashed border-vinho/15 px-5 py-2 text-sm text-vinho/70">{subtitle}</p>}
-        <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
-        {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t-2 border-px-line/20 bg-px-soft/70 px-5 py-3">{footer}</div>}
+        {subtitle && <p className="px-6 text-sm text-vinho/60">{subtitle}</p>}
+        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t border-px-line px-6 py-4">{footer}</div>}
       </div>
     </div>,
     document.body,
@@ -65,4 +61,3 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
 }
 
 /** Nome de jogo para a mesma janela */
-export const GameModal = Modal

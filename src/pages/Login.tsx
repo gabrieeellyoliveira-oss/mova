@@ -1,89 +1,88 @@
 import type { ReactNode } from 'react'
-import { ChevronRight, Loader2, Mail, Play } from 'lucide-react'
+import { ArrowRight, Loader2, Mail } from 'lucide-react'
+import gabi from '@/assets/gabi-mova.webp'
 import { useAuthForm } from '@/hooks/useAuthForm'
-import { AuthScene } from '@/components/auth/AuthScene'
-import { AuthGameWindow, WindowTitle } from '@/components/auth/AuthGameWindow'
-import { MovaBrand } from '@/components/auth/MovaBrand'
-import { GameInput } from '@/components/auth/GameInput'
-import { GameToggle } from '@/components/auth/GameToggle'
-import { PixelButton } from '@/components/game/PixelButton'
-import { PixelIcon } from '@/components/game/PixelIcon'
+import { AuthField } from '@/components/auth/AuthField'
+import { Logo } from '@/components/layout/Logo'
+import { Toggle } from '@/components/ui/Form'
 
-/** Tela inicial do MOVA (cadastro/entrada) como a tela de título de um cozy game. */
+/** Tela de acesso: ilustração e saudação de um lado, formulário do outro. */
 export default function Login() {
   return (
-    <main className="relative min-h-dvh w-full overflow-x-hidden bg-[#2b0910] lg:h-dvh lg:overflow-hidden">
-      {/* desktop: cenário inteiro; celular: cenário fixo com a personagem à vista */}
-      <AuthScene className="absolute inset-0 hidden lg:block" fx={50} fy={66} cy={50} />
-      <AuthScene className="fixed inset-0 lg:hidden" fx={35} fy={62} cx={50} cy={36} zoom={1.5} />
-      <div aria-hidden className="pointer-events-none fixed inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#2b0910] via-[#2b0910]/70 to-transparent lg:hidden" />
-
-      <div className="relative z-10 grid min-h-dvh lg:h-full lg:grid-cols-[60fr_40fr]">
-        <div className="hidden justify-center pt-[7vh] short:pt-[3vh] lg:flex">
-          <MovaBrand className="h-fit" />
+    <main className="grid min-h-dvh w-full bg-creme lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <section className="relative hidden overflow-hidden bg-[radial-gradient(120%_120%_at_85%_10%,#F3E6F0_0%,#EADAE6_45%,#DCC5D7_100%)] p-12 lg:flex lg:flex-col">
+        <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-80 w-80 rounded-full bg-white/50 blur-3xl" />
+        <Logo />
+        <div className="relative z-10 mt-[10vh] max-w-md">
+          <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-vinho/80">MOVA <span className="h-px w-10 bg-vinho/40" /></p>
+          <h1 className="mt-3 text-5xl font-extrabold leading-[1.05] tracking-tight text-vinho-900">Que bom te ver por aqui!</h1>
+          <p className="mt-4 text-lg leading-snug text-vinho-900/75">Que tal dar mais um passo em direção aos seus objetivos hoje?</p>
         </div>
-        <div className="flex flex-col items-center px-4 pb-6 pt-6 lg:justify-center lg:px-10 lg:py-6 short:py-3">
-          <MovaBrand compact className="lg:hidden" />
-          {/* espaço para a personagem aparecer no celular */}
-          <div className="h-[44svh] min-h-[230px] shrink-0 lg:hidden" />
+        <img src={gabi} alt="Ilustração da Gabi no notebook com a gata" className="pointer-events-none absolute bottom-0 right-0 w-[92%] max-w-[720px]" />
+      </section>
+      <section className="flex flex-col items-center justify-center px-5 py-10 sm:px-10">
+        <div className="mb-8 lg:hidden"><Logo /></div>
+        <div className="w-full max-w-[420px]">
           <AuthPanel />
         </div>
-      </div>
+      </section>
     </main>
   )
 }
 
 function ErrorLine({ message }: { message: string }) {
-  return (
-    <p role="alert" className="px-corners-sm flex items-start gap-2 bg-[#FBDDE0] px-3 py-2 text-sm font-medium text-cereja shadow-[inset_0_0_0_2px_rgba(150,20,21,0.35)]">
-      <span className="font-pixel text-base font-bold leading-5">!</span>{message}
-    </p>
-  )
+  return <p role="alert" className="rounded-2xl bg-pastel-pink px-4 py-2.5 text-sm font-medium text-[#9B2C4F]">{message}</p>
 }
 
 function Note({ children }: { children: ReactNode }) {
-  return <p className="rounded-md border-2 border-[#E3A9AE] bg-[#FDF0F0] px-4 py-3 text-[15px] leading-snug text-[#5b2a33]">{children}</p>
+  return <p className="rounded-2xl bg-rosa-50 px-4 py-3 text-[15px] leading-snug text-tinta/80">{children}</p>
 }
+
+function Title({ title, subtitle }: { title: string; subtitle: ReactNode }) {
+  return (
+    <header>
+      <h2 className="text-3xl font-extrabold tracking-tight text-tinta">{title}</h2>
+      <p className="mt-2 text-[15px] text-tinta/65">{subtitle}</p>
+    </header>
+  )
+}
+
+const primary = 'flex h-12 w-full items-center justify-center gap-2 rounded-full bg-vinho text-[15px] font-semibold text-white shadow-soft transition hover:bg-vinho-700 active:scale-[0.99] disabled:opacity-60'
+const link = 'font-semibold text-vinho hover:underline'
 
 function AuthPanel() {
   const f = useAuthForm()
   const creating = f.mode === 'criar'
-  const footer = f.cloud ? 'Seu acesso e seus dados ficam salvos com segurança na nuvem.' : 'Seu acesso e seus dados ficam salvos de forma segura neste navegador.'
-  const back = <button type="button" onClick={() => f.go('entrar')} className="mx-auto block text-sm font-semibold text-cereja hover:underline">← Voltar para Continuar jogo</button>
+  const footer = f.cloud ? 'Seu acesso e seus dados ficam salvos com segurança na nuvem.' : 'Seu acesso e seus dados ficam salvos neste navegador.'
+  const back = <button type="button" onClick={() => f.go('entrar')} className={`text-sm ${link}`}>← Voltar para entrar</button>
 
-  // mensagens depois de enviar um e-mail
   if (f.mode === 'confirmar' || f.mode === 'enviado')
     return (
-      <AuthGameWindow className="max-w-[480px]">
-        <div key={f.mode} className="animate-rise space-y-5">
-          <WindowTitle title={f.mode === 'confirmar' ? 'Quase lá!' : 'Link enviado'} subtitle={<>Mandamos um e-mail para <b className="text-vinho">{f.email.trim()}</b>.</>} />
-          <Note>
-            {f.mode === 'confirmar'
-              ? 'Abra o e-mail e toque no link de confirmação. Depois é só voltar aqui e continuar o jogo.'
-              : 'Abra o e-mail e toque no link para escolher uma senha nova. O link abre o MOVA direto na tela de senha.'}
-          </Note>
-          <p className="text-center text-xs text-[#8a5a62]">Não chegou? Olhe o spam ou as promoções.</p>
-          {back}
-        </div>
-      </AuthGameWindow>
+      <div key={f.mode} className="animate-rise space-y-6">
+        <Title title={f.mode === 'confirmar' ? 'Quase lá!' : 'Link enviado'} subtitle={<>Mandamos um e-mail para <b className="text-vinho">{f.email.trim()}</b>.</>} />
+        <Note>
+          {f.mode === 'confirmar'
+            ? 'Abra o e-mail e toque no link de confirmação. Depois é só voltar aqui e entrar.'
+            : 'Abra o e-mail e toque no link para escolher uma senha nova. O link abre o MOVA direto na tela de senha.'}
+        </Note>
+        <p className="text-xs text-tinta/55">Não chegou? Olhe o spam ou as promoções.</p>
+        {back}
+      </div>
     )
 
-  // local: não dá para recuperar senha
   if (f.mode === 'esqueci' && !f.cloud)
     return (
-      <AuthGameWindow className="max-w-[480px]">
-        <div key="esqueci" className="animate-rise space-y-5">
-          <WindowTitle title="Esqueci a senha" subtitle="Seu acesso fica salvo só neste navegador, então não dá para recuperar a senha." />
-          <Note>Você pode começar um acesso novo: <b className="text-vinho">seus dados do MOVA continuam aqui</b>, só o e-mail e a senha são trocados.</Note>
-          <PixelButton icon={<PixelIcon name="cherries" size={28} />} onClick={f.startOver}>Criar novo acesso</PixelButton>
-          {back}
-        </div>
-      </AuthGameWindow>
+      <div key="esqueci" className="animate-rise space-y-6">
+        <Title title="Esqueci a senha" subtitle="Seu acesso fica salvo só neste navegador, então não dá para recuperar a senha." />
+        <Note>Você pode criar um acesso novo: <b className="text-vinho">seus dados do MOVA continuam aqui</b>, só o e-mail e a senha são trocados.</Note>
+        <button type="button" onClick={f.startOver} className={primary}>Criar novo acesso</button>
+        {back}
+      </div>
     )
 
   const titles: Record<'criar' | 'entrar' | 'esqueci' | 'nova-senha', [string, string]> = {
-    criar: ['Novo jogo', 'Crie seu acesso ao MOVA e comece sua jornada.'],
-    entrar: ['Continuar jogo', 'Que bom te ver de novo! Entre para continuar sua jornada.'],
+    criar: ['Criar acesso', 'Crie seu acesso ao MOVA para começar.'],
+    entrar: ['Entrar', 'Que bom te ver de novo! Entre para continuar.'],
     esqueci: ['Esqueci a senha', 'Digite seu e-mail e mandamos um link para escolher uma senha nova.'],
     'nova-senha': ['Senha nova', 'Escolha a senha nova do seu MOVA.'],
   }
@@ -92,66 +91,52 @@ function AuthPanel() {
   const askEmail = mode !== 'nova-senha'
   const askPassword = mode !== 'esqueci'
   const askConfirm = mode === 'criar' || mode === 'nova-senha'
-  const buttonLabel = { criar: 'Começar minha jornada', entrar: 'Continuar minha jornada', esqueci: 'Enviar link', 'nova-senha': 'Salvar senha nova' }[mode]
-  const buttonIcon = f.busy ? <Loader2 size={22} className="animate-spin" /> : creating ? <PixelIcon name="cherries" size={30} /> : mode === 'entrar' ? <Play size={18} className="fill-current" /> : <PixelIcon name="sparkle" size={22} />
+  const buttonLabel = { criar: 'Criar acesso', entrar: 'Entrar', esqueci: 'Enviar link', 'nova-senha': 'Salvar senha nova' }[mode]
 
   return (
-    <AuthGameWindow className="max-w-[480px]">
-      <div key={f.mode} className="animate-rise">
-        <WindowTitle title={title} subtitle={subtitle} />
-        <form onSubmit={f.submit} className="mt-5 space-y-3.5 short:mt-3 short:space-y-2.5" noValidate>
-          {askEmail && (
-            <GameInput
-              id="login-email" label="E-mail" type="email" autoComplete="email" placeholder="voce@email.com"
-              value={f.email} onChange={(e) => f.setEmail(e.target.value)} icon={<Mail size={19} />} invalid={f.error?.field === 'email'}
-            />
-          )}
-          {askPassword && (
-            <GameInput
-              id="login-password" label={mode === 'nova-senha' ? 'Senha nova' : 'Senha'} type="password" autoComplete={mode === 'entrar' ? 'current-password' : 'new-password'}
-              placeholder={mode === 'entrar' ? 'Sua senha' : 'Pelo menos 6 caracteres'}
-              value={f.password} onChange={(e) => f.setPassword(e.target.value)} invalid={f.error?.field === 'password'}
-            />
-          )}
-          {askConfirm && (
-            <GameInput
-              id="login-confirm" label="Confirmar senha" type="password" autoComplete="new-password" placeholder="Repita a senha"
-              value={f.confirm} onChange={(e) => f.setConfirm(e.target.value)} invalid={f.error?.field === 'confirm'}
-            />
-          )}
-          {(mode === 'criar' || mode === 'entrar') && (
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-              <GameToggle checked={f.remember} onChange={f.setRemember} label="Lembrar de mim" />
-              {mode === 'entrar' && <button type="button" onClick={() => f.go('esqueci')} className="text-sm font-semibold text-cereja hover:underline">Esqueci minha senha</button>}
-            </div>
-          )}
-          {f.error && <ErrorLine message={f.error.message} />}
-          <div className="pt-2">
-            <PixelButton
-              type="submit"
-              disabled={f.busy}
-              icon={buttonIcon}
-              trailing={creating ? <ChevronRight size={22} strokeWidth={3} className="transition-transform group-hover:translate-x-0.5" /> : undefined}
-            >
-              {buttonLabel}
-            </PixelButton>
+    <div key={f.mode} className="animate-rise">
+      <Title title={title} subtitle={subtitle} />
+      <form onSubmit={f.submit} className="mt-7 space-y-4" noValidate>
+        {askEmail && (
+          <AuthField
+            id="login-email" label="E-mail" type="email" autoComplete="email" placeholder="voce@email.com"
+            value={f.email} onChange={(e) => f.setEmail(e.target.value)} icon={<Mail size={18} />} invalid={f.error?.field === 'email'}
+          />
+        )}
+        {askPassword && (
+          <AuthField
+            id="login-password" label={mode === 'nova-senha' ? 'Senha nova' : 'Senha'} type="password" autoComplete={mode === 'entrar' ? 'current-password' : 'new-password'}
+            placeholder={mode === 'entrar' ? 'Sua senha' : 'Pelo menos 6 caracteres'}
+            value={f.password} onChange={(e) => f.setPassword(e.target.value)} invalid={f.error?.field === 'password'}
+          />
+        )}
+        {askConfirm && (
+          <AuthField
+            id="login-confirm" label="Confirmar senha" type="password" autoComplete="new-password" placeholder="Repita a senha"
+            value={f.confirm} onChange={(e) => f.setConfirm(e.target.value)} invalid={f.error?.field === 'confirm'}
+          />
+        )}
+        {(mode === 'criar' || mode === 'entrar') && (
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <Toggle checked={f.remember} onChange={f.setRemember} label="Lembrar de mim" />
+            {mode === 'entrar' && <button type="button" onClick={() => f.go('esqueci')} className={`text-sm ${link}`}>Esqueci minha senha</button>}
           </div>
-        </form>
-        <p className="mt-5 text-center text-[13px] leading-snug text-[#8a5a62] short:mt-3">
-          <span aria-hidden className="text-cereja/70">✦ </span>{footer}<span aria-hidden className="text-cereja/70"> ✦</span>
-        </p>
+        )}
+        {f.error && <ErrorLine message={f.error.message} />}
+        <button type="submit" disabled={f.busy} className={`${primary} mt-2`}>
+          {f.busy && <Loader2 size={18} className="animate-spin" />}
+          {buttonLabel}
+          {!f.busy && <ArrowRight size={18} />}
+        </button>
+      </form>
+      <div className="mt-6 text-center text-sm text-tinta/70">
         {creating ? (
-          <p className="mt-3 text-center text-sm text-[#5b2a33]">
-            Já começou sua jornada? <button type="button" onClick={() => f.go('entrar')} className="font-bold text-cereja hover:underline">Continuar jogo →</button>
-          </p>
+          <>Já tem acesso? <button type="button" onClick={() => f.go('entrar')} className={link}>Entrar</button></>
         ) : mode === 'entrar' ? (
-          f.canCreate && (
-            <p className="mt-3 text-center text-sm text-[#5b2a33]">
-              Primeira vez por aqui? <button type="button" onClick={() => f.go('criar')} className="font-bold text-cereja hover:underline">Novo jogo →</button>
-            </p>
-          )
-        ) : mode === 'esqueci' && <div className="mt-3">{back}</div>}
+          f.canCreate && <>Primeira vez por aqui? <button type="button" onClick={() => f.go('criar')} className={link}>Criar acesso</button></>
+        ) : mode === 'esqueci' && back}
       </div>
-    </AuthGameWindow>
+      <p className="mt-8 text-center text-xs text-tinta/50">{footer}</p>
+    </div>
   )
 }

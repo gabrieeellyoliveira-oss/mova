@@ -1,9 +1,9 @@
-import { PixelIcon } from '@/components/game/PixelIcon'
+import { Icon } from '@/components/ui/Icon'
 import { cn } from '@/lib/cn'
 
 /** Caixa de marcar estilo jogo (quadrada, borda escura, check em pixel). */
 export function Checkbox({
-  checked, onChange, label, color = '#961415', size = 22,
+  checked, onChange, label, color = '#6E2E58', size = 22,
 }: { checked: boolean; onChange: (v: boolean) => void; label?: string; color?: string; size?: number }) {
   return (
     <button
@@ -16,7 +16,7 @@ export function Checkbox({
         onChange(!checked)
       }}
       className={cn(
-        'grid shrink-0 place-items-center rounded-[5px] border-2 border-px-line transition-transform duration-150 hover:scale-105 active:scale-95',
+        'grid shrink-0 place-items-center rounded-md border-[1.5px] border-vinho/40 transition-transform duration-150 hover:scale-105 active:scale-95',
         checked ? 'animate-pop' : 'bg-white/80',
       )}
       style={{ width: size, height: size, backgroundColor: checked ? color : undefined }}
@@ -26,4 +26,4 @@ export function Checkbox({
   )
 }
 
-export { PixelIcon }
+export { Icon }

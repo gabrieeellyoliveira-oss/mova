@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "5.1.0",
-    "@fontsource/pixelify-sans": "^5.1.0",
     "@supabase/supabase-js": "^2.118.0",
     "clsx": "2.1.1",
     "lucide-react": "0.453.0",

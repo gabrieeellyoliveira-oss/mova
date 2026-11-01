@@ -8,10 +8,10 @@ import { Button } from '@/components/ui/Button'
 import { Segmented } from '@/components/ui/Chip'
 import { DeleteButton } from '@/components/ui/Misc'
 import { Field, FormGrid, Input, Textarea } from '@/components/ui/Form'
-import { PixelIcon, type SpriteName } from './PixelIcon'
+import { Icon, type IconName } from '@/components/ui/Icon'
 import { cn } from '@/lib/cn'
 
-const ICONS: SpriteName[] = ['trophy', 'star', 'sparkle', 'heart', 'cherry', 'book', 'laptop', 'briefcase', 'coins', 'piggy', 'target', 'dumbbell', 'cup', 'map', 'pin', 'home', 'city', 'sun', 'moon', 'tree', 'note', 'check']
+const ICONS: IconName[] = ['trophy', 'star', 'sparkle', 'heart', 'cherry', 'book', 'laptop', 'briefcase', 'coins', 'piggy', 'target', 'dumbbell', 'cup', 'map', 'pin', 'home', 'city', 'sun', 'moon', 'tree', 'note', 'check']
 
 type Kind = 'feita' | 'meta'
 
@@ -19,7 +19,7 @@ type Kind = 'feita' | 'meta'
 export function CustomAchievementForm({ initial, onClose }: { initial?: CustomAchievement; onClose: () => void }) {
   const [title, setTitle] = useState(initial?.title ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
-  const [sprite, setSprite] = useState<SpriteName>((initial?.sprite as SpriteName) ?? 'trophy')
+  const [sprite, setSprite] = useState<IconName>((initial?.sprite as IconName) ?? 'trophy')
   const [kind, setKind] = useState<Kind>(initial && initial.target > 1 ? 'meta' : initial && initial.current < initial.target ? 'meta' : 'feita')
   const [target, setTarget] = useState(String(initial?.target && initial.target > 1 ? initial.target : 5))
   const [current, setCurrent] = useState(initial?.current ?? 0)
@@ -52,7 +52,7 @@ export function CustomAchievementForm({ initial, onClose }: { initial?: CustomAc
             {ICONS.map((s) => (
               <button key={s} type="button" onClick={() => setSprite(s)} aria-label={`Ícone ${s}`} aria-pressed={sprite === s}
                 className={cn('grid aspect-square place-items-center rounded-md border-2 transition', sprite === s ? 'border-px-line bg-rosa-100 shadow-pixel-sm' : 'border-transparent bg-white/60 hover:border-px-line/30')}>
-                <PixelIcon name={s} size={22} />
+                <Icon name={s} size={22} />
               </button>
             ))}
           </div>
@@ -68,7 +68,7 @@ export function CustomAchievementForm({ initial, onClose }: { initial?: CustomAc
             <Field group label="Progresso">
               <div className="flex h-11 items-center gap-2">
                 <Button size="icon-sm" variant="soft" onClick={() => setCurrent((c) => Math.max(0, c - 1))} aria-label="Diminuir progresso"><Minus size={14} /></Button>
-                <span className="min-w-[64px] text-center font-pixel text-lg font-semibold tabular-nums text-vinho">{Math.min(current, goal)} / {goal}</span>
+                <span className="min-w-[64px] text-center text-lg font-semibold tabular-nums text-vinho">{Math.min(current, goal)} / {goal}</span>
                 <Button size="icon-sm" variant="soft" onClick={() => setCurrent((c) => Math.min(goal, c + 1))} aria-label="Aumentar progresso"><Plus size={14} /></Button>
               </div>
             </Field>

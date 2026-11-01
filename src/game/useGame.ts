@@ -3,7 +3,7 @@ import { db } from '@/store/db'
 import { useCollection } from '@/store/collections'
 import { PAGES_PER_READING, XP_LABELS, XP_VALUES, levelFromXp, type XPSource } from './config'
 import { ACHIEVEMENTS, isTraining, rolesCount, type GameData } from './achievements'
-import type { SpriteName } from '@/components/game/pixelSprites'
+import type { IconName } from '@/components/ui/Icon'
 
 /** Estado do "jogo": XP, nível e conquistas — tudo derivado dos dados reais. */
 export interface GameAchievement {
@@ -12,7 +12,7 @@ export interface GameAchievement {
   customId?: string
   title: string
   description: string
-  sprite: SpriteName
+  sprite: IconName
   current: number
   target: number
   unlocked: boolean
@@ -58,7 +58,7 @@ export function useGame() {
       }),
       // criadas pela Gabi
       ...custom.map((c) => ({
-        id: `c:${c.id}`, customId: c.id, title: c.title, description: c.description ?? '', sprite: c.sprite as SpriteName,
+        id: `c:${c.id}`, customId: c.id, title: c.title, description: c.description ?? '', sprite: c.sprite as IconName,
         current: c.current, target: Math.max(1, c.target), unlocked: c.current >= Math.max(1, c.target),
       })),
     ]

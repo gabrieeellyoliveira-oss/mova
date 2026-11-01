@@ -4,7 +4,7 @@ import { Download, LogOut, RotateCcw, Upload } from 'lucide-react'
 import { cloudEnabled, signOut, useSession } from '@/lib/auth'
 import { syncStatus } from '@/lib/cloudSync'
 import { useStore } from '@/store/createStore'
-import gabi from '@/assets/gabi-e-gata.webp'
+import gabi from '@/assets/gabi-mova.webp'
 import { exportAll, importAll, resetAll, settingsStore } from '@/store/db'
 import { useSettings } from '@/hooks/useData'
 import { NAV_ITEMS } from '@/data/constants'
@@ -12,7 +12,7 @@ import { toast } from '@/hooks/useToast'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Field, FormGrid, Input } from '@/components/ui/Form'
-import { PixelIcon } from '@/components/game/PixelIcon'
+import { Icon } from '@/components/ui/Icon'
 import { GoogleCalendarCard } from '@/components/integrations/GoogleCalendarCard'
 import { LinkedInCard } from '@/components/integrations/LinkedInCard'
 
@@ -56,14 +56,14 @@ export default function Profile() {
         <div className="grid grid-cols-3 gap-2">
           {NAV_ITEMS.map(({ label, path, sprite }) => (
             <Link key={path} to={path} className="flex flex-col items-center gap-1.5 rounded-2xl bg-creme-100 px-2 py-3 text-center text-xs font-semibold text-vinho active:scale-95">
-              <PixelIcon name={sprite} size={24} />{label}
+              <Icon name={sprite} size={24} />{label}
             </Link>
           ))}
         </div>
       </Card>
 
       <section ref={connections} className="scroll-mt-6">
-        <h2 className="mb-3 font-heading text-xl uppercase text-vinho">Conexões</h2>
+        <h2 className="mb-4 text-xl font-bold text-tinta">Conexões</h2>
         <div className="grid items-start gap-6 lg:grid-cols-2">
           <GoogleCalendarCard />
           <LinkedInCard />

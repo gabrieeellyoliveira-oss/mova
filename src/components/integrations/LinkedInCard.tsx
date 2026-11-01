@@ -42,7 +42,7 @@ export function LinkedInCard() {
           <Field label="Conexões"><Input inputMode="numeric" value={f.connections} onChange={(e) => setF({ ...f, connections: e.target.value })} placeholder="0" /></Field>
           <Field label="Meta de posts por mês"><Input inputMode="numeric" value={f.postsGoal} onChange={(e) => setF({ ...f, postsGoal: e.target.value })} /></Field>
         </FormGrid>
-        {error && <p role="alert" className="text-sm font-medium text-cereja"><span className="font-pixel font-bold">! </span>{error}</p>}
+        {error && <p role="alert" className="text-sm font-medium text-cereja"><span className="font-bold">! </span>{error}</p>}
         <div className="flex flex-wrap items-center gap-2">
           <Button type="submit">{d.profileUrl ? 'Salvar' : 'Conectar'}</Button>
           {d.profileUrl && <Button variant="ghost" onClick={disconnect}><Unlink size={14} /> Desconectar</Button>}
