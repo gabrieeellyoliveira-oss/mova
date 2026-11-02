@@ -145,27 +145,29 @@ export function CollegeSection() {
         ))}
         <Button size="sm" variant="light" onClick={() => setEditDegree('new')}><Plus size={14} /> Adicionar curso</Button>
       </div>
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-      <div className="flex flex-col rounded-3xl border-2 border-ink bg-ink p-6 text-ink-fg shadow-lavanda">
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-xs uppercase tracking-[0.3em] text-lavanda">{degree ? LEVELS[degree.level ?? 'graduacao'] : 'faculdade'}{degree?.done ? ' · concluído' : ''}</p>
-          {degree && <button onClick={() => setEditDegree(degree)} className="grid h-8 w-8 place-items-center rounded-full border-2 border-ink-fg/40 hover:bg-ink-fg/10" aria-label="Editar curso"><Pencil size={13} /></button>}
-        </div>
+    <div className="space-y-6">
+      <div className="rounded-3xl border-2 border-ink bg-ink p-5 text-ink-fg shadow-lavanda sm:p-6">
         {degree ? (
-          <>
-            <p className="mt-2 font-serif text-3xl font-bold leading-tight">{degree.name}</p>
-            <p className="text-ink-fg/70">{degree.institution}</p>
-            <p className="mt-6 text-sm text-ink-fg/75">Semestre <b className="text-ink-fg">{degree.currentSemester}</b> de {degree.totalSemesters}</p>
-            <Progress value={(degree.currentSemester / degree.totalSemesters) * 100} color="#C3AEEC" track="rgba(246,241,231,0.15)" height={10} className="mt-2" />
-            <div className="mt-6 grid grid-cols-2 gap-3 text-ink">
-              <div className="rounded-2xl bg-lavanda p-3"><p className="text-xs">Em andamento</p><p className="font-serif text-2xl font-bold">{mine.length - delivered}</p></div>
-              <div className="rounded-2xl bg-salvia p-3"><p className="text-xs">Entregues</p><p className="font-serif text-2xl font-bold">{delivered}</p></div>
+          <div className="grid items-center gap-5 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_auto]">
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-[0.3em] text-lavanda">{LEVELS[degree.level ?? 'graduacao']}{degree.done ? ' · concluído' : ''}</p>
+              <p className="mt-1 truncate font-serif text-2xl font-bold leading-tight sm:text-3xl">{degree.name}</p>
+              <p className="text-sm text-ink-fg/70">{degree.institution}</p>
             </div>
-          </>
+            <div>
+              <p className="text-sm text-ink-fg/75">Semestre <b className="text-ink-fg">{degree.currentSemester}</b> de {degree.totalSemesters}</p>
+              <Progress value={(degree.currentSemester / degree.totalSemesters) * 100} color="#C3AEEC" track="rgba(246,241,231,0.15)" height={10} className="mt-2" />
+            </div>
+            <div className="flex items-center gap-3 text-ink">
+              <div className="rounded-2xl bg-lavanda px-4 py-2.5"><p className="text-xs">Em andamento</p><p className="font-serif text-2xl font-bold leading-none">{mine.length - delivered}</p></div>
+              <div className="rounded-2xl bg-salvia px-4 py-2.5"><p className="text-xs">Entregues</p><p className="font-serif text-2xl font-bold leading-none">{delivered}</p></div>
+              <button onClick={() => setEditDegree(degree)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-ink-fg/40 text-ink-fg hover:bg-ink-fg/10" aria-label="Editar curso"><Pencil size={14} /></button>
+            </div>
+          </div>
         ) : (
-          <div className="mt-3">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <p className="text-ink-fg/75">Cadastre um curso (graduação, pós, MBA…) para acompanhar semestre, trabalhos e provas.</p>
-            <Button className="mt-4" onClick={() => setEditDegree('new')}><GraduationCap size={16} /> Adicionar curso</Button>
+            <Button onClick={() => setEditDegree('new')}><GraduationCap size={16} /> Adicionar curso</Button>
           </div>
         )}
       </div>
@@ -184,7 +186,7 @@ export function CollegeSection() {
         {list.length === 0 ? (
           <p className="py-6 text-center text-sm text-tinta/55">Nenhum trabalho pendente. 🎉</p>
         ) : (
-          <ul className="grid gap-4 xl:grid-cols-2">
+          <ul className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
             {list.map((a) => {
               const pct = pctSteps(a)
               const left = a.dueDate ? daysBetween(today(), a.dueDate) : null
