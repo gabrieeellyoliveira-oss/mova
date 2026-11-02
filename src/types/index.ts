@@ -438,6 +438,8 @@ export interface Degree extends Entity {
   institution: string
   level?: DegreeLevel
   done?: boolean
+  /** Média mínima para passar (padrão 7) */
+  passGrade?: number
   currentSemester: number
   totalSemesters: number
 }
@@ -458,4 +460,17 @@ export interface Assignment extends Entity {
   notes?: string
   /** Fixado no card da Visão geral */
   pinned?: boolean
+}
+
+/** Disciplina de um curso (como no portal do aluno): notas, faltas e situação. */
+export interface Discipline extends Entity {
+  degreeId: string
+  name: string
+  semester: number
+  professor?: string
+  n1?: number
+  n2?: number
+  n3?: number
+  absences?: number
+  status: 'cursando' | 'aprovada' | 'reprovada'
 }

@@ -10,7 +10,7 @@ import { StatCard } from '@/components/ui/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
-import { Segmented } from '@/components/ui/Chip'
+import { Chip, Segmented } from '@/components/ui/Chip'
 import { EmptyState, SectionTitle } from '@/components/ui/Misc'
 import { FocusTimer } from '@/components/studies/FocusTimer'
 import { CourseCard } from '@/components/studies/CourseCard'
@@ -61,6 +61,7 @@ export default function Studies() {
   const events = useEvents()
   const w = useStudyWeek()
   const [filter, setFilter] = useState<'ativos' | 'todos'>('ativos')
+  const [tab, setTab] = useState<'graduacao' | 'livres'>('graduacao')
   const [editing, setEditing] = useState<Course | null | 'new'>(null)
 
   const active = courses.filter((c) => c.active)
@@ -73,7 +74,6 @@ export default function Studies() {
 
   return (
     <div className="space-y-8">
-      <CollegeSection />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard tone="vinho" label="Nesta semana" value={`${w.hours.toFixed(1).replace('.', ',')}h`} hint="de estudo focado" />
         <StatCard label="Cursos ativos" value={active.length} hint={`${courses.length - active.length} concluídos/pausados`} />
@@ -84,8 +84,12 @@ export default function Studies() {
         <div className="min-w-0 space-y-6">
           <WeeklyGoal />
           <section>
-            <SectionTitle action={<div className="flex flex-wrap items-center gap-2"><Segmented value={filter} onChange={setFilter} options={[{ value: 'ativos', label: 'Ativos' }, { value: 'todos', label: 'Todos' }]} /><Button size="sm" onClick={() => setEditing('new')}><Plus size={14} /> Novo curso</Button></div>}>Meus cursos</SectionTitle>
-            {shown.length === 0 ? (
+            <SectionTitle action={tab === 'livres' && <div className="flex flex-wrap items-center gap-2"><Segmented value={filter} onChange={setFilter} options={[{ value: 'ativos', label: 'Ativos' }, { value: 'todos', label: 'Todos' }]} /><Button size="sm" onClick={() => setEditing('new')}><Plus size={14} /> Novo curso</Button></div>}>Meus cursos</SectionTitle>
+            <div className="mb-5 flex gap-2" role="tablist">
+              <Chip active={tab === 'graduacao'} onClick={() => setTab('graduacao')}>🎓 Graduação</Chip>
+              <Chip active={tab === 'livres'} onClick={() => setTab('livres')}>Cursos livres</Chip>
+            </div>
+            {tab === 'graduacao' ? <CollegeSection /> : shown.length === 0 ? (
               <EmptyState title="Nenhum curso por aqui" action={<Button size="sm" onClick={() => setEditing('new')}>Adicionar curso</Button>} />
             ) : (
               <div className="grid gap-4 md:grid-cols-2">

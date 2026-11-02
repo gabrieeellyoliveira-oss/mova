@@ -13,6 +13,7 @@ import { Field, FormGrid, Input, Textarea } from '@/components/ui/Form'
 import { DeleteButton } from '@/components/ui/Misc'
 import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/cn'
+import { Disciplines } from './Disciplines'
 
 export const LEVELS: Record<DegreeLevel, string> = { graduacao: 'Graduação', pos: 'Pós-graduação', mba: 'MBA', tecnico: 'Técnico', mestrado: 'Mestrado', outro: 'Outro' }
 export const KINDS: Record<AssignmentKind, string> = { extensao: 'Extensão', trabalho: 'Trabalho', prova: 'Prova', atividade: 'Atividade', tcc: 'TCC' }
@@ -24,11 +25,11 @@ export const STATUS: Record<AssignmentStatus, { label: string; bg: string }> = {
 export const pctSteps = (a: Assignment) => (a.steps.length ? (a.steps.filter((s) => s.done).length / a.steps.length) * 100 : a.status === 'entregue' ? 100 : 0)
 
 function DegreeForm({ initial, onClose }: { initial?: Degree; onClose: () => void }) {
-  const [f, setF] = useState({ name: initial?.name ?? '', institution: initial?.institution ?? '', current: String(initial?.currentSemester ?? 1), total: String(initial?.totalSemesters ?? 4), level: initial?.level ?? ('graduacao' as DegreeLevel), done: !!initial?.done })
+  const [f, setF] = useState({ name: initial?.name ?? '', institution: initial?.institution ?? '', current: String(initial?.currentSemester ?? 1), total: String(initial?.totalSemesters ?? 4), level: initial?.level ?? ('graduacao' as DegreeLevel), done: !!initial?.done, pass: initial?.passGrade != null ? String(initial.passGrade).replace('.', ',') : '7' })
   const save = () => {
     if (!f.name.trim()) return
     const total = Math.max(1, Math.round(Number(f.total)) || 4)
-    const data = { name: f.name.trim(), institution: f.institution.trim(), level: f.level, done: f.done || undefined, totalSemesters: total, currentSemester: Math.min(total, Math.max(1, Math.round(Number(f.current)) || 1)) }
+    const data = { name: f.name.trim(), institution: f.institution.trim(), level: f.level, done: f.done || undefined, passGrade: parseMoney(f.pass) > 0 ? parseMoney(f.pass) : 7, totalSemesters: total, currentSemester: Math.min(total, Math.max(1, Math.round(Number(f.current)) || 1)) }
     if (initial) db.degrees.update(initial.id, data)
     else db.degrees.add(data)
     onClose()
@@ -48,6 +49,7 @@ function DegreeForm({ initial, onClose }: { initial?: Degree; onClose: () => voi
         <FormGrid>
           <Field label="Semestre atual"><Input inputMode="numeric" value={f.current} onChange={(e) => setF({ ...f, current: e.target.value })} /></Field>
           <Field label="Total de semestres"><Input inputMode="numeric" value={f.total} onChange={(e) => setF({ ...f, total: e.target.value })} /></Field>
+          <Field label="Média para passar"><Input inputMode="decimal" value={f.pass} onChange={(e) => setF({ ...f, pass: e.target.value })} /></Field>
         </FormGrid>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={f.done} onChange={(e) => setF({ ...f, done: e.target.checked })} className="h-4 w-4 accent-[#0C0A0E]" /> Curso concluído</label>
       </div>
@@ -115,7 +117,7 @@ export function AssignmentForm({ initial, degreeId, onClose }: { initial?: Assig
   )
 }
 
-/** Faculdade: o curso (semestre e progresso) e os trabalhos/provas com etapas. */
+/** Aba Graduação (em Meus cursos): cursos (graduação, pós…), semestre, trabalhos/provas com etapas e disciplinas. */
 export function CollegeSection() {
   const degrees = useDegrees()
   const assignments = useAssignments()
@@ -138,7 +140,6 @@ export function CollegeSection() {
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="mr-2 font-serif text-2xl font-bold">Meus cursos</h2>
         {ordered.map((d) => (
           <Chip key={d.id} active={d.id === degree?.id} onClick={() => setSelId(d.id)}>{d.name}<span className="opacity-60">· {LEVELS[d.level ?? 'graduacao']}{d.done ? ' ✓' : ''}</span></Chip>
         ))}
@@ -227,6 +228,7 @@ export function CollegeSection() {
       </div>
 
     </div>
+      {degree && <Disciplines degree={degree} />}
       {editDegree && <DegreeForm initial={editDegree === 'new' ? undefined : editDegree} onClose={() => setEditDegree(null)} />}
       {editA && <AssignmentForm initial={editA === 'new' ? undefined : editA} degreeId={degree?.id} onClose={() => setEditA(null)} />}
     </section>

@@ -42,6 +42,7 @@ export const useJournalFolders = () => useCollection(db.journalFolders)
 export const useMonthlyBills = () => useCollection(db.monthlyBills)
 export const useDegrees = () => useCollection(db.degrees)
 export const useAssignments = () => useCollection(db.assignments)
+export const useDisciplines = () => useCollection(db.disciplines)
 
 /* ---------- seletores puros ---------- */
 
