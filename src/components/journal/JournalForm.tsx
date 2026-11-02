@@ -5,17 +5,20 @@ import { db } from '@/store/db'
 import { today } from '@/utils/date'
 import { fileToDataUrl } from '@/utils/image'
 import { toast } from '@/hooks/useToast'
+import { useJournalFolders } from '@/hooks/useData'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
-import { Field, Input, Textarea } from '@/components/ui/Form'
+import { Field, Input, Select, Textarea } from '@/components/ui/Form'
 import { DeleteButton } from '@/components/ui/Misc'
 import { cn } from '@/lib/cn'
 
 export const MOODS = ['😊', '🥰', '😌', '🤩', '😴', '😢', '😤', '🤒']
 
 /** Editor de uma página do diário: data, humor, título, texto e fotos. */
-export function JournalForm({ initial, onClose }: { initial?: JournalEntry; onClose: () => void }) {
+export function JournalForm({ initial, folderId, onClose }: { initial?: JournalEntry; folderId?: string; onClose: () => void }) {
+  const folders = useJournalFolders()
   const [f, setF] = useState({
+    folderId: initial ? initial.folderId ?? '' : folderId ?? '',
     date: initial?.date ?? today(), title: initial?.title ?? '', mood: initial?.mood ?? '', text: initial?.text ?? '',
     photos: initial?.photos ?? [], favorite: !!initial?.favorite,
   })
@@ -24,7 +27,7 @@ export function JournalForm({ initial, onClose }: { initial?: JournalEntry; onCl
 
   const save = () => {
     if (!valid) return
-    const data = { date: f.date, title: f.title.trim() || undefined, mood: f.mood || undefined, text: f.text.trim(), photos: f.photos, favorite: f.favorite || undefined }
+    const data = { date: f.date, title: f.title.trim() || undefined, mood: f.mood || undefined, text: f.text.trim(), photos: f.photos, favorite: f.favorite || undefined, folderId: f.folderId || undefined }
     let id = initial?.id
     if (initial) db.journal.update(initial.id, data)
     else id = db.journal.add(data).id
@@ -50,9 +53,17 @@ export function JournalForm({ initial, onClose }: { initial?: JournalEntry; onCl
       </>}
     >
       <div className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-[180px_minmax(0,1fr)]">
+        <div className={cn('grid gap-4', folders.length ? 'sm:grid-cols-[160px_minmax(0,1fr)_200px]' : 'sm:grid-cols-[180px_minmax(0,1fr)]')}>
           <Field label="Data"><Input type="date" value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} /></Field>
           <Field label="Título (opcional)"><Input value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder="Um dia para lembrar" /></Field>
+          {folders.length > 0 && (
+            <Field label="Pasta">
+              <Select value={f.folderId} onChange={(e) => setF({ ...f, folderId: e.target.value })}>
+                <option value="">Sem pasta</option>
+                {folders.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+              </Select>
+            </Field>
+          )}
         </div>
         <Field label="Como foi o dia?" group>
           <div className="flex flex-wrap items-center gap-2">

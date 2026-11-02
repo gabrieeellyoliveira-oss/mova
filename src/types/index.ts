@@ -398,4 +398,13 @@ export interface JournalEntry extends Entity {
   text: string
   photos: string[]
   favorite?: boolean
+  /** Pasta (diário) onde a página fica — opcional. */
+  folderId?: string
+}
+
+/** Pasta do diário (ex.: "Diário pessoal", "Raivas do trabalho"). */
+export interface JournalFolder extends Entity {
+  name: string
+  color: string
+  cover?: string
 }

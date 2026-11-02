@@ -30,6 +30,7 @@ export const useNotes = () => useCollection(db.notes)
 export const useWorkouts = () => useCollection(db.workouts)
 export const useBodyCheckins = () => useCollection(db.bodyCheckins)
 export const useJournal = () => useCollection(db.journal)
+export const useJournalFolders = () => useCollection(db.journalFolders)
 
 /* ---------- seletores puros ---------- */
 

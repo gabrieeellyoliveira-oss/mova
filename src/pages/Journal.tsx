@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react'
-import { Heart, Images, PenLine, Search } from 'lucide-react'
-import type { JournalEntry } from '@/types'
-import { useJournal } from '@/hooks/useData'
+import { FolderPlus, Heart, Images, PenLine, Pencil, Search } from 'lucide-react'
+import type { JournalEntry, JournalFolder } from '@/types'
+import { useJournal, useJournalFolders } from '@/hooks/useData'
 import { fromISODate, monthKey, today } from '@/utils/date'
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/Misc'
 import { JournalForm } from '@/components/journal/JournalForm'
+import { FolderForm, FolderShape } from '@/components/journal/Folder'
 import { cn } from '@/lib/cn'
 
 type Filter = 'todas' | 'mes' | 'fotos' | 'favoritas'
@@ -44,6 +45,10 @@ function EntryBlock({ entry, onOpen }: { entry: JournalEntry; onOpen: () => void
 /** Diário: páginas em blocos, com fotos, humor e texto. */
 export default function Journal() {
   const entries = useJournal()
+  const folders = useJournalFolders()
+  const [folder, setFolder] = useState<string | null>(null)
+  const [editFolder, setEditFolder] = useState<JournalFolder | 'new' | null>(null)
+  const current = folders.find((x) => x.id === folder)
   const [filter, setFilter] = useState<Filter>('todas')
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<JournalEntry | 'new' | null>(null)
@@ -51,10 +56,11 @@ export default function Journal() {
   const list = useMemo(() => {
     const term = q.trim().toLowerCase()
     return [...entries]
+      .filter((e) => !current || e.folderId === current.id)
       .filter((e) => filter === 'todas' || (filter === 'mes' ? monthKey(e.date) === monthKey(today()) : filter === 'fotos' ? e.photos.length > 0 : !!e.favorite))
       .filter((e) => !term || `${e.title ?? ''} ${e.text}`.toLowerCase().includes(term))
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))
-  }, [entries, filter, q])
+  }, [entries, filter, q, current])
   const wroteToday = entries.some((e) => e.date === today())
 
   return (
@@ -68,6 +74,39 @@ export default function Journal() {
         <Button size="lg" onClick={() => setOpen('new')}><PenLine size={18} /> {wroteToday ? 'Nova página' : 'Escrever sobre hoje'}</Button>
       </section>
 
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-serif text-2xl font-bold">Pastas</h2>
+          <Button size="sm" variant="light" onClick={() => setEditFolder('new')}><FolderPlus size={14} /> Nova pasta</Button>
+        </div>
+        <div className="grid grid-cols-2 gap-x-5 gap-y-6 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6">
+          {[{ id: null as string | null, name: 'Todas as páginas', color: '#0C0A0E', cover: undefined as string | undefined, f: undefined as JournalFolder | undefined }, ...folders.map((x) => ({ id: x.id as string | null, name: x.name, color: x.color, cover: x.cover, f: x }))].map((x) => {
+            const count = x.id ? entries.filter((e) => e.folderId === x.id).length : entries.length
+            const active = folder === x.id
+            return (
+              <div key={x.id ?? 'todas'} className="group relative">
+                <button onClick={() => setFolder(x.id)} aria-pressed={active} className="block w-full text-left">
+                  <FolderShape color={x.color} cover={x.cover} className={cn('transition', active ? '-translate-y-1' : 'group-hover:-translate-y-0.5')} />
+                  <p className={cn('mt-2 truncate text-sm font-bold', active && 'underline decoration-lavanda decoration-[3px] underline-offset-4')}>{x.name}</p>
+                  <p className="text-xs text-tinta/55">{count} {count === 1 ? 'página' : 'páginas'}</p>
+                </button>
+                {x.f && (
+                  <button onClick={() => setEditFolder(x.f!)} aria-label={`Editar pasta ${x.name}`} className="absolute right-2 top-[18%] grid h-8 w-8 place-items-center rounded-full border-2 border-ink bg-quente opacity-0 transition group-hover:opacity-100 focus:opacity-100">
+                    <Pencil size={13} />
+                  </button>
+                )}
+              </div>
+            )
+          })}
+          {folders.length === 0 && (
+            <button onClick={() => setEditFolder('new')} className="flex aspect-[4/3] flex-col items-center justify-center gap-2 self-start rounded-2xl border-2 border-dashed border-ink/30 px-3 text-center text-xs text-tinta/60 transition hover:border-ink hover:text-ink">
+              <FolderPlus size={22} /> Crie pastas para separar seus diários (opcional)
+            </button>
+          )}
+        </div>
+      </section>
+
+      {current && <h2 className="font-serif text-2xl font-bold">{current.name}</h2>}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
           {FILTERS.map((f) => <Chip key={f.id} active={filter === f.id} onClick={() => setFilter(f.id)}>{f.label}</Chip>)}
@@ -88,7 +127,8 @@ export default function Journal() {
         </div>
       )}
 
-      {open && <JournalForm initial={open === 'new' ? undefined : open} onClose={() => setOpen(null)} />}
+      {open && <JournalForm initial={open === 'new' ? undefined : open} folderId={current?.id} onClose={() => setOpen(null)} />}
+      {editFolder && <FolderForm initial={editFolder === 'new' ? undefined : editFolder} onClose={() => setEditFolder(null)} />}
     </div>
   )
 }
