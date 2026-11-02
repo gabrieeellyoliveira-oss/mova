@@ -22,7 +22,7 @@ demais abas no mesmo estilo.
 - Botão principal: pílula lavanda com borda de tinta; secundário: tinta; contorno: creme com borda.
 - Fraunces (serifa) em títulos, números e logo; Figtree no texto.
 - Cabeçalho tinta com abas em pílula; ícones claros; avatar sálvia.
-- Ilustração da Gabi (`src/assets/gabi-login.webp`) no login e na capa.
+- Ilustração da Gabi (`src/assets/gabi-login.webp`) só no login (a capa da Visão geral fica só com texto).
 - Sem cereja, pixel art, XP, nível ou linguagem de jogo.
 
 ## Peças

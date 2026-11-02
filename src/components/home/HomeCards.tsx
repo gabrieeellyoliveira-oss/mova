@@ -4,7 +4,6 @@ import {
   ArrowDown, ArrowRight, ArrowUp, BarChart3, BookOpen, Calendar, CheckSquare, ChevronDown, Cloud, CloudRain,
   GraduationCap, Home as HomeIcon, Layers, Plus, Sun, Target, Wallet,
 } from 'lucide-react'
-import gabi from '@/assets/gabi-login.webp'
 import { AREAS } from '@/data/constants'
 import { useBooks, useFinanceSummary, useGoals, useSettings, useStudyWeek, useTasks, useVault } from '@/hooks/useData'
 import { useWeather, weatherKind } from '@/hooks/useWeather'
@@ -34,21 +33,18 @@ function Bar({ value, className }: { value: number; className?: string }) {
   )
 }
 
-/** Capa escura: "Olá, Gabi!", convite e a ilustração. */
+/** Capa escura: "Olá, Gabi!" e o convite (sem ilustração, a pedido da Gabi). */
 export function HeroCard() {
   const { name } = useSettings()
   return (
-    <div className="grid overflow-hidden rounded-[2rem] border-2 border-ink bg-ink text-ink-fg md:grid-cols-[1fr_1.1fr]">
-      <div className="flex flex-col justify-center p-7 sm:p-8">
+    <div className="flex overflow-hidden rounded-[2rem] border-2 border-ink bg-ink text-ink-fg">
+      <div className="flex flex-col justify-center p-7 sm:p-10">
         <p className="text-xs uppercase tracking-[0.3em] text-lavanda">mova*</p>
         <h1 className="mt-3 font-serif text-5xl font-extrabold leading-none">Olá, {name}!</h1>
         <p className="mt-4 max-w-xs text-ink-fg/80">Que tal dar mais um passo em direção aos seus objetivos hoje?</p>
         <Link to="/agenda" className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-lavanda px-6 py-3 font-semibold text-ink transition hover:brightness-105">
           Planejar meu dia <ArrowRight size={16} />
         </Link>
-      </div>
-      <div className="relative m-3 min-h-64 overflow-hidden rounded-[1.5rem]">
-        <img src={gabi} alt="Ilustração da Gabi planejando o dia" className="absolute inset-0 h-full w-full object-cover object-[50%_22%]" />
       </div>
     </div>
   )
