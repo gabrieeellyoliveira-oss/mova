@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Check, Pencil, Plus } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Pencil, Plus } from 'lucide-react'
 import { settingsStore } from '@/store/db'
-import { useFinanceSummary, useTransactions } from '@/hooks/useData'
+import { useMonthFinance, useSettings, useTransactions } from '@/hooks/useData'
+import { monthKey, today } from '@/utils/date'
 import { money, parseMoney } from '@/utils/format'
 import { openForm } from '@/hooks/useQuickAdd'
 import { Card, CardHeader } from '@/components/ui/Card'
@@ -12,14 +13,16 @@ import { CategoryDonut } from '@/components/finance/CategoryDonut'
 import { TransactionList } from '@/components/finance/TransactionList'
 import { FinancialGoals } from '@/components/finance/FinancialGoals'
 import { Icon } from '@/components/ui/Icon'
-import { BalanceCard, NextIncome, QuickGlance } from '@/components/finance/FinanceTop'
+import { BalanceCard, QuickGlance } from '@/components/finance/FinanceTop'
 import { IncomeCard } from '@/components/finance/IncomeCard'
-import { BillsCard, ProjectionCard } from '@/components/finance/MonthPlan'
+import { BillsCard, ProjectionCard, monthName } from '@/components/finance/MonthPlan'
 
-function BudgetCard() {
-  const s = useFinanceSummary()
+function BudgetCard({ month }: { month: string }) {
+  const settings = useSettings()
+  const m = useMonthFinance(month)
+  const s = { budget: settings.monthlyBudget, budgetLeft: settings.monthlyBudget - m.expenses, budgetUsed: settings.monthlyBudget ? Math.min(100, (m.expenses / settings.monthlyBudget) * 100) : 0 }
   const [edit, setEdit] = useState(false)
-  const [v, setV] = useState(String(s.budget))
+  const [v, setV] = useState(String(settings.monthlyBudget))
   return (
     <div className="flex min-h-[170px] flex-col rounded-[22px] bg-oliva-100 p-5 text-oliva-600">
       <div className="flex items-center justify-between">
@@ -41,36 +44,46 @@ function BudgetCard() {
 }
 
 export default function Finance() {
-  const s = useFinanceSummary()
   const tx = useTransactions()
+  const now = monthKey(today())
+  const [month, setMonth] = useState(now)
+  const m = useMonthFinance(month)
+  const shift = (n: number) => { const [y, mm] = month.split('-').map(Number); const d = new Date(y, mm - 1 + n, 1); setMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`) }
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-1 rounded-full border-2 border-ink bg-quente p-1">
+          <Button size="icon-sm" variant="ghost" onClick={() => shift(-1)} aria-label="Mês anterior"><ChevronLeft size={16} /></Button>
+          <span className="min-w-[160px] px-2 text-center font-serif text-lg font-bold capitalize">{monthName(month)}</span>
+          <Button size="icon-sm" variant="ghost" onClick={() => shift(1)} aria-label="Próximo mês"><ChevronRight size={16} /></Button>
+        </div>
+        {month !== now ? <Button size="sm" variant="light" onClick={() => setMonth(now)}>Voltar para o mês atual</Button> : <span className="text-sm text-tinta/60">mês atual</span>}
+      </div>
+      <div className="grid gap-6 md:grid-cols-3">
         <BalanceCard />
         <IncomeCard />
-        <NextIncome />
-        <BudgetCard />
+        <BudgetCard month={month} />
       </div>
-      <QuickGlance />
+      <QuickGlance month={month} />
       <div className="grid gap-6 lg:grid-cols-2">
-        <BillsCard />
-        <ProjectionCard />
+        <BillsCard month={month} />
+        <ProjectionCard month={month} />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="flex flex-col">
-          <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />
-          <MonthlyChart />
+          <CardHeader icon={<Icon name="note" size={20} />} title="Movimentações" subtitle={`${m.monthTx.length} em ${monthName(month)} · toque para editar`} action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
+          <TransactionList transactions={tx} month={month} />
         </Card>
         <Card className="flex flex-col">
-          <CardHeader icon={<Icon name="coins" size={20} />} title="Para onde foi o dinheiro" subtitle="gastos do mês por categoria" />
-          <div className="flex min-h-48 flex-1 items-center"><div className="w-full"><CategoryDonut transactions={s.monthTx} /></div></div>
+          <CardHeader icon={<Icon name="coins" size={20} />} title="Para onde foi o dinheiro" subtitle={`gastos de ${monthName(month)} por categoria`} />
+          <div className="flex min-h-48 flex-1 items-start"><div className="w-full"><CategoryDonut transactions={m.monthTx} /></div></div>
         </Card>
       </div>
-      <FinancialGoals />
-      <Card>
-        <CardHeader icon={<Icon name="note" size={20} />} title="Movimentações" subtitle="toque em uma para editar" action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
-        <TransactionList transactions={tx} />
+      <Card className="flex flex-col">
+        <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />
+        <MonthlyChart />
       </Card>
+      <FinancialGoals />
     </div>
   )
 }

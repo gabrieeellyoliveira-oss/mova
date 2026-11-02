@@ -71,6 +71,8 @@ export interface Transaction extends Entity {
   method: PaymentMethod
   recurring: boolean
   note?: string
+  /** Pagamento de uma conta do mês (`MonthlyBill.id`, ou 'cartao' para a fatura do cartão) */
+  billId?: string
 }
 
 export interface FinancialGoal extends Entity {
@@ -379,6 +381,7 @@ export interface MonthlyBill extends Entity {
   name: string
   amount: number
   dueDay?: number
+  category?: FinanceCategory
 }
 
 /* ---------- Evolução (treinos) ---------- */

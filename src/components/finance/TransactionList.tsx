@@ -11,9 +11,11 @@ import { EmptyState } from '@/components/ui/Misc'
 import { Coin } from '@/components/doodles/Doodles'
 import { cn } from '@/lib/cn'
 
-export function TransactionList({ transactions }: { transactions: Transaction[] }) {
+/** Movimentações; com `month`, mostra só as daquele mês (o mesmo de "Para onde foi o dinheiro"). */
+export function TransactionList({ transactions, month: fixedMonth }: { transactions: Transaction[]; month?: string }) {
   const months = useMemo(() => [...new Set(transactions.map((t) => monthKey(t.date)))].sort().reverse(), [transactions])
-  const [month, setMonth] = useState(months[0] ?? '')
+  const [ownMonth, setMonth] = useState(months[0] ?? '')
+  const month = fixedMonth ?? ownMonth
   const [type, setType] = useState<'todas' | 'receita' | 'despesa'>('todas')
   const [cat, setCat] = useState<FinanceCategory | ''>('')
   const [q, setQ] = useState('')
@@ -29,10 +31,10 @@ export function TransactionList({ transactions }: { transactions: Transaction[] 
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Segmented value={type} onChange={setType} options={[{ value: 'todas', label: 'Tudo' }, { value: 'receita', label: 'Entradas' }, { value: 'despesa', label: 'Gastos' }]} />
-        <Select value={month} onChange={(e) => setMonth(e.target.value)} className="h-9 w-auto capitalize">
+        {!fixedMonth && <Select value={month} onChange={(e) => setMonth(e.target.value)} className="h-9 w-auto capitalize">
           <option value="">Todos os meses</option>
           {months.map((m) => <option key={m} value={m}>{label(m)}</option>)}
-        </Select>
+        </Select>}
         <Select value={cat} onChange={(e) => setCat(e.target.value as FinanceCategory)} className="h-9 w-auto">
           <option value="">Todas as categorias</option>
           {[...new Set([...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES])].map((c) => <option key={c}>{c}</option>)}

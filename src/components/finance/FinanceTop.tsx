@@ -1,7 +1,6 @@
 import { ArrowUpRight, Plus } from 'lucide-react'
-import { useFinanceSummary, useIncome, useVault } from '@/hooks/useData'
+import { useFinanceSummary, useMonthFinance, useVault } from '@/hooks/useData'
 import { openForm } from '@/hooks/useQuickAdd'
-import { addMonths, daysBetween, fromISODate, toISODate, today } from '@/utils/date'
 import { money } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 
@@ -25,41 +24,16 @@ export function BalanceCard() {
   )
 }
 
-/** Data do próximo pagamento no dia `day` (hoje conta). */
-export function nextPayday(day: number, from = today()): string {
-  const now = fromISODate(from)
-  const at = (y: number, m: number) => new Date(y, m, Math.min(day, new Date(y, m + 1, 0).getDate()))
-  let d = at(now.getFullYear(), now.getMonth())
-  if (toISODate(d) < from) { const nm = addMonths(now, 1); d = at(nm.getFullYear(), nm.getMonth()) }
-  return toISODate(d)
-}
-
-/** Próxima receita: o salário fixo de "Minha renda", no dia do pagamento. */
-export function NextIncome() {
-  const inc = useIncome()
-  const date = nextPayday(inc.payday)
-  const days = daysBetween(today(), date)
-  return (
-    <div className="flex min-h-[170px] flex-col rounded-[22px] border-2 border-ink bg-quente p-5 shadow-pixel">
-      <p className="font-serif text-xl font-bold text-tinta">Próxima receita</p>
-      <p className="mt-2 truncate rounded-full border-2 border-ink px-3 py-1.5 text-sm text-tinta/70">Salário · {money(inc.salary)} ({fromISODate(date).toLocaleDateString('pt-BR')})</p>
-      <p className="mt-auto pt-3 text-center font-serif text-5xl font-bold leading-none text-vinho">{days === 0 ? 'Hoje' : days}</p>
-      {days !== 0 && <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-tinta/50">{days === 1 ? 'dia' : 'dias'}</p>}
-    </div>
-  )
-}
-
-/** "Resumo rápido": blocos coloridos com os números do mês. */
-export function QuickGlance() {
-  const s = useFinanceSummary()
+/** "Resumo rápido" do mês escolhido: tudo vem das Movimentações daquele mês. */
+export function QuickGlance({ month }: { month: string }) {
+  const m = useMonthFinance(month)
   const vault = useVault()
-  const fixed = s.monthTx.filter((x) => x.type === 'despesa' && x.recurring).reduce((a, x) => a + x.amount, 0)
   const tiles = [
-    { label: 'Receitas', value: s.income, emoji: '💰', bg: 'bg-pastel-pink' },
-    { label: 'Contas fixas', value: fixed, emoji: '🧾', bg: 'bg-pastel-lilac' },
-    { label: 'Gastos', value: s.expenses - fixed, emoji: '🛍️', bg: 'bg-pastel-peach' },
+    { label: 'Entradas', value: m.income, emoji: '💰', bg: 'bg-pastel-pink' },
+    { label: 'Contas pagas', value: m.billsPaid, emoji: '🧾', bg: 'bg-pastel-lilac' },
+    { label: 'Outros gastos', value: m.expenses - m.billsPaid, emoji: '🛍️', bg: 'bg-pastel-peach' },
     { label: 'No cofre', value: vault.saved, emoji: '🐷', bg: 'bg-pastel-mint' },
-    { label: 'Livre no mês', value: Math.max(0, s.budgetLeft), emoji: '✨', bg: 'bg-pastel-yellow' },
+    { label: 'Saldo do mês', value: m.income - m.expenses, emoji: '✨', bg: 'bg-pastel-yellow' },
   ]
   return (
     <div>

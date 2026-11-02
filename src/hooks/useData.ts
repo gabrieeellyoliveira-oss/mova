@@ -71,6 +71,21 @@ export function useFinanceSummary() {
   }, [tx, settings.monthlyBudget])
 }
 
+/** Tudo de um mês (`AAAA-MM`): movimentações, entradas (salário x extras), gastos e contas já pagas. */
+export function useMonthFinance(month: string) {
+  const tx = useTransactions()
+  return useMemo(() => {
+    const monthTx = tx.filter((t) => monthKey(t.date) === month)
+    const incomeTx = monthTx.filter((t) => t.type === 'receita')
+    const salaryReceived = incomeTx.filter((t) => t.category === 'Salário').reduce((a, t) => a + t.amount, 0)
+    const income = incomeTx.reduce((a, t) => a + t.amount, 0)
+    const expenses = monthTx.filter((t) => t.type === 'despesa').reduce((a, t) => a + t.amount, 0)
+    const billsPaid = monthTx.filter((t) => t.billId && t.type === 'despesa').reduce((a, t) => a + t.amount, 0)
+    const paid = new Set(monthTx.filter((t) => t.billId).map((t) => t.billId!))
+    return { monthTx, income, salaryReceived, extras: income - salaryReceived, expenses, billsPaid, paid }
+  }, [tx, month])
+}
+
 export function useMonthlySeries(months = 6) {
   const tx = useTransactions()
   return useMemo(() => {

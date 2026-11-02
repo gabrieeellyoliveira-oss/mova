@@ -40,7 +40,7 @@ export function IncomeCard({ className, extra }: { className?: string; extra?: R
         </div>
       </div>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-tinta/70">
-        <span>Total por mês: <b className="text-tinta">{money(inc.total)}</b></span>
+        <span>Renda total: <b className="text-tinta">{money(inc.total)}</b></span>
         {edit ? (
           <label className="flex items-center gap-2">Cai todo dia <input className="h-8 w-14 rounded-xl border-2 border-ink bg-quente px-2 text-center font-bold focus:outline-none" inputMode="numeric" aria-label="Dia do pagamento" value={v.payday} onChange={(e) => setV({ ...v, payday: e.target.value })} onKeyDown={(e) => e.key === 'Enter' && save()} /></label>
         ) : <span>Cai todo dia <b className="text-tinta">{inc.payday}</b></span>}
