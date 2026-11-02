@@ -9,12 +9,11 @@ import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
 import { MonthlyChart } from '@/components/finance/MonthlyChart'
-import { CategoryDonut } from '@/components/finance/CategoryDonut'
 import { TransactionList } from '@/components/finance/TransactionList'
-import { FinancialGoals } from '@/components/finance/FinancialGoals'
 import { Icon } from '@/components/ui/Icon'
 import { BalanceCard, QuickGlance } from '@/components/finance/FinanceTop'
 import { IncomeCard } from '@/components/finance/IncomeCard'
+import { FoodCard } from '@/components/finance/FoodCard'
 import { BillsCard, ProjectionCard, monthName } from '@/components/finance/MonthPlan'
 
 function BudgetCard({ month }: { month: string }) {
@@ -74,16 +73,12 @@ export default function Finance() {
           <CardHeader icon={<Icon name="note" size={20} />} title="Movimentações" subtitle={`${m.monthTx.length} em ${monthName(month)} · toque para editar`} action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
           <TransactionList transactions={tx} month={month} />
         </Card>
-        <Card className="flex flex-col">
-          <CardHeader icon={<Icon name="coins" size={20} />} title="Para onde foi o dinheiro" subtitle={`gastos de ${monthName(month)} por categoria`} />
-          <div className="flex min-h-48 flex-1 items-start"><div className="w-full"><CategoryDonut transactions={m.monthTx} /></div></div>
-        </Card>
+        <FoodCard month={month} />
       </div>
       <Card className="flex flex-col">
-        <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />
-        <MonthlyChart />
+        <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle={`entradas e gastos até ${monthName(month)} · contas pagas em lavanda`} />
+        <MonthlyChart month={month} />
       </Card>
-      <FinancialGoals />
     </div>
   )
 }

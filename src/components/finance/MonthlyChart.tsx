@@ -4,19 +4,21 @@ import { money } from '@/utils/format'
 
 export const tooltipStyle = { borderRadius: 14, border: 'none', boxShadow: '0 8px 24px -10px rgba(12,10,14,.18)', fontSize: 12 }
 
-export function MonthlyChart() {
-  const data = useMonthlySeries(6)
+/** Entradas × gastos dos 6 meses até o mês escolhido; os gastos separam as contas pagas ("Paguei as contas do mês") dos outros. */
+export function MonthlyChart({ month }: { month?: string }) {
+  const data = useMonthlySeries(6, month)
   return (
     <div className="h-48">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barGap={4} margin={{ top: 8, right: 4, left: -12, bottom: 0 }}>
           <CartesianGrid vertical={false} stroke="#0C0A0E" strokeOpacity={0.07} />
           <XAxis dataKey="mes" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#0C0A0E', opacity: 0.6 }} />
-          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#0C0A0E', opacity: 0.45 }} tickFormatter={(v) => `${Math.round(v / 1000)}k`} />
+          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#0C0A0E', opacity: 0.45 }} tickFormatter={(v: number) => (v < 1000 ? String(v) : `${(v / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}k`)} />
           <Tooltip formatter={(v: number) => money(v)} cursor={{ fill: '#C3AEEC', fillOpacity: 0.2 }} contentStyle={tooltipStyle} />
           <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: '#0C0A0E' }} />
           <Bar dataKey="receitas" name="Entradas" fill="#376139" radius={[8, 8, 3, 3]} maxBarSize={26} />
-          <Bar dataKey="despesas" name="Gastos" fill="#0C0A0E" radius={[8, 8, 3, 3]} maxBarSize={26} />
+          <Bar dataKey="contas" name="Contas pagas" stackId="g" fill="#C3AEEC" stroke="#0C0A0E" strokeWidth={1.5} maxBarSize={26} />
+          <Bar dataKey="outros" name="Outros gastos" stackId="g" fill="#0C0A0E" radius={[8, 8, 0, 0]} maxBarSize={26} />
         </BarChart>
       </ResponsiveContainer>
     </div>

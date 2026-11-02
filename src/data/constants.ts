@@ -85,7 +85,7 @@ export const FINANCE_COLORS: Record<FinanceCategory, string> = {
   Freela: '#C3AEEC',
 }
 
-export const PAYMENT_METHODS: PaymentMethod[] = ['Pix', 'Crédito', 'Débito', 'Dinheiro', 'Boleto', 'Transferência']
+export const PAYMENT_METHODS: PaymentMethod[] = ['Pix', 'Crédito', 'Débito', 'Dinheiro', 'Boleto', 'Transferência', 'Vale-alimentação']
 
 export const BOOK_STATUS: Record<BookStatus, string> = {
   quero: 'Quero ler',

@@ -86,10 +86,10 @@ export function useMonthFinance(month: string) {
   }, [tx, month])
 }
 
-export function useMonthlySeries(months = 6) {
+export function useMonthlySeries(months = 6, until?: string) {
   const tx = useTransactions()
   return useMemo(() => {
-    const now = new Date()
+    const now = until ? new Date(Number(until.slice(0, 4)), Number(until.slice(5, 7)) - 1, 1) : new Date()
     return Array.from({ length: months }, (_, i) => {
       const d = new Date(now.getFullYear(), now.getMonth() - (months - 1 - i), 1)
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
@@ -101,10 +101,12 @@ export function useMonthlySeries(months = 6) {
         mes: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
         receitas: Math.round(receitas),
         despesas: Math.round(despesas),
+        contas: Math.round(list.filter((t) => t.type === 'despesa' && t.billId).reduce((a, t) => a + t.amount, 0)),
+        outros: Math.round(list.filter((t) => t.type === 'despesa' && !t.billId).reduce((a, t) => a + t.amount, 0)),
         saldo: Math.round(receitas - despesas),
       }
     })
-  }, [tx, months])
+  }, [tx, months, until])
 }
 
 export function useStudyWeek() {

@@ -60,7 +60,7 @@ export type FinanceCategory =
   | 'Outros'
   | 'Salário'
   | 'Freela'
-export type PaymentMethod = 'Pix' | 'Crédito' | 'Débito' | 'Dinheiro' | 'Boleto' | 'Transferência'
+export type PaymentMethod = 'Pix' | 'Crédito' | 'Débito' | 'Dinheiro' | 'Boleto' | 'Transferência' | 'Vale-alimentação'
 
 export interface Transaction extends Entity {
   type: TransactionType
