@@ -18,7 +18,7 @@ export function LinkedInWidget() {
       <Card className="flex flex-col">
         <WidgetHeader title="LinkedIn" />
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-4 text-center">
-          <Linkedin size={30} className="text-[#0A66C2]" />
+          <Linkedin size={30} className="text-[#3E2723]" />
           <p className="text-sm text-vinho/65">Conecte seu perfil pra acompanhar seguidores e posts do mês.</p>
           <Link to="/perfil?secao=conexoes" className="text-sm font-bold text-cereja hover:underline">Conectar LinkedIn →</Link>
         </div>
@@ -30,7 +30,7 @@ export function LinkedInWidget() {
     <Card className="flex flex-col">
       <WidgetHeader title="LinkedIn" to="/perfil?secao=conexoes" linkLabel="Editar" />
       <div className="flex items-start gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#0A66C2] text-white"><Linkedin size={22} /></span>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#3E2723] text-white"><Linkedin size={22} /></span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold text-tinta">{d.name ?? d.profileUrl.replace(/^https:\/\/www\.linkedin\.com\/(in|company)\//, '')}</p>
           {d.headline && <p className="truncate text-xs text-vinho/60">{d.headline}</p>}
@@ -43,7 +43,7 @@ export function LinkedInWidget() {
       </div>
       <div className="mt-3">
         <div className="flex items-center justify-between text-xs"><span className="font-semibold text-vinho">Posts no mês</span><span className="font-semibold text-vinho">{posts}/{d.postsGoal}</span></div>
-        <Progress value={ratio(posts, d.postsGoal)} color="#0A66C2" height={7} className="mt-1" />
+        <Progress value={ratio(posts, d.postsGoal)} color="#3E2723" height={7} className="mt-1" />
       </div>
       <div className="mt-3 flex items-center gap-2">
         <Button size="sm" variant="soft" onClick={logLinkedInPost}><Plus size={14} /> Publiquei hoje</Button>

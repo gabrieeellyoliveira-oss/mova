@@ -53,7 +53,7 @@ export function ProjectCard({ project: p, stats: s, onEdit, onRecord }: { projec
           <span className="text-sm font-semibold text-vinho">{Math.round(s.progress)}%</span>
         </div>
         <div className="relative">
-          <Progress value={s.progress} color={done ? '#5E9474' : p.color} height={9} />
+          <Progress value={s.progress} color={done ? '#6E8B6A' : p.color} height={9} />
           {s.expectedPct !== null && !done && (
             <span className="absolute -top-1 bottom-[-4px] w-[3px] bg-tinta/70" style={{ left: `calc(${s.expectedPct}% - 1px)` }} title="onde o ritmo esperado diz que você estaria hoje" />
           )}

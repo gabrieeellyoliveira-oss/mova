@@ -25,7 +25,7 @@ export function useNotifications(now: Date): Notice[] {
     const hhmm = now.toTimeString().slice(0, 5)
     const list: Notice[] = []
     const upcoming = events.filter((e) => e.date === t && !e.allDay && e.time >= hhmm).sort((a, b) => a.time.localeCompare(b.time))
-    if (upcoming[0]) list.push({ id: `ev-${upcoming[0].id}`, emoji: '🗓️', title: `Às ${upcoming[0].time}: ${upcoming[0].title}`, text: upcoming.length > 1 ? `e mais ${upcoming.length - 1} hoje` : 'seu próximo compromisso', path: '/meu-dia' })
+    if (upcoming[0]) list.push({ id: `ev-${upcoming[0].id}`, emoji: '🗓️', title: `Às ${upcoming[0].time}: ${upcoming[0].title}`, text: upcoming.length > 1 ? `e mais ${upcoming.length - 1} hoje` : 'seu próximo compromisso', path: '/agenda' })
     if (vault.remaining > 0 && vault.thisMonth <= 0)
       list.push({ id: `vault-${t.slice(0, 7)}`, emoji: '🪙', title: 'Que tal guardar um pouquinho no cofre?', text: `faltam ${Math.round(100 - vault.progress)}% para sair de casa`, path: '/sair-de-casa' })
     if (fin.budgetUsed >= 80) list.push({ id: 'budget', emoji: '🪙', title: `Você já usou ${Math.round(fin.budgetUsed)}% do orçamento`, text: 'Que tal um rolê grátis essa semana?', path: '/financas' })

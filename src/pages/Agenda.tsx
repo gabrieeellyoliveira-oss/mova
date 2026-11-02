@@ -1,6 +1,6 @@
 import { useAgendaEvents } from '@/hooks/useAgenda'
 import { useMemo, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CalendarPlus, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ISODate } from '@/types'
 import { db } from '@/store/db'
 import { useTasks } from '@/hooks/useData'
@@ -52,11 +52,14 @@ export default function Agenda() {
       <section>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm text-vinho/60">{total} na agenda nesta semana</p>
-        <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1 shadow-pixel-sm">
-          <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, -7))} aria-label="Semana anterior"><ChevronLeft size={16} /></Button>
-          <button onClick={() => setRef(today())} className="px-2 text-sm font-bold text-vinho">{formatShort(days[0])} – {formatShort(days[6])}</button>
-          <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, 7))} aria-label="Próxima semana"><ChevronRight size={16} /></Button>
-        </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 rounded-lg border-2 border-px-line bg-px-panel p-1">
+              <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, -7))} aria-label="Semana anterior"><ChevronLeft size={16} /></Button>
+              <button onClick={() => setRef(today())} className="px-2 text-sm font-bold text-vinho">{formatShort(days[0])} – {formatShort(days[6])}</button>
+              <Button size="icon-sm" variant="ghost" onClick={() => setRef(addDays(ref, 7))} aria-label="Próxima semana"><ChevronRight size={16} /></Button>
+            </div>
+            <Button size="sm" onClick={() => openForm('event', { date: today() } as never)}><CalendarPlus size={14} /> Compromisso</Button>
+          </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 xl:gap-2">
           {days.map((d) => (

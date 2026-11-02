@@ -38,7 +38,7 @@ function WeeklyGoal() {
           <Button size="icon-sm" variant="ghost" onClick={() => setEdit(true)} aria-label="Editar meta semanal"><Pencil size={14} /></Button>
         )}
       />
-      <Progress value={w.progress} color="#3F6E52" track="#ffffff99" height={10} />
+      <Progress value={w.progress} color="#4F6A4C" track="#ffffff99" height={10} />
       <p className="mt-1.5 text-xs">{w.progress >= 100 ? 'Meta da semana batida! 🌱' : `faltam ${Math.max(0, w.goalHours - w.hours).toFixed(1).replace('.', ',')}h — no seu ritmo`}</p>
       <div className="mt-5 flex h-28 items-end gap-2">
         {w.perDay.map((d, i) => (

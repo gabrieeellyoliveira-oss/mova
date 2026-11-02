@@ -1,3 +1,4 @@
+import { moneyInput, parseMoney } from '@/utils/format'
 import { useState } from 'react'
 import type { FinanceCategory, PaymentMethod, Transaction, TransactionType } from '@/types'
 import { db } from '@/store/db'
@@ -16,11 +17,11 @@ export function TransactionForm({ initial, onClose }: { initial?: Partial<Transa
   const [f, setF] = useState<Draft>({
     type: 'despesa', description: '', category: 'Alimentação', date: today(), method: 'Pix', recurring: false, note: '',
     ...initial,
-    amount: initial?.amount ? String(initial.amount) : '',
+    amount: initial?.amount ? moneyInput(initial.amount) : '',
   })
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setF((p) => ({ ...p, [k]: v }))
   const cats = f.type === 'despesa' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES
-  const amount = Number(f.amount.replace(',', '.'))
+  const amount = parseMoney(f.amount)
   const valid = f.description.trim() && amount > 0
 
   const save = () => {

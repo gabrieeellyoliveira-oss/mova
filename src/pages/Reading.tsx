@@ -7,7 +7,6 @@ import { useBooks, useSettings } from '@/hooks/useData'
 import { ratio } from '@/utils/format'
 import { MONTHS_SHORT } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
-import { StatCard } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { Card, CardHeader } from '@/components/ui/Card'
@@ -69,12 +68,6 @@ export default function Reading() {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <StatCard tone="vinho" label={`Lidos em ${year}`} value={stats.readYear} hint={`meta: ${yearlyBooksGoal} livros`} action={<Button size="sm" variant="light" onClick={() => openForm('book')}><Plus size={14} /> Nova leitura</Button>} />
-        <StatCard label="Páginas lidas" value={stats.pages.toLocaleString('pt-BR')} hint="neste ano" />
-        <StatCard tone="rosa" label="Média mensal" value={stats.avg.toFixed(1).replace('.', ',')} hint="livros por mês" />
-        <StatCard tone="oliva" label="Lendo agora" value={count('lendo')} hint={`${count('quero')} na fila`} />
-      </div>
       {current && (
         <Card>
           <WidgetHeader title="Estou lendo" sprite="book" subtitle={`${reading.length} ${reading.length === 1 ? 'livro aberto' : 'livros abertos'}`} />
@@ -95,7 +88,7 @@ export default function Reading() {
               <p className="mt-1 font-heading text-2xl leading-tight text-vinho">{current.title}</p>
               <p className="text-sm text-vinho/60">{current.author}</p>
               <p className="mt-3 text-xs text-vinho/70">Página {current.currentPage} de {current.pages}</p>
-              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#B58AA8" height={8} className="flex-1" /><span className="text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
+              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#D99AAE" height={8} className="flex-1" /><span className="text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
               <Button className="mt-4 self-start" onClick={() => setParams({ livro: current.id })}>Continuar lendo</Button>
             </div>
           </div>
@@ -103,10 +96,13 @@ export default function Reading() {
       )}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section className="min-w-0">
-          <div className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-            {shelves.map((s) => (
-              <Chip key={s} active={shelf === s} onClick={() => setShelf(s)}>{shelfLabel(s)} <span className="opacity-60">{count(s)}</span></Chip>
-            ))}
+          <div className="mb-6 flex items-start gap-3">
+            <div className="-mx-4 flex min-w-0 flex-1 gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+              {shelves.map((s) => (
+                <Chip key={s} active={shelf === s} onClick={() => setShelf(s)}>{shelfLabel(s)} <span className="opacity-60">{count(s)}</span></Chip>
+              ))}
+            </div>
+            <Button size="sm" className="shrink-0" onClick={() => openForm('book')}><Plus size={14} /> Nova leitura</Button>
           </div>
           {list.length === 0 ? (
             <EmptyState title="Estante vazia por aqui" text="Que tal anotar aquele livro que te indicaram?" doodle={<BookDoodle size={44} />} action={<Button size="sm" onClick={() => openForm('book')}>Adicionar livro</Button>} />
@@ -119,7 +115,7 @@ export default function Reading() {
         <aside className="space-y-6">
           <Card>
             <CardHeader title={`Meta de ${year}`} subtitle={`${stats.readYear} de ${yearlyBooksGoal} livros`} />
-            <Progress value={ratio(stats.readYear, yearlyBooksGoal)} height={10} color="#5E9474" />
+            <Progress value={ratio(stats.readYear, yearlyBooksGoal)} height={10} color="#6E8B6A" />
             <div className="mt-5 flex h-24 items-end gap-1">
               {stats.perMonth.map((x) => (
                 <div key={x.m} className="flex flex-1 flex-col items-center gap-1">

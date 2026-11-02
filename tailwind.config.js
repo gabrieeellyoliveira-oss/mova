@@ -4,29 +4,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        // paleta do MOVA (referência "Visão geral"): ameixa/vinho suave + lilases claros
-        vinho: { DEFAULT: '#5B2448', 950: '#2A1022', 900: '#3E1631', 800: '#4A1C3B', 700: '#6E2E58' },
-        cereja: { DEFAULT: '#6E2E58', 600: '#5B2448' }, // ação principal
-        queimado: { DEFAULT: '#B58AA8', 300: '#CDAFC4' },
-        rosa: { DEFAULT: '#E9D7E5', 100: '#F2E7EF', 50: '#F9F4F8' },
-        nevoa: '#E7DEE5',
-        creme: { DEFAULT: '#F7F2F6', 100: '#F1EAF0', 200: '#E9E0E8' },
-        quente: '#FFFFFF',
-        tinta: '#2B1A26',
-        oliva: { DEFAULT: '#5E9474', 100: '#E2F1E8', 600: '#3F6E52' },
+        // paleta do MOVA (nov/2026): Deep Espresso + Petal Reverie + Ivory Hearth, minimalista
+        vinho: { DEFAULT: '#3E2723', 950: '#1F1311', 900: '#2A1A17', 800: '#33201D', 700: '#5A3C36' },
+        cereja: { DEFAULT: '#3E2723', 600: '#33201D' }, // destaque (gráficos, progresso)
+        queimado: { DEFAULT: '#D99AAE', 300: '#EBC3CF' },
+        rosa: { DEFAULT: '#F4C9D6', 100: '#F9E1E8', 50: '#FCF0F3' },
+        nevoa: '#EAE3D6',
+        creme: { DEFAULT: '#F5F0E6', 100: '#EFE8DA', 200: '#E6DDCB' },
+        quente: '#FFFDF9',
+        tinta: '#3E2723',
+        oliva: { DEFAULT: '#6E8B6A', 100: '#E6EDE1', 600: '#4F6A4C' },
+        lima: { DEFAULT: '#F4C9D6', 300: '#F9E1E8' },
         // superfícies (nomes antigos mantidos para não quebrar as telas)
         px: {
-          ink: '#2B1A26',
-          line: '#EDE4EB', // borda bem suave dos cards
-          panel: '#FFFFFF',
-          soft: '#F6EFF4',
-          field: '#F7F2F6', // fundo da página
-          gold: '#E8B04B',
-          'gold-soft': '#FBEBC4',
+          ink: '#3E2723',
+          line: '#E8DFD0',
+          panel: '#FFFDF9',
+          soft: '#F3EDE2',
+          field: '#FAF7F1',
+          gold: '#F4C9D6',
+          'gold-soft': '#FCF0F3',
           brown: '#8A6F5C',
         },
-        // blocos pastel ("Quick glance")
-        pastel: { pink: '#FADDE6', lilac: '#E4DEF7', peach: '#FCE4D0', mint: '#D8F0E4', yellow: '#FFF1C4', blue: '#DCEAFA' },
+        // blocos suaves (todos dentro da paleta: rosa e marfim)
+        pastel: { pink: '#F9E1E8', lilac: '#F3ECE0', peach: '#F7E6E0', mint: '#EEF0E6', yellow: '#F6EFE2', blue: '#F1EDE6' },
       },
       fontFamily: {
         // tudo em DM Sans; os nomes antigos apontam para ela
@@ -40,13 +41,13 @@ export default {
       // bordas finas: as telas usam border-2, que aqui vira 1px
       borderWidth: { 2: '1px', px2: '1px', px3: '2px' },
       boxShadow: {
-        soft: '0 1px 2px rgba(60,20,50,0.04), 0 8px 24px -12px rgba(60,20,50,0.14)',
-        lift: '0 2px 4px rgba(60,20,50,0.05), 0 18px 36px -16px rgba(60,20,50,0.22)',
+        soft: '0 1px 2px rgba(62,39,35,0.04), 0 8px 24px -12px rgba(62,39,35,0.14)',
+        lift: '0 2px 4px rgba(62,39,35,0.05), 0 18px 36px -16px rgba(62,39,35,0.22)',
         // nomes antigos → sombras suaves
-        pixel: '0 1px 2px rgba(60,20,50,0.04), 0 8px 24px -14px rgba(60,20,50,0.16)',
-        'pixel-sm': '0 1px 2px rgba(60,20,50,0.06)',
+        pixel: '0 1px 2px rgba(62,39,35,0.04), 0 8px 24px -14px rgba(62,39,35,0.16)',
+        'pixel-sm': '0 1px 2px rgba(62,39,35,0.06)',
         'pixel-press': 'none',
-        'pixel-glow': '0 0 0 3px rgba(181,138,168,0.25), 0 12px 28px -14px rgba(60,20,50,0.25)',
+        'pixel-glow': '0 0 0 3px rgba(244,201,214,0.6), 0 12px 28px -14px rgba(62,39,35,0.25)',
       },
       keyframes: {
         pop: { '0%': { transform: 'scale(0.6)' }, '60%': { transform: 'scale(1.15)' }, '100%': { transform: 'scale(1)' } },

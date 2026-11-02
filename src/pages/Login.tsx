@@ -1,24 +1,20 @@
 import type { ReactNode } from 'react'
 import { ArrowRight, Loader2, Mail } from 'lucide-react'
-import gabi from '@/assets/gabi-mova.webp'
 import { useAuthForm } from '@/hooks/useAuthForm'
 import { AuthField } from '@/components/auth/AuthField'
 import { Logo } from '@/components/layout/Logo'
 import { Toggle } from '@/components/ui/Form'
 
-/** Tela de acesso: ilustração e saudação de um lado, formulário do outro. */
+/** Tela de acesso: saudação de um lado, formulário do outro. */
 export default function Login() {
   return (
     <main className="grid min-h-dvh w-full bg-creme lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-      <section className="relative hidden overflow-hidden bg-[radial-gradient(120%_120%_at_85%_10%,#F3E6F0_0%,#EADAE6_45%,#DCC5D7_100%)] p-12 lg:flex lg:flex-col">
-        <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-80 w-80 rounded-full bg-white/50 blur-3xl" />
+      <section className="relative hidden overflow-hidden bg-rosa p-12 lg:flex lg:flex-col">
         <Logo />
         <div className="relative z-10 mt-[10vh] max-w-md">
-          <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-vinho/80">MOVA <span className="h-px w-10 bg-vinho/40" /></p>
-          <h1 className="mt-3 text-5xl font-extrabold leading-[1.05] tracking-tight text-vinho-900">Que bom te ver por aqui!</h1>
-          <p className="mt-4 text-lg leading-snug text-vinho-900/75">Que tal dar mais um passo em direção aos seus objetivos hoje?</p>
+          <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-tinta">Que bom te ver por aqui!</h1>
+          <p className="mt-4 text-lg leading-snug text-tinta/70">Suas tarefas, estudos e finanças em um só lugar.</p>
         </div>
-        <img src={gabi} alt="Ilustração da Gabi no notebook com a gata" className="pointer-events-none absolute bottom-0 right-0 w-[92%] max-w-[720px]" />
       </section>
       <section className="flex flex-col items-center justify-center px-5 py-10 sm:px-10">
         <div className="mb-8 lg:hidden"><Logo /></div>

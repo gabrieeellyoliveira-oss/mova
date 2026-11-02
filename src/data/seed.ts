@@ -193,10 +193,10 @@ export const seedWorkEntries = (): WorkEntry[] => {
 }
 
 export const seedCourses = (): Course[] => [
-  { ...base(), name: 'UX Writing na prática', institution: 'Alura', modules: 6, lessonsTotal: 32, lessonsDone: 19, deadline: d(30), color: '#6E2E58', active: true, notes: 'Fazer o projeto final sobre onboarding.' },
-  { ...base(), name: 'Inglês — Conversação B2', institution: 'Cultura Inglesa', modules: 10, lessonsTotal: 40, lessonsDone: 12, deadline: d(90), color: '#5E9474', active: true },
-  { ...base(), name: 'Ilustração digital', institution: 'Domestika', modules: 5, lessonsTotal: 24, lessonsDone: 6, color: '#B58AA8', active: true },
-  { ...base(), name: 'Excel para a vida', institution: 'YouTube', modules: 3, lessonsTotal: 12, lessonsDone: 12, color: '#5B2448', active: false },
+  { ...base(), name: 'UX Writing na prática', institution: 'Alura', modules: 6, lessonsTotal: 32, lessonsDone: 19, deadline: d(30), color: '#3E2723', active: true, notes: 'Fazer o projeto final sobre onboarding.' },
+  { ...base(), name: 'Inglês — Conversação B2', institution: 'Cultura Inglesa', modules: 10, lessonsTotal: 40, lessonsDone: 12, deadline: d(90), color: '#6E8B6A', active: true },
+  { ...base(), name: 'Ilustração digital', institution: 'Domestika', modules: 5, lessonsTotal: 24, lessonsDone: 6, color: '#D99AAE', active: true },
+  { ...base(), name: 'Excel para a vida', institution: 'YouTube', modules: 3, lessonsTotal: 12, lessonsDone: 12, color: '#3E2723', active: false },
 ]
 
 export const seedFocusSessions = (courses: Course[]): FocusSession[] => {
@@ -213,13 +213,13 @@ export const seedFocusSessions = (courses: Course[]): FocusSession[] => {
 }
 
 export const seedBooks = (): Book[] => [
-  { ...base(), title: 'Tudo é rio', author: 'Carla Madeira', coverColor: '#6E2E58', pages: 210, currentPage: 132, status: 'lendo', favorite: true, startedAt: d(-12), quotes: ['O perdão é uma coisa que se aprende devagar.'], comments: 'Me pegou desde o primeiro capítulo.' },
-  { ...base(), title: 'A biblioteca da meia-noite', author: 'Matt Haig', coverColor: '#5B2448', pages: 308, currentPage: 308, status: 'lido', favorite: true, startedAt: d(-60), finishedAt: d(-35), rating: 5, quotes: ['Você não precisa entender a vida. Só precisa vivê-la.'] },
-  { ...base(), title: 'Pequenas coisas como estas', author: 'Claire Keegan', coverColor: '#5E9474', pages: 112, currentPage: 112, status: 'lido', favorite: false, startedAt: d(-90), finishedAt: d(-80), rating: 4, quotes: [] },
-  { ...base(), title: 'Torto arado', author: 'Itamar Vieira Junior', coverColor: '#B58AA8', pages: 264, currentPage: 88, status: 'pausado', favorite: false, startedAt: d(-120), quotes: [] },
-  { ...base(), title: 'O avesso da pele', author: 'Jeferson Tenório', coverColor: '#3E1631', pages: 192, currentPage: 0, status: 'quero', favorite: false, quotes: [] },
-  { ...base(), title: 'Mulheres que correm com os lobos', author: 'Clarissa Pinkola Estés', coverColor: '#9B5C86', pages: 576, currentPage: 0, status: 'quero', favorite: true, quotes: [] },
-  { ...base(), title: 'Hábitos atômicos', author: 'James Clear', coverColor: '#3F6E52', pages: 320, currentPage: 320, status: 'lido', favorite: false, startedAt: d(-200), finishedAt: d(-170), rating: 3, quotes: [] },
+  { ...base(), title: 'Tudo é rio', author: 'Carla Madeira', coverColor: '#3E2723', pages: 210, currentPage: 132, status: 'lendo', favorite: true, startedAt: d(-12), quotes: ['O perdão é uma coisa que se aprende devagar.'], comments: 'Me pegou desde o primeiro capítulo.' },
+  { ...base(), title: 'A biblioteca da meia-noite', author: 'Matt Haig', coverColor: '#3E2723', pages: 308, currentPage: 308, status: 'lido', favorite: true, startedAt: d(-60), finishedAt: d(-35), rating: 5, quotes: ['Você não precisa entender a vida. Só precisa vivê-la.'] },
+  { ...base(), title: 'Pequenas coisas como estas', author: 'Claire Keegan', coverColor: '#6E8B6A', pages: 112, currentPage: 112, status: 'lido', favorite: false, startedAt: d(-90), finishedAt: d(-80), rating: 4, quotes: [] },
+  { ...base(), title: 'Torto arado', author: 'Itamar Vieira Junior', coverColor: '#D99AAE', pages: 264, currentPage: 88, status: 'pausado', favorite: false, startedAt: d(-120), quotes: [] },
+  { ...base(), title: 'O avesso da pele', author: 'Jeferson Tenório', coverColor: '#2A1A17', pages: 192, currentPage: 0, status: 'quero', favorite: false, quotes: [] },
+  { ...base(), title: 'Mulheres que correm com os lobos', author: 'Clarissa Pinkola Estés', coverColor: '#B7798C', pages: 576, currentPage: 0, status: 'quero', favorite: true, quotes: [] },
+  { ...base(), title: 'Hábitos atômicos', author: 'James Clear', coverColor: '#4F6A4C', pages: 320, currentPage: 320, status: 'lido', favorite: false, startedAt: d(-200), finishedAt: d(-170), rating: 3, quotes: [] },
 ]
 
 export const seedGoals = (): Goal[] => {
@@ -244,17 +244,17 @@ export const seedHabits = (): Habit[] => {
     }
     return { ...base(), name, emoji, color, weeklyTarget, log, ...extra }
   }
-  const water = mk('Beber água', '💧', '#B58AA8', 7, 1.1, { health: true })
-  const skincare = mk('Skincare', '🧴', '#E9D7E5', 7, 0.8, { health: true })
+  const water = mk('Beber água', '💧', '#D99AAE', 7, 1.1, { health: true })
+  const skincare = mk('Skincare', '🧴', '#F4C9D6', 7, 0.8, { health: true })
   return [
     { ...water, log: [d(0), ...water.log] },
     { ...skincare, log: [d(0), ...skincare.log] },
-    mk('Academia', '🏋️', '#6E2E58', 3, 0.45, { health: true, training: true }),
-    mk('Estudar', '📚', '#5B2448', 5, 0.7),
-    mk('Ler', '📖', '#5E9474', 5, 0.65),
-    mk('Sair de casa', '🌷', '#B58AA8', 3, 0.4),
-    mk('Organizar quarto', '🧺', '#9B5C86', 2, 0.3),
-    mk('Dormir cedo', '🌙', '#3E1631', 5, 0.5, { health: true }),
+    mk('Academia', '🏋️', '#3E2723', 3, 0.45, { health: true, training: true }),
+    mk('Estudar', '📚', '#3E2723', 5, 0.7),
+    mk('Ler', '📖', '#6E8B6A', 5, 0.65),
+    mk('Sair de casa', '🌷', '#D99AAE', 3, 0.4),
+    mk('Organizar quarto', '🧺', '#B7798C', 2, 0.3),
+    mk('Dormir cedo', '🌙', '#2A1A17', 5, 0.5, { health: true }),
   ]
 }
 

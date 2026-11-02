@@ -1,25 +1,24 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { BookOpen, CalendarPlus, ListTodo, NotebookPen, PiggyBank, Plus, Wallet } from 'lucide-react'
+import { BookOpen, CalendarPlus, ListTodo, PiggyBank, Plus, Wallet } from 'lucide-react'
 import { Icon, type IconName } from '@/components/ui/Icon'
 import { cn } from '@/lib/cn'
 import { openForm, type FormKind } from '@/hooks/useQuickAdd'
 
 const items: ({ label: string; path: string; sprite: IconName } | null)[] = [
   { label: 'Início', path: '/', sprite: 'home' },
-  { label: 'Meu dia', path: '/meu-dia', sprite: 'check' },
+  { label: 'Agenda', path: '/agenda', sprite: 'planner' },
   null,
-  { label: 'Metas', path: '/metas', sprite: 'target' },
+  { label: 'Finanças', path: '/financas', sprite: 'coins' },
   { label: 'Perfil', path: '/perfil', sprite: 'user' },
 ]
 
 export const QUICK_ACTIONS: { kind: FormKind; label: string; icon: typeof Plus; color: string }[] = [
-  { kind: 'task', label: 'Nova tarefa', icon: ListTodo, color: '#6E2E58' },
-  { kind: 'transaction', label: 'Novo gasto', icon: Wallet, color: '#5B2448' },
-  { kind: 'event', label: 'Novo compromisso', icon: CalendarPlus, color: '#B58AA8' },
-  { kind: 'deposit', label: 'Guardar no cofre', icon: PiggyBank, color: '#5E9474' },
-  { kind: 'book', label: 'Nova leitura', icon: BookOpen, color: '#9B5C86' },
-  { kind: 'note', label: 'Nova nota', icon: NotebookPen, color: '#3F6E52' },
+  { kind: 'task', label: 'Nova tarefa', icon: ListTodo, color: '#3E2723' },
+  { kind: 'transaction', label: 'Novo gasto', icon: Wallet, color: '#3E2723' },
+  { kind: 'event', label: 'Novo compromisso', icon: CalendarPlus, color: '#D99AAE' },
+  { kind: 'deposit', label: 'Guardar no cofre', icon: PiggyBank, color: '#6E8B6A' },
+  { kind: 'book', label: 'Nova leitura', icon: BookOpen, color: '#B7798C' },
 ]
 
 export function BottomNav() {

@@ -4,7 +4,7 @@ import { useSyncExternalStore } from 'react'
  * Controle global dos formulários (abrir "Novo gasto" ou "Guardar no cofre" de qualquer lugar,
  * inclusive do botão + do mobile). Cada formulário recebe `initial` opcional.
  */
-export type FormKind = 'task' | 'transaction' | 'event' | 'deposit' | 'book' | 'note'
+export type FormKind = 'task' | 'transaction' | 'event' | 'deposit' | 'book'
 
 export interface OpenForm {
   kind: FormKind

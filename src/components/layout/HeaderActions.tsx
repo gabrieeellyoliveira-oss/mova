@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Bell, ChevronDown, Hourglass, LogOut, Search, Settings, Trophy } from 'lucide-react'
-import avatar from '@/assets/avatar.webp'
 import { useSettings } from '@/hooks/useData'
 import { useNotifications } from '@/hooks/useNotifications'
 import { useNow } from '@/hooks/useNow'
@@ -27,7 +26,10 @@ function useOutside<T extends HTMLElement>(open: boolean, close: () => void) {
   return ref
 }
 
-const iconBtn = 'relative grid h-10 w-10 place-items-center rounded-full text-vinho transition hover:bg-rosa-100'
+/** Iniciais do nome (até duas letras) para o círculo da conta. */
+const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || 'M'
+
+const iconBtn = 'relative grid h-11 w-11 place-items-center rounded-full bg-white text-tinta shadow-pixel-sm transition hover:bg-rosa-50'
 const popover = 'absolute right-0 top-[calc(100%+10px)] z-50 rounded-2xl border border-px-line bg-white p-2 shadow-lift animate-rise'
 
 /** Busca, modo foco, lembretes e menu da conta (topo do app). */
@@ -65,7 +67,7 @@ export function HeaderActions({ compact }: { compact?: boolean }) {
       <div ref={bellRef} className="relative">
         <button onClick={toggleBell} className={iconBtn} aria-label="Notificações">
           <Bell size={20} />
-          {unread > 0 && <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[#D9486F] ring-2 ring-white" aria-label={`${unread} novas`} />}
+          {unread > 0 && <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-cereja ring-2 ring-white" aria-label={`${unread} novas`} />}
         </button>
         {open === 'bell' && (
           <div className={cn(popover, 'w-[min(340px,calc(100vw-24px))]')}>
@@ -88,7 +90,7 @@ export function HeaderActions({ compact }: { compact?: boolean }) {
       </div>
       <div ref={meRef} className="relative">
         <button onClick={() => setOpen((o) => (o === 'me' ? null : 'me'))} className="flex items-center gap-1 rounded-full p-0.5 pr-1.5 transition hover:bg-rosa-100" aria-label="Minha conta">
-          <img src={avatar} alt="" className="h-10 w-10 rounded-full bg-rosa-100 object-cover" />
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-vinho text-sm font-bold text-white">{initials(settings.name)}</span>
           <ChevronDown size={16} className="text-vinho" />
         </button>
         {open === 'me' && (

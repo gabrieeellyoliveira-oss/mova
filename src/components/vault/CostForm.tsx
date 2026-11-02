@@ -1,3 +1,4 @@
+import { moneyInput, parseMoney } from '@/utils/format'
 import { useState } from 'react'
 import type { VaultCost } from '@/types'
 import { db } from '@/store/db'
@@ -8,8 +9,8 @@ import { DeleteButton } from '@/components/ui/Misc'
 
 export function CostForm({ initial, onClose }: { initial?: VaultCost; onClose: () => void }) {
   const [name, setName] = useState(initial?.name ?? '')
-  const [amount, setAmount] = useState(initial ? String(initial.amount) : '')
-  const value = Number(amount.replace(',', '.'))
+  const [amount, setAmount] = useState(initial ? moneyInput(initial.amount) : '')
+  const value = parseMoney(amount)
   const valid = name.trim() && value > 0
 
   const save = () => {

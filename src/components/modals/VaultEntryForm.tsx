@@ -1,3 +1,4 @@
+import { moneyInput, parseMoney } from '@/utils/format'
 import { useState } from 'react'
 import type { VaultEntry, VaultEntryType } from '@/types'
 import { db } from '@/store/db'
@@ -11,10 +12,10 @@ import { DeleteButton } from '@/components/ui/Misc'
 
 export function VaultEntryForm({ initial, onClose }: { initial?: Partial<VaultEntry>; onClose: () => void }) {
   const [type, setType] = useState<VaultEntryType>(initial?.type ?? 'deposito')
-  const [amount, setAmount] = useState(initial?.amount ? String(initial.amount) : '')
+  const [amount, setAmount] = useState(initial?.amount ? moneyInput(initial.amount) : '')
   const [date, setDate] = useState(initial?.date ?? today())
   const [note, setNote] = useState(initial?.note ?? '')
-  const value = Number(amount.replace(',', '.'))
+  const value = parseMoney(amount)
   const valid = value > 0 && !!date
 
   const save = () => {

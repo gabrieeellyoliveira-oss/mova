@@ -16,7 +16,7 @@ export function Quest({
       onClick={onClick}
       className={cn(
         'relative rounded-[24px] border border-px-line shadow-pixel transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lift',
-        main ? 'bg-[linear-gradient(135deg,#5B2448,#8E5A80)] p-6 text-white' : 'bg-white p-5 text-tinta',
+        main ? 'bg-[linear-gradient(135deg,#3E2723,#3E2723)] p-6 text-white' : 'bg-white p-5 text-tinta',
         onClick && 'cursor-pointer',
       )}
     >
@@ -33,7 +33,7 @@ export function Quest({
         </div>
       </div>
       <div className="mt-3 flex items-center gap-3">
-        <Progress value={progress} color={done ? '#5E9474' : main ? '#FFFFFF' : '#5B2448'} track={main ? 'rgba(255,255,255,0.25)' : undefined} height={main ? 10 : 8} className="flex-1" />
+        <Progress value={progress} color={done ? '#6E8B6A' : main ? '#FFFFFF' : '#3E2723'} track={main ? 'rgba(255,255,255,0.25)' : undefined} height={main ? 10 : 8} className="flex-1" />
         <span className={cn('shrink-0 text-sm font-semibold tabular-nums', main ? 'text-white' : 'text-vinho')}>
           {total ? `${current} / ${total}` : `${Math.round(progress)}%`}
         </span>

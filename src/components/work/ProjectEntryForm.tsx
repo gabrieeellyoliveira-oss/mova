@@ -1,3 +1,4 @@
+import { parseMoney } from '@/utils/format'
 import { useState } from 'react'
 import type { WorkProject } from '@/types'
 import { db } from '@/store/db'
@@ -14,7 +15,7 @@ export function ProjectEntryForm({ project: p, onClose }: { project: WorkProject
   const [amount, setAmount] = useState('')
   const [date, setDate] = useState(today())
   const [note, setNote] = useState('')
-  const value = Number(amount.replace(',', '.'))
+  const value = parseMoney(amount)
   const valid = value > 0 && !!date
   const label = p.metric === 'moeda' ? 'Valor (R$)' : p.metric === 'horas' ? 'Horas' : `Quantidade${p.unitLabel ? ` (${p.unitLabel})` : ''}`
 

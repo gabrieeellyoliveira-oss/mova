@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Check, Pencil, Plus } from 'lucide-react'
 import { settingsStore } from '@/store/db'
 import { useFinanceSummary, useTransactions } from '@/hooks/useData'
-import { money } from '@/utils/format'
+import { money, parseMoney } from '@/utils/format'
 import { openForm } from '@/hooks/useQuickAdd'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -22,17 +22,17 @@ function BudgetCard() {
     <div className="flex min-h-[170px] flex-col rounded-[22px] bg-oliva-100 p-5 text-oliva-600">
       <div className="flex items-center justify-between">
         <p className="text-lg font-bold">Orçamento disponível</p>
-        <button onClick={() => { if (edit) settingsStore.set((p) => ({ ...p, monthlyBudget: Number(v) || p.monthlyBudget })); setEdit(!edit) }} className="opacity-70 hover:opacity-100" aria-label="Editar orçamento">
+        <button onClick={() => { if (edit) settingsStore.set((p) => ({ ...p, monthlyBudget: parseMoney(v) || p.monthlyBudget })); setEdit(!edit) }} className="opacity-70 hover:opacity-100" aria-label="Editar orçamento">
           {edit ? <Check size={16} /> : <Pencil size={14} />}
         </button>
       </div>
       {edit ? (
-        <input autoFocus type="number" value={v} onChange={(e) => setV(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget.blur(), settingsStore.set((p) => ({ ...p, monthlyBudget: Number(v) || p.monthlyBudget })), setEdit(false))}
+        <input autoFocus inputMode="decimal" value={v} onChange={(e) => setV(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget.blur(), settingsStore.set((p) => ({ ...p, monthlyBudget: parseMoney(v) || p.monthlyBudget })), setEdit(false))}
           className="mt-2 h-10 w-full rounded-xl border border-oliva/30 bg-quente px-3 text-lg font-bold focus:outline-none" />
       ) : (
         <p className="mt-2 text-2xl font-extrabold tracking-tight sm:text-[28px]">{money(Math.max(0, s.budgetLeft))}</p>
       )}
-      <Progress value={s.budgetUsed} color={s.budgetUsed > 90 ? '#C0466A' : '#5E9474'} track="rgba(63,110,82,0.15)" className="mt-auto" height={8} />
+      <Progress value={s.budgetUsed} color={s.budgetUsed > 90 ? '#C0466A' : '#6E8B6A'} track="rgba(63,110,82,0.15)" className="mt-auto" height={8} />
       <p className="mt-1.5 text-xs opacity-70">{Math.round(s.budgetUsed)}% de {money(s.budget)}</p>
     </div>
   )

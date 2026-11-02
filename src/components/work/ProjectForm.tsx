@@ -1,3 +1,4 @@
+import { moneyInput, parseMoney } from '@/utils/format'
 import { useState } from 'react'
 import { Plus, X } from 'lucide-react'
 import type { ProjectMetric, ProjectStatus, WorkProject } from '@/types'
@@ -23,10 +24,10 @@ const empty = (): Draft => ({ name: '', client: '', status: 'andamento', start: 
 export function ProjectForm({ initial, onClose }: { initial?: WorkProject; onClose: () => void }) {
   const [f, setF] = useState<Draft>(() => ({ ...empty(), ...initial }))
   const [step, setStep] = useState('')
-  const [target, setTarget] = useState(initial?.target ? String(initial.target) : '')
+  const [target, setTarget] = useState(initial?.target ? moneyInput(initial.target) : '')
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setF((p) => ({ ...p, [k]: v }))
   const numeric = f.metric !== 'etapas'
-  const targetValue = Number(target.replace(',', '.'))
+  const targetValue = parseMoney(target)
   const valid = !!f.name.trim() && (!numeric || targetValue > 0)
 
   const addStep = () => {

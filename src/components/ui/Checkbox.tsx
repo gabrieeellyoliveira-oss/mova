@@ -3,7 +3,7 @@ import { cn } from '@/lib/cn'
 
 /** Caixa de marcar estilo jogo (quadrada, borda escura, check em pixel). */
 export function Checkbox({
-  checked, onChange, label, color = '#6E2E58', size = 22,
+  checked, onChange, label, color = '#3E2723', size = 22,
 }: { checked: boolean; onChange: (v: boolean) => void; label?: string; color?: string; size?: number }) {
   return (
     <button

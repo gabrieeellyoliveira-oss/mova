@@ -15,7 +15,7 @@ export function VaultHero() {
     <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
       <div className="grid items-center gap-8 lg:grid-cols-[auto_minmax(0,1fr)]">
         <div className="flex flex-col items-center gap-5 sm:flex-row lg:flex-col xl:flex-row">
-          <Ring value={v.progress} size={190} stroke={14} color="#E9D7E5" track="rgba(239,175,179,0.16)">
+          <Ring value={v.progress} size={190} stroke={14} color="#F4C9D6" track="rgba(239,175,179,0.16)">
             <div className="text-center">
               <p className="text-5xl font-extrabold tracking-tight">{Math.round(v.progress)}%</p>
               <p className="text-xs text-rosa-50/70">da meta</p>

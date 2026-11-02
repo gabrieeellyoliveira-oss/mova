@@ -7,9 +7,10 @@ import { Logo } from './Logo'
 import { HeaderActions } from './HeaderActions'
 import { cn } from '@/lib/cn'
 
-const MORE = ['/notas', '/conquistas', '/perfil']
-const main = NAV_ITEMS.filter((i) => !MORE.includes(i.path))
-const more = NAV_ITEMS.filter((i) => MORE.includes(i.path))
+// ordem da referência; o resto fica em "Mais" (Configurações fica só no menu do perfil)
+const MAIN = ['/', '/agenda', '/financas', '/estudos', '/leitura', '/sair-de-casa']
+const main = MAIN.map((p) => NAV_ITEMS.find((i) => i.path === p)!).filter(Boolean)
+const more = NAV_ITEMS.filter((i) => !MAIN.includes(i.path) && i.path !== '/perfil')
 
 /** Menu do topo (computador): logo, abas, "Mais" e ações da conta. */
 export function TopNav() {
@@ -30,18 +31,18 @@ export function TopNav() {
   const moreActive = more.some((i) => pathname.startsWith(i.path))
 
   return (
-    <header className="sticky top-0 z-30 hidden border-b border-px-line/70 bg-creme/85 backdrop-blur-md lg:block">
+    <header className="sticky top-0 z-30 hidden bg-creme/85 backdrop-blur-md lg:block">
       <div className="mx-auto flex h-[76px] max-w-[1600px] items-center gap-4 px-6">
         <Link to="/" className="shrink-0 pr-2"><Logo /></Link>
-        <nav className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto" aria-label="Menu principal">
+        <nav className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto pl-6" aria-label="Menu principal">
           {main.map(({ label, path, sprite }) => (
             <NavLink
               key={path}
               to={path}
               end={path === '/'}
               className={({ isActive }) => cn(
-                'flex shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-colors',
-                isActive ? 'bg-vinho text-white shadow-soft' : 'text-tinta/80 hover:bg-rosa-100 hover:text-vinho',
+                'flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2.5 text-[15px] font-medium transition-colors',
+                isActive ? 'bg-vinho text-white shadow-soft' : 'text-tinta/85 hover:bg-rosa-100 hover:text-vinho',
               )}
             >
               {({ isActive }) => (<><Icon name={sprite} size={18} className={isActive ? 'text-white' : undefined} />{label}</>)}
@@ -53,7 +54,6 @@ export function TopNav() {
             </button>
           </div>
         </nav>
-        <span className="h-7 w-px shrink-0 bg-px-line" />
         <HeaderActions />
       </div>
       {openMore && (

@@ -1,10 +1,10 @@
+import { parseMoney } from '@/utils/format'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Download, LogOut, RotateCcw, Upload } from 'lucide-react'
 import { cloudEnabled, signOut, useSession } from '@/lib/auth'
 import { syncStatus } from '@/lib/cloudSync'
 import { useStore } from '@/store/createStore'
-import gabi from '@/assets/gabi-mova.webp'
 import { exportAll, importAll, resetAll, settingsStore } from '@/store/db'
 import { useSettings } from '@/hooks/useData'
 import { NAV_ITEMS } from '@/data/constants'
@@ -40,21 +40,10 @@ export default function Profile() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
-        <div className="grid items-end gap-6 md:grid-cols-[1fr_360px]">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">oi, {s.name}!</p>
-            <p className="mt-2 font-display text-6xl leading-[1.05]">Mais movimento,<br />mais vida.</p>
-            <p className="mt-3 max-w-md text-sm text-rosa-50/75">O MOVA não existe pra te deixar mais produtiva. Existe pra organizar a vida e sobrar tempo pra vivê-la.</p>
-          </div>
-          <img src={gabi} alt="" className="mx-auto w-full max-w-[360px] md:-mb-8" />
-        </div>
-      </section>
-
       <Card className="lg:hidden">
         <CardHeader title="Todas as áreas" />
         <div className="grid grid-cols-3 gap-2">
-          {NAV_ITEMS.map(({ label, path, sprite }) => (
+          {NAV_ITEMS.filter((i) => i.path !== '/perfil').map(({ label, path, sprite }) => (
             <Link key={path} to={path} className="flex flex-col items-center gap-1.5 rounded-2xl bg-creme-100 px-2 py-3 text-center text-xs font-semibold text-vinho active:scale-95">
               <Icon name={sprite} size={24} />{label}
             </Link>
@@ -75,7 +64,7 @@ export default function Profile() {
           <CardHeader title="Sobre você" subtitle="salvo automaticamente" />
           <FormGrid>
             <Field label="Como quer ser chamada?"><Input value={s.name} onChange={(e) => set('name', e.target.value)} /></Field>
-            <Field label="Orçamento mensal (R$)"><Input type="number" value={s.monthlyBudget} onChange={(e) => set('monthlyBudget', Number(e.target.value))} /></Field>
+            <Field label="Orçamento mensal (R$)"><Input inputMode="decimal" defaultValue={s.monthlyBudget ? String(s.monthlyBudget).replace('.', ',') : ''} onBlur={(e) => { const n = parseMoney(e.target.value); if (n >= 0) set('monthlyBudget', n) }} placeholder="0,00" /></Field>
             <Field label="Horas de estudo por semana"><Input type="number" value={s.weeklyStudyHours} onChange={(e) => set('weeklyStudyHours', Number(e.target.value))} /></Field>
             <Field label="Meta de livros no ano"><Input type="number" value={s.yearlyBooksGoal} onChange={(e) => set('yearlyBooksGoal', Number(e.target.value))} /></Field>
           </FormGrid>

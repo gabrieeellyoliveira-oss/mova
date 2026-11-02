@@ -5,10 +5,10 @@
 /* ---------- Tokens do MOVA ---------- */
 :root {
   color-scheme: light;
-  --mova-bg: #f7f2f6;     /* fundo da página (lilás bem claro) */
+  --mova-bg: #F5F0E6;     /* fundo da página (marfim) */
   --mova-card: #ffffff;   /* cards */
-  --mova-line: #ede4eb;   /* bordas suaves */
-  --mova-plum: #5b2448;   /* cor principal */
+  --mova-line: #E8DFD0;   /* bordas suaves */
+  --mova-plum: #3E2723;   /* cor principal (espresso) */
   --mova-radius: 20px;    /* cantos dos cards */
   --mova-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -21,7 +21,7 @@
   }
   ::selection { @apply bg-rosa text-vinho; }
   input[type='date'], input[type='time'] { @apply cursor-pointer; }
-  * { scrollbar-width: thin; scrollbar-color: rgba(91, 36, 72, 0.22) transparent; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(62, 39, 35, 0.22) transparent; }
 }
 
 @layer components {
@@ -39,7 +39,7 @@
   /* Trilho das barras de progresso */
   .px-track {
     border-radius: 999px;
-    background: #efe6ee;
+    background: #EFE8DA;
     overflow: hidden;
     position: relative;
   }

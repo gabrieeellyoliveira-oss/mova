@@ -3,7 +3,7 @@ import { Pencil, PiggyBank, Plus } from 'lucide-react'
 import type { FinancialGoal } from '@/types'
 import { db } from '@/store/db'
 import { useFinancialGoals } from '@/hooks/useData'
-import { money, ratio } from '@/utils/format'
+import { money, moneyInput, parseMoney, ratio } from '@/utils/format'
 import { relativeDay } from '@/utils/date'
 import { celebrate, toast } from '@/hooks/useToast'
 import { Card } from '@/components/ui/Card'
@@ -14,11 +14,11 @@ import { Field, FormGrid, Input } from '@/components/ui/Form'
 import { DeleteButton, SectionTitle } from '@/components/ui/Misc'
 
 function GoalForm({ initial, onClose }: { initial?: FinancialGoal; onClose: () => void }) {
-  const [f, setF] = useState({ name: initial?.name ?? '', emoji: initial?.emoji ?? '🪙', current: String(initial?.current ?? ''), target: String(initial?.target ?? ''), deadline: initial?.deadline ?? '' })
-  const valid = f.name.trim() && Number(f.target) > 0
+  const [f, setF] = useState({ name: initial?.name ?? '', emoji: initial?.emoji ?? '🪙', current: moneyInput(initial?.current), target: moneyInput(initial?.target), deadline: initial?.deadline ?? '' })
+  const valid = f.name.trim() && parseMoney(f.target) > 0
   const save = () => {
     if (!valid) return
-    const data = { name: f.name.trim(), emoji: f.emoji, current: Number(f.current) || 0, target: Number(f.target), deadline: f.deadline || undefined }
+    const data = { name: f.name.trim(), emoji: f.emoji, current: parseMoney(f.current) || 0, target: parseMoney(f.target), deadline: f.deadline || undefined }
     if (initial) db.financialGoals.update(initial.id, data)
     else db.financialGoals.add(data)
     onClose()
@@ -32,8 +32,8 @@ function GoalForm({ initial, onClose }: { initial?: FinancialGoal; onClose: () =
           <Field label="Nome"><Input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="Viagem dos sonhos" /></Field>
         </div>
         <FormGrid>
-          <Field label="Já tenho (R$)"><Input type="number" value={f.current} onChange={(e) => setF({ ...f, current: e.target.value })} /></Field>
-          <Field label="Quero chegar em (R$)"><Input type="number" value={f.target} onChange={(e) => setF({ ...f, target: e.target.value })} /></Field>
+          <Field label="Já tenho (R$)"><Input inputMode="decimal" placeholder="0,00" value={f.current} onChange={(e) => setF({ ...f, current: e.target.value })} /></Field>
+          <Field label="Quero chegar em (R$)"><Input inputMode="decimal" placeholder="0,00" value={f.target} onChange={(e) => setF({ ...f, target: e.target.value })} /></Field>
         </FormGrid>
         <Field label="Prazo (opcional)"><Input type="date" value={f.deadline} onChange={(e) => setF({ ...f, deadline: e.target.value })} /></Field>
       </div>
@@ -50,7 +50,7 @@ function Deposit({ goal }: { goal: FinancialGoal }) {
       className="flex items-center gap-1.5"
       onSubmit={(e) => {
         e.preventDefault()
-        const n = Number(v.replace(',', '.'))
+        const n = parseMoney(v)
         if (n) {
           const current = Math.max(0, goal.current + n)
           db.financialGoals.update(goal.id, { current })
@@ -90,7 +90,7 @@ export function FinancialGoals() {
                 <button onClick={() => setEditing(g)} className="grid h-8 w-8 place-items-center rounded-full text-vinho/50 hover:bg-vinho/5" aria-label="Editar meta"><Pencil size={14} /></button>
               </div>
               <p className="text-sm text-vinho/70"><b className="text-lg text-vinho">{money(g.current).replace(',00', '')}</b> / {money(g.target).replace(',00', '')}</p>
-              <Progress value={p} height={10} color={p >= 100 ? '#5E9474' : '#6E2E58'} />
+              <Progress value={p} height={10} color={p >= 100 ? '#6E8B6A' : '#3E2723'} />
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-cereja">{Math.round(p)}%{p >= 100 && ' · conquistada ✨'}</span>
                 <Deposit goal={g} />

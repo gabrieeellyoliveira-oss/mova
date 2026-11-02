@@ -55,7 +55,7 @@ export function FocusMode() {
 
   return (
     <div className="fixed inset-0 z-[65] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Modo foco">
-      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_0%,#EADAE6_0%,#D9C2D3_45%,#5B2448_120%)] backdrop-blur" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_0%,#ECE5FB_0%,#EBC3CF_45%,#3E2723_120%)] backdrop-blur" />
       <div className="relative w-full max-w-md animate-rise rounded-[28px] bg-white shadow-lift">
         <div className="flex items-center justify-between px-6 pb-1 pt-5">
           <span className="flex items-center gap-2 text-xl font-bold text-tinta"><Icon name="hourglass" size={22} /> Modo foco</span>

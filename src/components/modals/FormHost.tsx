@@ -4,7 +4,6 @@ import { TaskForm } from './TaskForm'
 import { TransactionForm } from './TransactionForm'
 import { VaultEntryForm } from './VaultEntryForm'
 import { BookForm } from './BookForm'
-import { NoteForm } from './NoteForm'
 
 /** Renderiza o formulário global aberto via `openForm()` */
 export function FormHost() {
@@ -19,6 +18,5 @@ export function FormHost() {
     case 'transaction': return <TransactionForm key={key} {...props} />
     case 'deposit': return <VaultEntryForm key={key} {...props} />
     case 'book': return <BookForm key={key} {...props} />
-    case 'note': return <NoteForm key={key} {...props} />
   }
 }
