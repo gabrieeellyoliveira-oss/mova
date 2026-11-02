@@ -70,7 +70,7 @@ export default function Finance() {
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="flex flex-col">
-          <CardHeader icon={<Icon name="note" size={20} />} title="Movimentações" subtitle={`${m.monthTx.length} em ${monthName(month)} · toque para editar`} action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
+          <CardHeader icon={<Icon name="note" size={20} />} title="Movimentações" subtitle={`${m.monthTx.filter((t) => t.method !== 'Vale-alimentação').length} em ${monthName(month)} · toque para editar`} action={<Button size="sm" variant="soft" onClick={() => openForm('transaction')}><Plus size={14} /> Nova</Button>} />
           <TransactionList transactions={tx} month={month} />
         </Card>
         <FoodCard month={month} />

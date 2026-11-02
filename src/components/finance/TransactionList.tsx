@@ -21,7 +21,9 @@ export function TransactionList({ transactions, month: fixedMonth }: { transacti
   const [cat, setCat] = useState<FinanceCategory | ''>('')
   const [q, setQ] = useState('')
 
+  // os gastos no vale-alimentação ficam só no card Alimentação
   const list = transactions
+    .filter((t) => t.method !== 'Vale-alimentação')
     .filter((t) => (!month || monthKey(t.date) === month) && (type === 'todas' || t.type === type) && (!cat || t.category === cat))
     .filter((t) => !q || normalize(t.description + ' ' + (t.note ?? '')).includes(normalize(q)))
     .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))
