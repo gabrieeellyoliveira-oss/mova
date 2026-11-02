@@ -3,14 +3,12 @@ import { ExternalLink, Linkedin, Plus, Undo2 } from 'lucide-react'
 import { linkedinStore } from '@/store/db'
 import { useStore } from '@/store/createStore'
 import { today } from '@/utils/date'
-import { ratio } from '@/utils/format'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Progress } from '@/components/ui/Progress'
-import { logLinkedInPost, postsThisMonth, undoLinkedInPost } from '@/components/integrations/linkedin'
+import { logLinkedInPost, postingAdvice, undoLinkedInPost } from '@/components/integrations/linkedin'
 import { WidgetHeader } from './WidgetHeader'
 
-/** LinkedIn no painel: perfil, números e posts do mês. */
+/** LinkedIn no painel: perfil, números e a análise de quando postar de novo. */
 export function LinkedInWidget() {
   const d = useStore(linkedinStore)
   if (!d.profileUrl)
@@ -19,12 +17,12 @@ export function LinkedInWidget() {
         <WidgetHeader title="LinkedIn" />
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-4 text-center">
           <Linkedin size={30} className="text-[#0C0A0E]" />
-          <p className="text-sm text-vinho/65">Conecte seu perfil pra acompanhar seguidores e posts do mês.</p>
+          <p className="text-sm text-vinho/65">Conecte seu perfil pra acompanhar seguidores e saber quando postar.</p>
           <Link to="/perfil?secao=conexoes" className="text-sm font-bold text-cereja hover:underline">Conectar LinkedIn →</Link>
         </div>
       </Card>
     )
-  const posts = postsThisMonth(d)
+  const advice = postingAdvice(d.posts)
   const postedToday = d.posts.includes(today())
   return (
     <Card className="flex flex-col">
@@ -41,9 +39,11 @@ export function LinkedInWidget() {
         <div className="rounded-2xl bg-rosa-50 p-3"><p className="text-[11px] font-semibold uppercase text-vinho/60">Seguidores</p><p className="text-xl font-extrabold text-vinho">{d.followers?.toLocaleString('pt-BR') ?? '—'}</p></div>
         <div className="rounded-2xl bg-rosa-50 p-3"><p className="text-[11px] font-semibold uppercase text-vinho/60">Conexões</p><p className="text-xl font-extrabold text-vinho">{d.connections?.toLocaleString('pt-BR') ?? '—'}</p></div>
       </div>
-      <div className="mt-3">
-        <div className="flex items-center justify-between text-xs"><span className="font-semibold text-vinho">Posts no mês</span><span className="font-semibold text-vinho">{posts}/{d.postsGoal}</span></div>
-        <Progress value={ratio(posts, d.postsGoal)} color="#0C0A0E" height={7} className="mt-1" />
+      <div className="mt-3 rounded-2xl border-2 border-ink bg-lavanda-100 p-4">
+        <p className="text-xs uppercase tracking-[0.2em] text-tinta/60">Próximo post</p>
+        <p className="mt-1 font-serif text-2xl font-bold">{advice.when} <span className="font-sans text-sm font-semibold text-tinta/60">· 8h–10h</span></p>
+        <p className="mt-1.5 text-sm leading-snug text-tinta/75">{advice.reason}</p>
+        {advice.rhythm && <p className="mt-2 text-xs text-tinta/55">{advice.rhythm}</p>}
       </div>
       <div className="mt-3 flex items-center gap-2">
         <Button size="sm" variant="soft" onClick={logLinkedInPost}><Plus size={14} /> Publiquei hoje</Button>

@@ -40,7 +40,6 @@ export function LinkedInCard() {
           <Field label="Título (opcional)"><Input value={f.headline} onChange={(e) => setF({ ...f, headline: e.target.value })} placeholder="UX Writer · Design" /></Field>
           <Field label="Seguidores"><Input inputMode="numeric" value={f.followers} onChange={(e) => setF({ ...f, followers: e.target.value })} placeholder="0" /></Field>
           <Field label="Conexões"><Input inputMode="numeric" value={f.connections} onChange={(e) => setF({ ...f, connections: e.target.value })} placeholder="0" /></Field>
-          <Field label="Meta de posts por mês"><Input inputMode="numeric" value={f.postsGoal} onChange={(e) => setF({ ...f, postsGoal: e.target.value })} /></Field>
         </FormGrid>
         {error && <p role="alert" className="text-sm font-medium text-cereja"><span className="font-bold">! </span>{error}</p>}
         <div className="flex flex-wrap items-center gap-2">
