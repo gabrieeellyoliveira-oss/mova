@@ -13,6 +13,7 @@ import { TransactionList } from '@/components/finance/TransactionList'
 import { FinancialGoals } from '@/components/finance/FinancialGoals'
 import { Icon } from '@/components/ui/Icon'
 import { BalanceCard, NextIncome, QuickGlance } from '@/components/finance/FinanceTop'
+import { IncomeCard } from '@/components/finance/IncomeCard'
 
 function BudgetCard() {
   const s = useFinanceSummary()
@@ -43,8 +44,9 @@ export default function Finance() {
   const tx = useTransactions()
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)]">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <BalanceCard />
+        <IncomeCard />
         <NextIncome />
         <BudgetCard />
       </div>

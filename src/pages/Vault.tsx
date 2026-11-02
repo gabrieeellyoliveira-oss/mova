@@ -1,4 +1,7 @@
 import { History, ListChecks, TrendingUp } from 'lucide-react'
+import { useIncome, useVault } from '@/hooks/useData'
+import { money } from '@/utils/format'
+import { IncomeCard } from '@/components/finance/IncomeCard'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { VaultHero } from '@/components/vault/VaultHero'
 import { VaultChart } from '@/components/vault/VaultChart'
@@ -6,10 +9,14 @@ import { CostList } from '@/components/vault/CostList'
 import { EntryList } from '@/components/vault/EntryList'
 
 export default function Vault() {
+  const v = useVault()
+  const inc = useIncome()
+  const need = v.neededPerMonth
   return (
     <div className="space-y-6">
       <VaultHero />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+        <IncomeCard className="lg:col-span-2" extra={need && need > 0 ? <>Para sair na data que você quer, guardar <b className="text-tinta">{money(need)}</b> por mês = <b className="text-tinta">{Math.round((need / inc.salary) * 100)}% do salário</b>.</> : <>Guardando {money(v.monthlyAvg)} por mês em média = {inc.salary ? Math.round((v.monthlyAvg / inc.salary) * 100) : 0}% do salário.</>} />
         <Card className="flex flex-col">
           <CardHeader icon={<TrendingUp size={18} />} title="Evolução do cofre" subtitle="saldo acumulado mês a mês e a linha da meta" />
           <VaultChart />

@@ -12,6 +12,14 @@ import { ratio } from '@/utils/format'
 import type { Goal, Habit, Transaction, VaultEntry } from '@/types'
 
 export const useSettings = () => useStore(settingsStore)
+
+/** Renda fixa da Gabi: salário R$ 2.185 e vale-alimentação R$ 500 (editáveis em Finanças e Sair de casa). */
+export function useIncome() {
+  const s = useSettings()
+  const salary = s.salary ?? 2185
+  const voucher = s.mealVoucher ?? 500
+  return { salary, voucher, total: salary + voucher }
+}
 export const useEvents = () => useCollection(db.events)
 export const useTasks = () => useCollection(db.tasks)
 export const useTransactions = () => useCollection(db.transactions)

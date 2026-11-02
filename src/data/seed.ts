@@ -27,6 +27,8 @@ export const seedSettings = (): Settings => ({
   monthlyBudget: 3200,
   weeklyStudyHours: 6,
   yearlyBooksGoal: 18,
+  salary: 2185,
+  mealVoucher: 500,
 })
 
 export const seedEvents = (): CalendarEvent[] => [

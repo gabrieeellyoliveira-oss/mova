@@ -364,6 +364,10 @@ export interface Settings {
   monthlyBudget: number
   weeklyStudyHours: number
   yearlyBooksGoal: number
+  /** Salário mensal (R$) */
+  salary?: number
+  /** Vale-alimentação mensal (R$) */
+  mealVoucher?: number
 }
 
 /* ---------- Evolução (treinos) ---------- */
