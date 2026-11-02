@@ -1,5 +1,6 @@
 import { FinanceCard, HeroCard, InProgress } from '@/components/home/HomeCards'
 import { LinkedInWidget } from '@/components/widgets/LinkedInWidget'
+import { PinnedAssignments } from '@/components/college/PinnedAssignments'
 
 /** Visão geral: capa com data e clima, finanças e LinkedIn lado a lado, e o que está em andamento. */
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
         <FinanceCard />
         <LinkedInWidget />
       </section>
+      <PinnedAssignments />
       <InProgress />
     </div>
   )

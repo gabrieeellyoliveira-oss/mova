@@ -16,6 +16,7 @@ import { FocusTimer } from '@/components/studies/FocusTimer'
 import { CourseCard } from '@/components/studies/CourseCard'
 import { CourseForm } from '@/components/studies/CourseForm'
 import { TaskItem } from '@/components/tasks/TaskItem'
+import { CollegeSection } from '@/components/college/CollegeSection'
 
 function WeeklyGoal() {
   const w = useStudyWeek()
@@ -72,6 +73,7 @@ export default function Studies() {
 
   return (
     <div className="space-y-8">
+      <CollegeSection />
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard tone="vinho" label="Nesta semana" value={`${w.hours.toFixed(1).replace('.', ',')}h`} hint="de estudo focado" />
         <StatCard label="Cursos ativos" value={active.length} hint={`${courses.length - active.length} concluídos/pausados`} />

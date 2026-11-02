@@ -1,7 +1,7 @@
 import type {
   Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
   Experience, Note, Place, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
-  WorkEntry, WorkGoal, WorkSettings,
+  WorkEntry, WorkGoal, WorkSettings, Degree, Assignment,
 } from '@/types'
 import { addDays, startOfWeek, today, toISODate, weekdayIndex } from '@/utils/date'
 import { uid } from '@/utils/id'
@@ -274,4 +274,25 @@ export const seedNotes = (): Note[] => [
   { ...base(), title: 'Filmes para ver', content: '• Retratos fantasmas\n• Aftersun\n• A vida invisível', tags: ['cinema'], favorite: false, color: 'creme', updatedAt: new Date().toISOString() },
   { ...base(), title: 'Lembrete gentil', content: 'Você não precisa fazer tudo hoje. Só o próximo passo.', tags: ['eu'], favorite: true, color: 'vinho', updatedAt: new Date().toISOString() },
   { ...base(), title: 'Receita de bolo de laranja', content: '3 ovos, 1 xícara de óleo, 2 laranjas com casca, 2 xícaras de açúcar, 2 de farinha, 1 colher de fermento.', tags: ['receitas', 'casa'], favorite: false, color: 'oliva', updatedAt: new Date().toISOString() },
+]
+
+/** Faculdade da Gabi: Recursos Humanos na Unigrande (semestre editável na aba Estudos). */
+const RH_ID = 'curso-rh-unigrande'
+export const seedDegrees = (): Degree[] => [
+  { id: RH_ID, createdAt: new Date().toISOString(), name: 'Recursos Humanos', institution: 'Unigrande', level: 'graduacao', currentSemester: 1, totalSemesters: 4 },
+]
+
+/** O trabalho de extensão, como exemplo de como acompanhar um trabalho por etapas. */
+export const seedAssignments = (): Assignment[] => [
+  {
+    ...base(), degreeId: RH_ID, title: 'Trabalho de extensão', kind: 'extensao', status: 'fazendo', pinned: true,
+    steps: [
+      { text: 'Ler as orientações e o modelo da Unigrande', done: false },
+      { text: 'Escolher o tema e o público (empresa, ONG ou comunidade)', done: false },
+      { text: 'Planejar a ação: objetivo, data e o que vai ser feito', done: false },
+      { text: 'Realizar a ação e guardar evidências (fotos, lista de presença)', done: false },
+      { text: 'Escrever o relatório', done: false },
+      { text: 'Enviar no portal', done: false },
+    ],
+  },
 ]

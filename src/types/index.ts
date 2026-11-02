@@ -428,3 +428,34 @@ export interface JournalFolder extends Entity {
   color: string
   cover?: string
 }
+
+/* ---------- Faculdade ---------- */
+/** Curso de graduação (ex.: RH na Unigrande). */
+export type DegreeLevel = 'graduacao' | 'pos' | 'mba' | 'tecnico' | 'mestrado' | 'outro'
+
+export interface Degree extends Entity {
+  name: string
+  institution: string
+  level?: DegreeLevel
+  done?: boolean
+  currentSemester: number
+  totalSemesters: number
+}
+
+export type AssignmentKind = 'extensao' | 'trabalho' | 'prova' | 'atividade' | 'tcc'
+export type AssignmentStatus = 'a-fazer' | 'fazendo' | 'entregue'
+
+/** Trabalho, prova ou atividade da faculdade, com etapas para acompanhar. */
+export interface Assignment extends Entity {
+  degreeId?: string
+  title: string
+  subject?: string
+  kind: AssignmentKind
+  dueDate?: ISODate
+  status: AssignmentStatus
+  steps: { text: string; done: boolean }[]
+  grade?: number
+  notes?: string
+  /** Fixado no card da Visão geral */
+  pinned?: boolean
+}

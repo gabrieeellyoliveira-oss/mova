@@ -40,6 +40,8 @@ export const useBodyCheckins = () => useCollection(db.bodyCheckins)
 export const useJournal = () => useCollection(db.journal)
 export const useJournalFolders = () => useCollection(db.journalFolders)
 export const useMonthlyBills = () => useCollection(db.monthlyBills)
+export const useDegrees = () => useCollection(db.degrees)
+export const useAssignments = () => useCollection(db.assignments)
 
 /* ---------- seletores puros ---------- */
 
