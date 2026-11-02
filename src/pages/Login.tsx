@@ -8,15 +8,15 @@ import gabi from '@/assets/gabi-login.webp'
 /** Tela de acesso (projeto "Login Look Dashboard"): cartão escuro com o formulário e a ilustração da Gabi. */
 export default function Login() {
   return (
-    <main className="grid min-h-dvh w-full place-items-center bg-creme p-3 sm:p-8">
-      <div className="grid w-full max-w-[1180px] overflow-hidden rounded-[2.5rem] bg-ink p-3 text-ink-fg sm:rounded-[3rem] md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:p-4">
-        <section className="order-2 flex flex-col justify-center px-5 pb-8 pt-6 sm:px-10 md:order-1 md:px-12 md:py-10 lg:px-16">
+    <main className="flex min-h-dvh w-full bg-creme p-3 sm:p-6 lg:px-8">
+      <div className="grid w-full overflow-hidden rounded-[2.5rem] bg-ink p-3 text-ink-fg sm:rounded-[3rem] md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:p-4">
+        <section className="order-2 flex flex-col items-center justify-center px-5 pb-8 pt-6 sm:px-10 md:order-1 md:px-12 md:py-10 lg:px-16 short:md:py-6">
           <div className="w-full max-w-[440px]">
             <AuthPanel />
           </div>
         </section>
-        <div className="order-1 overflow-hidden rounded-[2rem] md:order-2 md:rounded-[2.25rem]">
-          <img src={gabi} alt="Ilustração da Gabi organizando o dia" className="h-56 w-full object-cover object-[50%_20%] sm:h-72 md:h-full md:min-h-[600px]" />
+        <div className="relative order-1 overflow-hidden rounded-[2rem] md:order-2 md:min-h-[540px] md:rounded-[2.25rem]">
+          <img src={gabi} alt="Ilustração da Gabi organizando o dia" className="h-56 w-full object-cover object-[50%_20%] sm:h-72 md:absolute md:inset-0 md:h-full" />
         </div>
       </div>
     </main>
@@ -36,7 +36,7 @@ function Brand({ title, subtitle = 'Organize sua rotina com leveza.' }: { title:
     <header>
       <h2 className="sr-only">{title}</h2>
       <Logo size="lg" light />
-      <p className="mt-4 text-lg text-ink-fg/85">{subtitle}</p>
+      <p className="mt-4 text-lg text-ink-fg/85 short:mt-2 short:text-base">{subtitle}</p>
     </header>
   )
 }
@@ -49,8 +49,8 @@ function Or() {
   )
 }
 
-const primary = 'flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-lavanda text-base font-semibold text-ink transition hover:brightness-105 active:scale-[0.99] disabled:opacity-60'
-const outline = 'flex h-14 w-full items-center justify-center rounded-full border-2 border-ink-fg/90 text-base font-semibold text-ink-fg transition hover:bg-ink-fg/10 active:scale-[0.99]'
+const primary = 'flex h-14 short:h-12 w-full items-center justify-center gap-2 rounded-2xl bg-lavanda text-base font-semibold text-ink transition hover:brightness-105 active:scale-[0.99] disabled:opacity-60'
+const outline = 'flex h-14 short:h-12 w-full items-center justify-center rounded-full border-2 border-ink-fg/90 text-base font-semibold text-ink-fg transition hover:bg-ink-fg/10 active:scale-[0.99]'
 const link = 'text-sm text-ink-fg underline decoration-ink-fg/70 underline-offset-4 hover:decoration-ink-fg'
 
 function AuthPanel() {
@@ -97,7 +97,7 @@ function AuthPanel() {
   return (
     <div key={f.mode} className="animate-rise">
       <Brand title={{ criar: 'Criar conta', entrar: 'Entrar', esqueci: 'Esqueci a senha', 'nova-senha': 'Senha nova' }[mode]} subtitle={subtitles[mode]} />
-      <form onSubmit={f.submit} className="mt-10 space-y-5" noValidate>
+      <form onSubmit={f.submit} className="mt-10 space-y-5 short:mt-6 short:space-y-3.5" noValidate>
         {askEmail && (
           <AuthField
             id="login-email" label="E-mail" type="email" autoComplete="email" placeholder="E-mail"
@@ -124,18 +124,18 @@ function AuthPanel() {
           </label>
         )}
         {f.error && <ErrorLine message={f.error.message} />}
-        <button type="submit" disabled={f.busy} className={`${primary} !mt-7`}>
+        <button type="submit" disabled={f.busy} className={`${primary} !mt-7 short:!mt-5`}>
           {f.busy && <Loader2 size={18} className="animate-spin" />}
           {buttonLabel}
         </button>
       </form>
-      <div className="mt-6 space-y-6">
+      <div className="mt-6 space-y-6 short:mt-4 short:space-y-4">
         {mode === 'entrar' && <p className="text-center"><button type="button" onClick={() => f.go('esqueci')} className={link}>Esqueci minha senha</button></p>}
         {mode === 'entrar' && f.canCreate && (<><Or /><button type="button" onClick={() => f.go('criar')} className={outline}>Criar conta</button></>)}
         {mode === 'criar' && (<><Or /><button type="button" onClick={() => f.go('entrar')} className={outline}>Já tenho conta</button></>)}
         {mode === 'esqueci' && back}
       </div>
-      <p className="mt-8 text-center text-xs text-ink-fg/45">{footer}</p>
+      <p className="mt-8 text-center text-xs text-ink-fg/45 short:mt-5">{footer}</p>
     </div>
   )
 }

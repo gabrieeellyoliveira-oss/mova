@@ -32,7 +32,7 @@ export function TopNav() {
 
   return (
     <header className="sticky top-0 z-30 hidden bg-ink text-ink-fg lg:block">
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-6 px-6">
+      <div className="flex h-[72px] items-center gap-6 px-8">
         <Link to="/" className="shrink-0"><Logo light /></Link>
         <nav className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto" aria-label="Menu principal">
           {main.map(({ label, path, sprite }) => (

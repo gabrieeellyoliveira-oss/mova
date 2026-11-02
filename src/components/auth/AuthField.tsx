@@ -25,7 +25,7 @@ export const AuthField = forwardRef<HTMLInputElement, Props>(function AuthField(
           type={password && show ? 'text' : type}
           aria-invalid={invalid || undefined}
           className={cn(
-            'h-[68px] w-full rounded-2xl border-2 bg-transparent text-lg text-ink-fg transition placeholder:text-ink-fg/80 focus:outline-none focus:ring-4 focus:ring-lavanda/40',
+            'h-[68px] w-full rounded-2xl border-2 bg-transparent text-lg short:h-14 short:text-base text-ink-fg transition placeholder:text-ink-fg/80 focus:outline-none focus:ring-4 focus:ring-lavanda/40',
             lead ? 'pl-[68px]' : 'pl-6',
             password ? 'pr-16' : 'pr-6',
             invalid ? 'border-[#E07A8C]' : 'border-ink-fg/85 focus:border-lavanda',

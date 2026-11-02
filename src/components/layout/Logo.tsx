@@ -6,7 +6,7 @@ export function Logo({ className, size = 'md', light }: { className?: string; si
     <span
       className={cn(
         'inline-flex select-none items-baseline font-serif font-extrabold leading-none tracking-tight',
-        size === 'lg' ? 'text-6xl sm:text-7xl' : size === 'md' ? 'text-[32px]' : 'text-[26px]',
+        size === 'lg' ? 'text-6xl sm:text-7xl short:sm:text-6xl' : size === 'md' ? 'text-[32px]' : 'text-[26px]',
         light ? 'text-ink-fg' : 'text-ink',
         className,
       )}

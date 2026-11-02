@@ -3,6 +3,8 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      // telas baixas (notebook): deixa o login mais compacto
+      screens: { short: { raw: '(max-height: 820px)' } },
       colors: {
         // paleta "moova*" (projeto Login Look Dashboard da Gabi): tinta quase preta, lavanda, sálvia, creme e vinho
         ink: { DEFAULT: '#0C0A0E', soft: '#222126', fg: '#F6F1E7' },
