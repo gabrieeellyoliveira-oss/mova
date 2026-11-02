@@ -11,9 +11,9 @@ export const useWorkSettings = () => useStore(workSettingsStore)
 
 export const PROJECT_STATUS: Record<ProjectStatus, { label: string; color: string; soft: string }> = {
   planejado: { label: 'Planejado', color: '#8a6f5c', soft: '#F3E9DF' },
-  andamento: { label: 'Em andamento', color: '#3E2723', soft: '#F9E1E8' },
-  pausado: { label: 'Pausado', color: '#4F6A4C', soft: '#E6EDE1' },
-  concluido: { label: 'Entregue', color: '#3E2723', soft: '#F4C9D6' },
+  andamento: { label: 'Em andamento', color: '#0C0A0E', soft: '#DCD1F4' },
+  pausado: { label: 'Pausado', color: '#2A4B2C', soft: '#D2E5C8' },
+  concluido: { label: 'Entregue', color: '#0C0A0E', soft: '#C3AEEC' },
 }
 
 export const PROJECT_METRICS: Record<ProjectMetric, string> = {

@@ -1,9 +1,9 @@
 import { Icon } from '@/components/ui/Icon'
 import { cn } from '@/lib/cn'
 
-/** Caixa de marcar estilo jogo (quadrada, borda escura, check em pixel). */
+/** Caixa de marcar: quadrada, borda de tinta, preenchida ao marcar. */
 export function Checkbox({
-  checked, onChange, label, color = '#3E2723', size = 22,
+  checked, onChange, label, color = '#0C0A0E', size = 22,
 }: { checked: boolean; onChange: (v: boolean) => void; label?: string; color?: string; size?: number }) {
   return (
     <button
@@ -16,12 +16,12 @@ export function Checkbox({
         onChange(!checked)
       }}
       className={cn(
-        'grid shrink-0 place-items-center rounded-md border-[1.5px] border-vinho/40 transition-transform duration-150 hover:scale-105 active:scale-95',
-        checked ? 'animate-pop' : 'bg-white/80',
+        'grid shrink-0 place-items-center rounded-md border-2 border-ink transition-transform duration-150 hover:scale-105 active:scale-95',
+        checked ? 'animate-pop' : 'bg-quente',
       )}
       style={{ width: size, height: size, backgroundColor: checked ? color : undefined }}
     >
-      {checked && <svg viewBox="0 0 8 8" width={size * 0.62} height={size * 0.62} shapeRendering="crispEdges" aria-hidden><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2h1v1H7v1H6v1H5v1H4v1H3V6H2V5H1z" fill="#FFF5F1" /></svg>}
+      {checked && <svg viewBox="0 0 24 24" width={size * 0.7} height={size * 0.7} fill="none" stroke="#F6F1E7" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>}
     </button>
   )
 }

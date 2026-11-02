@@ -42,7 +42,7 @@ export function CostList() {
                   </span>
                   <span className="shrink-0 tabular-nums text-vinho/70"><b className="text-vinho">{money(covered).replace(',00', '')}</b> / {money(cost.amount).replace(',00', '')}</span>
                 </div>
-                <Progress value={progress} color={progress >= 100 ? '#6E8B6A' : '#3E2723'} height={7} />
+                <Progress value={progress} color={progress >= 100 ? '#376139' : '#0C0A0E'} height={7} />
               </button>
             </li>
           ))}

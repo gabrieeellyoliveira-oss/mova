@@ -1,203 +1,238 @@
-import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import { ArrowRight, BookOpen, CalendarDays, GraduationCap, Play, Plus, Target, Wallet, Briefcase } from 'lucide-react'
-import { useBooks, useCourses, useFocusSessions, useSettings, useTasks, useVault } from '@/hooks/useData'
-import { useProjects } from '@/hooks/useProjects'
-import { focusTimer } from '@/hooks/useFocusTimer'
-import { setFocusMode } from '@/hooks/useFocusMode'
+import { useMemo, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
+import {
+  ArrowDown, ArrowRight, ArrowUp, BarChart3, BookOpen, Calendar, CheckSquare, ChevronDown, Cloud, CloudRain,
+  GraduationCap, Home as HomeIcon, Layers, Plus, Sun, Target, Wallet,
+} from 'lucide-react'
+import gabi from '@/assets/gabi-login.webp'
+import { AREAS } from '@/data/constants'
+import { useBooks, useFinanceSummary, useGoals, useSettings, useStudyWeek, useTasks, useVault } from '@/hooks/useData'
+import { useWeather, weatherKind } from '@/hooks/useWeather'
 import { openForm } from '@/hooks/useQuickAdd'
 import { toggleTask } from '@/components/tasks/TaskItem'
-import { addDays, fromISODate, startOfWeek, today, weekDays, WEEKDAYS_SHORT } from '@/utils/date'
-import { ratio } from '@/utils/format'
+import { fromISODate, today, weekDays, WEEKDAYS_SHORT } from '@/utils/date'
+import { money, ratio } from '@/utils/format'
 import { Checkbox } from '@/components/ui/Checkbox'
-import { Progress, Ring } from '@/components/ui/Progress'
+import { Logo } from '@/components/layout/Logo'
 import { cn } from '@/lib/cn'
 
-export const card = 'rounded-[24px] border border-px-line bg-quente p-6'
+/** Card padrão do projeto de referência: creme, borda de 2px em tinta e sombra deslocada. */
+export const card = 'min-w-0 rounded-3xl border-2 border-ink bg-quente p-6 shadow-pixel'
 
-/** "Oi, Gabi!" — e nada mais. */
-export function Greeting() {
+function IconBtn({ children, label, onClick, to }: { children: ReactNode; label: string; onClick?: () => void; to?: string }) {
+  const cls = 'grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-ink bg-quente text-ink transition hover:bg-lavanda'
+  if (to) return <Link to={to} className={cls} aria-label={label}>{children}</Link>
+  return <button type="button" onClick={onClick} className={cls} aria-label={label}>{children}</button>
+}
+
+/** Barra fina com contorno em tinta. */
+function Bar({ value, className }: { value: number; className?: string }) {
+  return (
+    <div className={cn('h-2 overflow-hidden rounded-full border border-ink bg-quente', className)} role="progressbar" aria-valuenow={Math.round(value)} aria-valuemin={0} aria-valuemax={100}>
+      <div className="h-full rounded-full bg-ink transition-[width] duration-700" style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+    </div>
+  )
+}
+
+/** Capa escura: "Olá, Gabi!", convite e a ilustração. */
+export function HeroCard() {
   const { name } = useSettings()
   return (
-    <section className="flex min-h-[130px] items-center rounded-[24px] bg-rosa px-7 sm:min-h-[170px] sm:px-10">
-      <h1 className="text-4xl font-extrabold tracking-tight text-tinta sm:text-[52px]">Oi, {name}!</h1>
-    </section>
-  )
-}
-
-/** "Continue de onde parou": o curso, livro ou projeto em andamento mais recente. */
-export function ContinueCard() {
-  const nav = useNavigate()
-  const courses = useCourses()
-  const sessions = useFocusSessions()
-  const book = useBooks().find((b) => b.status === 'lendo')
-  const project = useProjects().find((p) => p.project.status === 'andamento')
-  const item = useMemo(() => {
-    const active = courses.filter((c) => c.active && c.lessonsDone < c.lessonsTotal)
-    const last = (id: string) => sessions.filter((s) => s.courseId === id).reduce((a, s) => (s.date > a ? s.date : a), '')
-    const course = [...active].sort((a, b) => last(b.id).localeCompare(last(a.id)))[0]
-    if (course) return { area: 'Estudos', icon: GraduationCap, title: course.name, pct: ratio(course.lessonsDone, course.lessonsTotal), go: () => { focusTimer.setCourse(course.id); setFocusMode(true) }, cta: 'Começar foco' }
-    if (book) return { area: 'Leitura', icon: BookOpen, title: book.title, pct: ratio(book.currentPage, book.pages), go: () => nav(`/leitura?livro=${book.id}`), cta: 'Continuar lendo' }
-    if (project) return { area: 'Trabalho', icon: Briefcase, title: project.project.name, pct: project.stats.progress, go: () => nav('/trabalho'), cta: 'Abrir projeto' }
-    return null
-  }, [courses, sessions, book, project, nav])
-
-  return (
-    <section>
-      <h2 className="mb-3 text-lg font-bold text-tinta">Continue de onde parou</h2>
-      <div className={cn(card, 'flex min-w-0 items-center gap-4 p-5 sm:gap-6')}>
-        {item ? (
-          <>
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-rosa-100 text-tinta"><item.icon size={26} strokeWidth={1.7} /></span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-tinta/60">{item.area}</p>
-              <p className="line-clamp-2 text-lg font-bold leading-tight text-tinta sm:text-xl">{item.title}</p>
-              <div className="mt-2 flex items-center gap-3">
-                <Progress value={item.pct} color="#3E2723" track="#EFE8DA" height={6} className="max-w-xs flex-1" />
-                <span className="text-sm text-tinta/70">{Math.round(item.pct)}%</span>
-              </div>
-            </div>
-            <button onClick={item.go} className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-vinho text-white transition hover:bg-vinho-700 active:scale-95" aria-label={item.cta} title={item.cta}>
-              <Play size={20} className="ml-0.5 fill-current" />
-            </button>
-          </>
-        ) : (
-          <p className="flex-1 py-2 text-tinta/60">Comece um curso, um livro ou um projeto e ele aparece aqui.</p>
-        )}
+    <div className="grid overflow-hidden rounded-[2rem] border-2 border-ink bg-ink text-ink-fg md:grid-cols-[1fr_1.1fr]">
+      <div className="flex flex-col justify-center p-7 sm:p-8">
+        <p className="text-xs uppercase tracking-[0.3em] text-lavanda">mova*</p>
+        <h1 className="mt-3 font-serif text-5xl font-extrabold leading-none">Olá, {name}!</h1>
+        <p className="mt-4 max-w-xs text-ink-fg/80">Que tal dar mais um passo em direção aos seus objetivos hoje?</p>
+        <Link to="/agenda" className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-lavanda px-6 py-3 font-semibold text-ink transition hover:brightness-105">
+          Planejar meu dia <ArrowRight size={16} />
+        </Link>
       </div>
-    </section>
-  )
-}
-
-/** "Meus pilares": atalhos para as áreas principais. */
-export function Pillars() {
-  const items = [
-    { title: 'Planejamento', text: 'Organize sua rotina e próximos passos', icon: Target, to: '/agenda' },
-    { title: 'Finanças', text: 'Controle seus gastos e evolua seu planejamento', icon: Wallet, to: '/financas' },
-    { title: 'Estudos', text: 'Acompanhe sua evolução', icon: GraduationCap, to: '/estudos' },
-    { title: 'Leitura', text: 'Registre e mantenha o hábito', icon: BookOpen, to: '/leitura' },
-  ]
-  return (
-    <section>
-      <h2 className="mb-3 text-lg font-bold text-tinta">Meus pilares</h2>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {items.map(({ title, text, icon: I, to }) => (
-          <Link key={title} to={to} className="group flex items-start gap-4 rounded-[24px] border border-px-line bg-quente p-5 transition hover:border-rosa hover:bg-rosa-50">
-            <I size={28} strokeWidth={1.6} className="shrink-0 text-tinta" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-lg font-bold text-tinta">{title}</span>
-              <span className="mt-0.5 block text-sm leading-snug text-tinta/65">{text}</span>
-            </span>
-            <span className="grid h-10 w-10 shrink-0 place-items-center self-center rounded-full text-tinta/70 transition group-hover:translate-x-0.5"><ArrowRight size={18} /></span>
-          </Link>
-        ))}
+      <div className="relative m-3 min-h-64 overflow-hidden rounded-[1.5rem]">
+        <img src={gabi} alt="Ilustração da Gabi planejando o dia" className="absolute inset-0 h-full w-full object-cover object-[50%_22%]" />
       </div>
-    </section>
+    </div>
   )
 }
 
-/** Meu dia: tarefas de hoje com checkbox. */
+/** Data de hoje e o clima de Fortaleza. */
+export function DateWeather() {
+  const w = useWeather()
+  const d = fromISODate(today())
+  const date = d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })
+  const wd = d.toLocaleDateString('pt-BR', { weekday: 'long' }).replace('-feira', '')
+  const weekday = wd.charAt(0).toUpperCase() + wd.slice(1)
+  const kind = w ? weatherKind(w.code) : null
+  const WIcon = kind === 'sol' ? Sun : kind === 'chuva' ? CloudRain : Cloud
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <Link to="/agenda" className="flex items-center gap-2 rounded-full border-2 border-ink bg-quente px-4 py-2 text-sm font-medium text-ink">
+        <Calendar size={16} /> {date} <ChevronDown size={16} />
+      </Link>
+      <span className="flex items-center gap-1.5 text-sm text-tinta/60">
+        {weekday} {w && <><WIcon size={16} /> {w.temp}°C</>}
+      </span>
+    </div>
+  )
+}
+
+/** Três blocos: metas, tarefas de hoje e foco da semana. */
+export function StatTiles() {
+  const goals = useGoals()
+  const tasks = useTasks()
+  const t = today()
+  const done = goals.filter((g) => g.status === 'concluida').length
+  const pending = tasks.filter((x) => x.date === t && !x.done).length
+  const focus = useMemo(() => {
+    const days = new Set(weekDays(t))
+    const count = new Map<string, number>()
+    tasks.filter((x) => x.date && days.has(x.date) && x.area !== 'geral').forEach((x) => count.set(x.area, (count.get(x.area) ?? 0) + 1))
+    const top = [...count.entries()].sort((a, b) => b[1] - a[1])[0]
+    return top ? AREAS[top[0] as keyof typeof AREAS]?.label ?? '—' : '—'
+  }, [tasks, t])
+  const tile = 'min-w-0 rounded-3xl border-2 border-ink p-3 shadow-pixel sm:p-4'
+  return (
+    <div className="grid flex-1 grid-cols-3 gap-3 sm:gap-4">
+      <div className={cn(tile, 'bg-lavanda')}>
+        <Target size={24} />
+        <p className="mt-3 text-xs font-medium sm:text-sm">Metas</p>
+        <p className="font-serif text-3xl font-bold">{done} <span className="font-sans text-sm font-normal">de {goals.length}</span></p>
+        <Bar value={ratio(done, goals.length)} className="mt-2" />
+      </div>
+      <Link to="/agenda" className={cn(tile, 'bg-salvia')}>
+        <CheckSquare size={24} />
+        <p className="mt-3 text-xs font-medium sm:text-sm">Tarefas hoje</p>
+        <p className="font-serif text-3xl font-bold">{pending}</p>
+        <p className="text-xs">{pending === 1 ? 'pendente' : 'pendentes'}</p>
+      </Link>
+      <div className={cn(tile, 'bg-px-gold-soft')}>
+        <BarChart3 size={24} />
+        <p className="mt-3 text-xs font-medium sm:text-sm">Foco da semana</p>
+        <p className="mt-2 font-serif text-base font-bold leading-tight text-cereja [overflow-wrap:anywhere] sm:text-2xl">{focus}</p>
+      </div>
+    </div>
+  )
+}
+
+/** Meu dia: tarefas de hoje com caixa de marcar. */
 export function MyDayCard() {
   const tasks = useTasks()
   const t = today()
   const list = tasks.filter((x) => x.date === t).sort((a, b) => Number(a.done) - Number(b.done) || a.order - b.order)
-  const label = fromISODate(t).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })
+  const raw = fromISODate(t).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }).replace('-feira', '')
+  const label = raw.charAt(0).toUpperCase() + raw.slice(1)
   return (
-    <section className={cn(card, 'flex flex-col')}>
-      <header className="mb-3 flex items-start gap-4">
-        <CalendarDays size={28} strokeWidth={1.6} className="mt-1 shrink-0 text-tinta" />
-        <div className="min-w-0 flex-1">
-          <h2 className="text-xl font-bold text-tinta">Meu dia</h2>
-          <p className="text-[15px] text-tinta/65">Hoje, {label}</p>
+    <div className={cn(card, 'flex flex-col')}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-lavanda"><Calendar size={20} /></span>
+          <div className="min-w-0">
+            <h2 className="font-serif text-xl font-bold">Meu dia</h2>
+            <p className="text-xs text-tinta/60">{label}</p>
+          </div>
         </div>
-        <button onClick={() => openForm('task', { date: t })} className="grid h-10 w-10 place-items-center rounded-full bg-rosa text-tinta hover:bg-queimado-300" aria-label="Nova tarefa para hoje"><Plus size={24} /></button>
-      </header>
+        <IconBtn label="Nova tarefa para hoje" onClick={() => openForm('task', { date: t })}><Plus size={16} /></IconBtn>
+      </div>
       {list.length === 0 ? (
-        <p className="my-auto py-6 text-center text-sm text-tinta/60">Nada marcado para hoje. Toque no + para adicionar.</p>
+        <p className="my-auto pt-12 text-center text-sm text-tinta/60">Nada marcado para hoje. Toque no + para adicionar.</p>
       ) : (
-        <ul className="divide-y divide-px-line sm:pl-11">
+        <ul className="mt-4 space-y-1">
           {list.slice(0, 5).map((task) => (
-            <li key={task.id} className="flex items-center gap-4 py-2.5">
-              <Checkbox checked={task.done} onChange={() => toggleTask(task)} label={task.title} size={22} color="#3E2723" />
-              <button onClick={() => openForm('task', task as never)} className={cn('min-w-0 flex-1 truncate text-left text-base', task.done ? 'text-tinta/45 line-through' : 'text-tinta')}>{task.title}</button>
+            <li key={task.id} className="flex items-center gap-3 py-1.5">
+              <Checkbox checked={task.done} onChange={() => toggleTask(task)} label={task.title} size={20} />
+              <button onClick={() => openForm('task', task as never)} className={cn('min-w-0 flex-1 truncate text-left text-sm', task.done ? 'text-tinta/45 line-through' : 'text-tinta')}>{task.title}</button>
             </li>
           ))}
+          {list.length > 5 && <li><Link to="/agenda" className="text-xs font-semibold underline underline-offset-4">+ {list.length - 5} na agenda</Link></li>}
         </ul>
       )}
-      {list.length > 5 && <Link to="/agenda" className="mt-2 sm:pl-11 text-sm font-semibold text-vinho hover:underline">+ {list.length - 5} na agenda</Link>}
-    </section>
+    </div>
   )
 }
 
-/** Evolução da semana: % das tarefas concluídas por dia + anel com o total da semana. */
+/** Evolução da semana: uma coluna por dia com o % de tarefas concluídas. */
 export function WeekChart() {
   const tasks = useTasks()
-  const [offset, setOffset] = useState(0)
-  const days = useMemo(() => weekDays(addDays(startOfWeek(today()), offset * 7)), [offset])
-  const data = useMemo(() => {
-    return days.map((d, i) => {
-      const dayTasks = tasks.filter((x) => x.date === d)
-      return { dia: WEEKDAYS_SHORT[i].charAt(0) + WEEKDAYS_SHORT[i].slice(1).toLowerCase(), pct: dayTasks.length ? Math.round(ratio(dayTasks.filter((x) => x.done).length, dayTasks.length)) : null }
-    })
-  }, [tasks, days])
-  const empty = data.every((d) => d.pct === null)
-  const week = tasks.filter((x) => x.date && days.includes(x.date))
-  const done = week.filter((x) => x.done).length
-  const weekPct = ratio(done, week.length)
+  const data = useMemo(() => weekDays(today()).map((d, i) => {
+    const day = tasks.filter((x) => x.date === d)
+    return { dia: WEEKDAYS_SHORT[i].charAt(0) + WEEKDAYS_SHORT[i].slice(1).toLowerCase(), pct: day.length ? Math.round(ratio(day.filter((x) => x.done).length, day.length)) : null }
+  }), [tasks])
+  const empty = data.every((d) => !d.pct)
   return (
-    <section className={cn(card, 'flex flex-col')}>
-      <header className="mb-2 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-bold text-tinta">Evolução da semana</h2>
-        <select value={offset} onChange={(e) => setOffset(Number(e.target.value))} className="h-9 rounded-full border border-px-line bg-quente px-3 text-sm text-tinta focus:outline-none" aria-label="Escolher semana">
-          <option value={0}>Esta semana</option>
-          <option value={-1}>Semana passada</option>
-        </select>
-      </header>
-      <div className="grid flex-1 items-center gap-4 sm:grid-cols-[minmax(0,1fr)_auto]">
-        <div className="relative h-48 sm:border-r sm:border-px-line sm:pr-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 16, right: 10, left: 10, bottom: 0 }}>
-              <defs>
-                <linearGradient id="evo" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#F4C9D6" stopOpacity={0.7} />
-                  <stop offset="100%" stopColor="#F4C9D6" stopOpacity={0.05} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="dia" tickLine={false} axisLine={{ stroke: '#E8DFD0' }} padding={{ left: 14, right: 14 }} tick={{ fontSize: 12, fill: 'rgba(62,39,35,0.7)' }} />
-              <Tooltip formatter={(v: number) => [`${v}%`, 'concluído']} contentStyle={{ borderRadius: 12, border: '1px solid #E8DFD0', fontSize: 12 }} />
-              <Area type="monotone" dataKey="pct" connectNulls animationDuration={500} stroke="#3E2723" strokeWidth={2} fill="url(#evo)" dot={{ r: 4, fill: '#FFFDF9', stroke: '#3E2723', strokeWidth: 2 }} />
-            </AreaChart>
-          </ResponsiveContainer>
-          {empty && <p className="absolute inset-0 grid place-items-center text-sm text-tinta/50">Conclua tarefas para ver sua evolução.</p>}
-        </div>
-        <Link to="/agenda" className="flex flex-col items-center gap-2 px-2 text-center">
-          <Ring value={weekPct} size={112} stroke={8} color="#3E2723" track="#F4C9D6">
-            <span className="text-2xl font-extrabold text-tinta">{Math.round(weekPct)}%</span>
-          </Ring>
-          <span className="text-sm leading-tight text-tinta/75"><b className="text-tinta">{done} de {week.length}</b><br />tarefas da semana</span>
-        </Link>
+    <div className={card}>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><BarChart3 size={20} /> Evolução da semana</h2>
+        <span className="shrink-0 rounded-full border-2 border-ink px-3 py-1 text-xs">Esta semana</span>
       </div>
-    </section>
+      <div className="mt-6 flex h-32 items-end justify-between gap-2">
+        {data.map(({ dia, pct }) => (
+          <div key={dia} className="flex flex-1 flex-col items-center gap-2" title={pct === null ? 'Sem tarefas' : `${pct}% concluído`}>
+            <div className="relative h-24 w-full rounded-xl border-2 border-dashed border-ink/25">
+              {!!pct && <div className="absolute inset-x-[-2px] bottom-[-2px] rounded-xl border-2 border-ink bg-lavanda" style={{ height: `calc(${pct}% + 2px)` }} />}
+            </div>
+            <span className="text-xs text-tinta/60">{dia}</span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-center text-xs text-tinta/60">{empty ? 'Conclua tarefas para ver sua evolução.' : '% das tarefas concluídas em cada dia.'}</p>
+    </div>
   )
 }
 
-/** Faixa "Meta principal": o cofre para sair de casa. */
-export function MainGoalBanner() {
-  const vault = useVault()
+/** Finanças: saldo atual e o mês em receitas/despesas. */
+export function FinanceCard() {
+  const f = useFinanceSummary()
   return (
-    <section className="flex flex-wrap items-center gap-x-8 gap-y-4 rounded-[24px] bg-vinho px-6 py-6 text-creme sm:px-9">
-      <div>
-        <p className="text-sm text-rosa">Meta principal</p>
-        <p className="text-2xl font-bold">Sair de casa</p>
+    <div className={card}>
+      <div className="flex items-center justify-between">
+        <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><Wallet size={20} /> Finanças</h2>
+        <IconBtn label="Abrir finanças" to="/financas"><ArrowRight size={16} /></IconBtn>
       </div>
-      <div className="flex min-w-[220px] flex-1 items-center gap-4 md:max-w-md">
-        <Progress value={vault.progress} color="#F4C9D6" track="rgba(245,240,230,0.18)" height={8} className="flex-1" />
-        <span className="text-lg font-bold">{Math.round(vault.progress)}%</span>
+      <p className="mt-4 text-xs text-tinta/60">Saldo atual</p>
+      <p className="font-serif text-4xl font-bold text-cereja">{money(f.balance)}</p>
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-2xl border-2 border-ink bg-salvia p-3">
+          <p className="flex items-center gap-1 text-xs"><ArrowUp size={12} /> Receitas</p>
+          <p className="font-bold">{money(f.income)}</p>
+        </div>
+        <div className="rounded-2xl border-2 border-ink bg-lavanda p-3">
+          <p className="flex items-center gap-1 text-xs"><ArrowDown size={12} /> Despesas</p>
+          <p className="font-bold">{money(f.expenses)}</p>
+        </div>
       </div>
-      <Link to="/sair-de-casa" className="ml-auto inline-flex h-11 items-center gap-2 rounded-full bg-rosa px-5 text-[15px] font-semibold text-tinta transition hover:bg-rosa-100">
-        Ver plano <ArrowRight size={18} />
-      </Link>
+    </div>
+  )
+}
+
+/** Em andamento: Estudos, Leitura e Sair de casa + a frase. */
+export function InProgress() {
+  const study = useStudyWeek()
+  const book = useBooks().find((b) => b.status === 'lendo')
+  const vault = useVault()
+  const items = [
+    { label: 'Estudos', icon: GraduationCap, value: study.progress, to: '/estudos' },
+    { label: 'Leitura', icon: BookOpen, value: book ? ratio(book.currentPage, book.pages) : 0, to: '/leitura' },
+    { label: 'Sair de casa', icon: HomeIcon, value: vault.progress, to: '/sair-de-casa' },
+  ]
+  return (
+    <section>
+      <h2 className="mb-4 flex items-center gap-2 font-serif text-2xl font-bold"><Layers size={20} /> Em andamento</h2>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {items.map(({ label, icon: I, value, to }) => (
+          <Link key={label} to={to} className={cn(card, 'group block transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift')}>
+            <div className="flex items-center justify-between">
+              <I size={24} />
+              <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-ink bg-quente transition group-hover:bg-lavanda"><ArrowRight size={16} /></span>
+            </div>
+            <p className="mt-4 font-serif text-xl font-bold">{label}</p>
+            <p className="text-sm text-tinta/60">{Math.round(value)}%</p>
+            <Bar value={value} className="mt-3 bg-nevoa" />
+          </Link>
+        ))}
+        <div className="flex flex-col justify-between rounded-3xl border-2 border-ink bg-ink p-6 text-ink-fg shadow-lavanda">
+          <p className="font-serif text-2xl italic leading-snug">“Disciplina hoje, liberdade amanhã.”</p>
+          <Logo light className="mt-6 !text-xl" />
+        </div>
+      </div>
     </section>
   )
 }

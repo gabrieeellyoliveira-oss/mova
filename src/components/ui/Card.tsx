@@ -3,14 +3,14 @@ import { cn } from '@/lib/cn'
 
 type Tone = 'creme' | 'quente' | 'rosa' | 'vinho' | 'oliva' | 'nevoa'
 
-// cards brancos com borda suave e sombra leve; "tom" muda o fundo
+// cards creme com borda de 2px em tinta e sombra deslocada; "tom" muda o fundo
 const tones: Record<Tone, string> = {
   quente: 'bg-px-panel text-tinta',
-  creme: 'bg-rosa-50 text-tinta',
-  rosa: 'bg-rosa-100 text-vinho',
-  vinho: 'bg-vinho text-white',
-  oliva: 'bg-oliva-100 text-oliva-600',
-  nevoa: 'bg-nevoa text-vinho',
+  creme: 'bg-px-gold-soft text-tinta',
+  rosa: 'bg-lavanda text-ink',
+  vinho: 'bg-ink text-ink-fg',
+  oliva: 'bg-salvia text-ink',
+  nevoa: 'bg-nevoa text-ink',
 }
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
@@ -22,9 +22,9 @@ export function Card({ tone = 'quente', hover, className, ...props }: CardProps)
   return (
     <div
       className={cn(
-        'min-w-0 rounded-px border border-px-line p-5 shadow-pixel sm:p-6',
+        'min-w-0 rounded-px border-2 border-ink p-5 shadow-pixel sm:p-6',
         tones[tone],
-        hover && 'transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lift',
+        hover && 'transition-[transform,box-shadow] duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift',
         className,
       )}
       {...props}
@@ -43,12 +43,12 @@ export function CardHeader({
     <div className={cn('mb-4', className)}>
       <div className="px-titlebar justify-between">
         <span className="flex min-w-0 items-center gap-2">
-          {icon && <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-rosa-50 text-vinho [&_svg]:h-[18px] [&_svg]:w-[18px]">{icon}</span>}
+          {icon && <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-lavanda text-ink [&_svg]:h-5 [&_svg]:w-5">{icon}</span>}
           <span className="truncate">{title}</span>
         </span>
         {action && <span className="shrink-0 text-xs font-medium">{action}</span>}
       </div>
-      {subtitle && <p className="mt-1 truncate text-sm text-vinho/60">{subtitle}</p>}
+      {subtitle && <p className="mt-1 truncate text-xs text-tinta/60">{subtitle}</p>}
     </div>
   )
 }

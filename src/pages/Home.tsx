@@ -1,23 +1,24 @@
-import { ContinueCard, Greeting, MainGoalBanner, MyDayCard, Pillars, WeekChart } from '@/components/home/HomeCards'
+import { DateWeather, FinanceCard, HeroCard, InProgress, MyDayCard, StatTiles, WeekChart } from '@/components/home/HomeCards'
 import { LinkedInWidget } from '@/components/widgets/LinkedInWidget'
 
-/** Dashboard: "Oi, Gabi!", continue de onde parou, pilares, meu dia, evolução e meta principal. */
+/** Visão geral (projeto "Login Look Dashboard"): capa, números, meu dia, evolução, finanças e em andamento. */
 export default function Home() {
   return (
     <div className="min-w-0 space-y-6">
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="min-w-0 space-y-6">
-          <Greeting />
-          <ContinueCard />
-          <Pillars />
+      <section className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+        <HeroCard />
+        <div className="flex flex-col gap-4">
+          <DateWeather />
+          <StatTiles />
         </div>
-        <div className="min-w-0 space-y-6">
-          <MyDayCard />
-          <WeekChart />
-        </div>
-      </div>
-      <MainGoalBanner />
-      <div className="grid gap-6 lg:grid-cols-3">
+      </section>
+      <section className="grid gap-6 lg:grid-cols-3">
+        <MyDayCard />
+        <WeekChart />
+        <FinanceCard />
+      </section>
+      <InProgress />
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <LinkedInWidget />
       </div>
     </div>

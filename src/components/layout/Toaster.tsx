@@ -17,7 +17,7 @@ export function Toaster() {
           <button
             key={t.id}
             onClick={() => dismissToast(t.id)}
-            className="pointer-events-auto relative flex max-w-sm items-center gap-3 rounded-2xl border border-px-line bg-white px-4 py-3 text-left shadow-lift animate-rise"
+            className="pointer-events-auto relative flex max-w-sm items-center gap-3 rounded-2xl border-2 border-ink bg-quente px-4 py-3 text-left shadow-lift animate-rise"
           >
             <span className={cn('grid h-10 w-10 shrink-0 place-items-center rounded-xl', achievement ? 'bg-pastel-yellow' : 'bg-rosa-100')}>
               {achievement ? <Icon name={t.sprite ?? 'trophy'} size={20} /> : KindIcon && <KindIcon size={18} className="text-vinho" />}

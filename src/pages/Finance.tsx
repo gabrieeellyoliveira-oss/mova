@@ -32,7 +32,7 @@ function BudgetCard() {
       ) : (
         <p className="mt-2 text-2xl font-extrabold tracking-tight sm:text-[28px]">{money(Math.max(0, s.budgetLeft))}</p>
       )}
-      <Progress value={s.budgetUsed} color={s.budgetUsed > 90 ? '#C0466A' : '#6E8B6A'} track="rgba(63,110,82,0.15)" className="mt-auto" height={8} />
+      <Progress value={s.budgetUsed} color={s.budgetUsed > 90 ? '#C0466A' : '#376139'} track="rgba(63,110,82,0.15)" className="mt-auto" height={8} />
       <p className="mt-1.5 text-xs opacity-70">{Math.round(s.budgetUsed)}% de {money(s.budget)}</p>
     </div>
   )

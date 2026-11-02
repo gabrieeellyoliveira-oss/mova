@@ -24,7 +24,7 @@ export function FocusTimer() {
       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-rosa">um tempinho só pra você</p>
       <h2 className="mt-1 font-display text-5xl leading-[1.05]">Foco</h2>
       <div className="my-6 flex justify-center">
-        <Ring value={(1 - t.remaining / total) * 100} size={200} stroke={12} color="#F4C9D6" track="rgba(239,175,179,0.16)">
+        <Ring value={(1 - t.remaining / total) * 100} size={200} stroke={12} color="#C3AEEC" track="rgba(239,175,179,0.16)">
           <div className="text-center">
             <p className="text-5xl font-extrabold tabular-nums tracking-tight text-rosa-50">{mm}:{ss}</p>
             <p className="mt-1 text-xs text-rosa-50/60">{t.running ? 'respira e vai' : started ? 'pausado' : `${t.duration} minutos`}</p>
@@ -33,7 +33,7 @@ export function FocusTimer() {
       </div>
       <div className="mb-4 flex flex-wrap justify-center gap-2">
         {PRESETS.map((m) => (
-          <Chip key={m} disabled={t.running} active={t.duration === m} onClick={() => focusTimer.setDuration(m)} className={t.duration === m ? 'border-rosa bg-rosa text-vinho' : 'border-rosa-50/20 bg-transparent text-rosa-50 hover:bg-white/10'}>
+          <Chip key={m} disabled={t.running} active={t.duration === m} onClick={() => focusTimer.setDuration(m)} className={t.duration === m ? 'border-rosa bg-rosa text-vinho' : 'border-rosa-50/20 bg-transparent text-rosa-50 hover:bg-quente/10'}>
             {m} min
           </Chip>
         ))}
@@ -53,8 +53,8 @@ export function FocusTimer() {
         )}
         {started && (
           <>
-            <Button size="icon" variant="ghost" className="text-rosa-50 hover:bg-white/10" onClick={focusTimer.finishEarly} title="Encerrar e registrar" aria-label="Encerrar e registrar"><Square size={16} /></Button>
-            <Button size="icon" variant="ghost" className="text-rosa-50 hover:bg-white/10" onClick={focusTimer.reset} title="Recomeçar" aria-label="Recomeçar"><RotateCcw size={16} /></Button>
+            <Button size="icon" variant="ghost" className="text-rosa-50 hover:bg-quente/10" onClick={focusTimer.finishEarly} title="Encerrar e registrar" aria-label="Encerrar e registrar"><Square size={16} /></Button>
+            <Button size="icon" variant="ghost" className="text-rosa-50 hover:bg-quente/10" onClick={focusTimer.reset} title="Recomeçar" aria-label="Recomeçar"><RotateCcw size={16} /></Button>
           </>
         )}
       </div>

@@ -1,28 +1,33 @@
-# MOVA — direção visual (nov/2026)
+# mova* — direção visual (nov/2026)
 
-Referências da Gabi: um dashboard com menu no topo e cards arredondados
-(saudação, "Continue de onde parou", pilares, meu dia, evolução da semana,
-meta principal) e a paleta "Deep Espresso / Petal Reverie / Ivory Hearth".
-Pedido dela: **algo bem minimalista**, sem foto/ilustração e sem frase motivacional.
+Referência da Gabi: o projeto **"Login Look Dashboard"** dela na Lovable
+(`src/routes/index.tsx` e `src/styles.css`) e a imagem do login com a ilustração dela.
+Pedido: "imite tudo, design tudo" — login e Visão geral iguais ao projeto, e as
+demais abas no mesmo estilo.
 
 ## Paleta
 | Papel | Cor | Tokens |
 | --- | --- | --- |
-| Principal (texto, botões, gráficos, aba ativa, faixa "Meta principal") | Deep Espresso `#3E2723` | `vinho`, `cereja`, `tinta` |
-| Destaque (cartão "Oi, Gabi!", botões secundários, área do gráfico) | Petal Reverie `#F4C9D6` | `rosa`, `lima`, `px-gold` |
-| Fundo | Ivory Hearth `#F5F0E6` | `creme` |
-| Cards | `#FFFDF9` com linha `#E8DFD0` | `quente`, `px-line` |
-| Entradas / sucesso | verde suave `#6E8B6A` | `oliva` |
+| Tinta (cabeçalho, capa, bordas, sombras, texto) | `#0C0A0E` | `ink`, `vinho`, `tinta`, `px-line` |
+| Texto claro sobre a tinta | `#F6F1E7` | `ink-fg` |
+| Lavanda (aba ativa, botões, blocos) | `#C3AEEC` · `#DCD1F4` · `#EBE4FA` | `lavanda`, `rosa`, `queimado` |
+| Sálvia (blocos, receitas) | `#A8CA96` · `#D2E5C8` · escuro `#376139` | `salvia`, `oliva` |
+| Creme (blocos) | `#FAF1DF` | `px-gold-soft`, `pastel-yellow` |
+| Vinho (saldo, foco da semana) | `#702335` | `cereja` |
+| Fundo da página | `#F1EFF4` | `creme` |
+| Cards | `#FEFCF7` | `quente`, `px-panel` |
 
 ## Princípios
-- Minimalista: só essas cores, sem gradientes, sem ilustrações, sem fotos, sem emojis decorativos.
-- Cards marfim-claro com borda fina e quase nenhuma sombra; cantos de 24px.
-- DM Sans em tudo; títulos em negrito, textos de apoio em espresso com transparência.
-- Ícones de linha fina (lucide).
+- Cards: `rounded-3xl border-2 border-ink bg-quente shadow-pixel` (sombra sólida 4px 4px).
+- Botão principal: pílula lavanda com borda de tinta; secundário: tinta; contorno: creme com borda.
+- Fraunces (serifa) em títulos, números e logo; Figtree no texto.
+- Cabeçalho tinta com abas em pílula; ícones claros; avatar sálvia.
+- Ilustração da Gabi (`src/assets/gabi-login.webp`) no login e na capa.
 - Sem cereja, pixel art, XP, nível ou linguagem de jogo.
 
 ## Peças
 - `TopNav` / `Topbar` / `BottomNav` / `HeaderActions` — navegação (Configurações só no menu da conta).
-- `components/home/HomeCards.tsx` — Dashboard ("Oi, Gabi!", Continue de onde parou, Meus pilares, Meu dia, Evolução da semana, Meta principal).
-- `components/finance/FinanceTop.tsx` — cartão do saldo, próxima receita, resumo rápido.
-- Primitivos em `components/ui/` (Card, Button, Chip/Segmented, Form, Modal, Progress, Icon).
+- `components/home/HomeCards.tsx` — Visão geral (HeroCard, DateWeather, StatTiles, MyDayCard, WeekChart, FinanceCard, InProgress).
+- `pages/Login.tsx` + `components/auth/AuthField.tsx` — login escuro com a ilustração.
+- `components/finance/FinanceTop.tsx` — cartão escuro do saldo, próxima receita, resumo rápido.
+- Primitivos em `components/ui/` (Card, Button, Chip/Segmented, Form, Modal, Progress, Checkbox, Icon).

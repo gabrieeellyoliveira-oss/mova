@@ -5,11 +5,11 @@
 /* ---------- Tokens do MOVA ---------- */
 :root {
   color-scheme: light;
-  --mova-bg: #F5F0E6;     /* fundo da página (marfim) */
-  --mova-card: #ffffff;   /* cards */
-  --mova-line: #E8DFD0;   /* bordas suaves */
-  --mova-plum: #3E2723;   /* cor principal (espresso) */
-  --mova-radius: 20px;    /* cantos dos cards */
+  --mova-bg: #F1EFF4;     /* fundo da página (lilás acinzentado) */
+  --mova-card: #FEFCF7;   /* cards (creme bem claro) */
+  --mova-ink: #0C0A0E;    /* tinta: bordas, cabeçalho e sombras */
+  --mova-lavender: #C3AEEC;
+  --mova-radius: 28px;    /* cantos dos cards */
   --mova-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -19,27 +19,29 @@
     @apply font-sans text-tinta antialiased;
     background-color: var(--mova-bg);
   }
-  ::selection { @apply bg-rosa text-vinho; }
+  ::selection { @apply bg-lavanda text-ink; }
+  h1, h2, h3 { font-family: 'Fraunces Variable', Georgia, serif; }
   input[type='date'], input[type='time'] { @apply cursor-pointer; }
-  * { scrollbar-width: thin; scrollbar-color: rgba(62, 39, 35, 0.22) transparent; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(12, 10, 14, 0.25) transparent; }
 }
 
 @layer components {
   /* Card base */
   .px-panel {
     background: var(--mova-card);
-    border: 1px solid var(--mova-line);
+    border: 2px solid var(--mova-ink);
     border-radius: var(--mova-radius);
     @apply shadow-pixel;
   }
   /* Cabeçalho dos cards: título forte, sem faixa */
   .px-titlebar {
-    @apply flex items-center gap-2 text-[17px] font-bold text-tinta;
+    @apply flex items-center gap-2 font-serif text-xl font-bold text-tinta;
   }
   /* Trilho das barras de progresso */
   .px-track {
     border-radius: 999px;
-    background: #EFE8DA;
+    background: var(--mova-card);
+    box-shadow: inset 0 0 0 1px var(--mova-ink);
     overflow: hidden;
     position: relative;
   }
@@ -48,9 +50,9 @@
 }
 
 @layer utilities {
-  .font-logo { font-weight: 800; letter-spacing: 0.02em; }
+  .font-logo { font-weight: 800; letter-spacing: -0.02em; }
   .font-heading { font-weight: 700; }
-  .font-display { font-weight: 800; letter-spacing: -0.02em; }
+  .font-display { font-weight: 700; letter-spacing: -0.01em; }
   .tabular-nums { font-variant-numeric: tabular-nums; }
   .no-scrollbar { scrollbar-width: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }

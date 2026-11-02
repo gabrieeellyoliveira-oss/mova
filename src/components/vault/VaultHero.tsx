@@ -15,7 +15,7 @@ export function VaultHero() {
     <section className="relative overflow-hidden rounded-px border-2 border-px-line bg-vinho p-6 text-rosa-50 shadow-pixel sm:p-8">
       <div className="grid items-center gap-8 lg:grid-cols-[auto_minmax(0,1fr)]">
         <div className="flex flex-col items-center gap-5 sm:flex-row lg:flex-col xl:flex-row">
-          <Ring value={v.progress} size={190} stroke={14} color="#F4C9D6" track="rgba(239,175,179,0.16)">
+          <Ring value={v.progress} size={190} stroke={14} color="#C3AEEC" track="rgba(239,175,179,0.16)">
             <div className="text-center">
               <p className="text-5xl font-extrabold tracking-tight">{Math.round(v.progress)}%</p>
               <p className="text-xs text-rosa-50/70">da meta</p>
@@ -28,7 +28,7 @@ export function VaultHero() {
             <p className="mt-3 text-base font-semibold text-rosa">{done ? 'Meta batida! Hora de procurar a casa nova 🔑' : `Faltam ${money(v.remaining)}`}</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start lg:justify-center xl:justify-start">
               <Button variant="light" onClick={() => openForm('deposit', { type: 'deposito' })}><Plus size={16} strokeWidth={2.6} /> Guardar</Button>
-              <Button variant="ghost" className="text-rosa-50 hover:bg-white/10" onClick={() => openForm('deposit', { type: 'retirada' })}><ArrowDownRight size={16} /> Retirar</Button>
+              <Button variant="ghost" className="text-rosa-50 hover:bg-quente/10" onClick={() => openForm('deposit', { type: 'retirada' })}><ArrowDownRight size={16} /> Retirar</Button>
             </div>
           </div>
         </div>

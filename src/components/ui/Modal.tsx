@@ -37,23 +37,23 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-vinho-950/40 backdrop-blur-[2px] animate-[rise_.15s_ease-out]" onClick={onClose} />
+      <div className="absolute inset-0 bg-ink/50 backdrop-blur-[2px] animate-[rise_.15s_ease-out]" onClick={onClose} />
       <div
         ref={panel}
         className={cn(
-          'relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[28px] bg-white shadow-lift animate-rise sm:rounded-[28px]',
+          'relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[28px] border-2 border-ink bg-quente shadow-lift animate-rise sm:rounded-[28px]',
           widths[size],
         )}
       >
         <div className="flex items-center justify-between gap-3 px-6 pb-1 pt-5">
-          <h2 className="truncate text-xl font-bold text-tinta">{title}</h2>
-          <button onClick={onClose} className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-rosa-50 text-vinho hover:bg-rosa-100" aria-label="Fechar">
+          <h2 className="truncate font-serif text-2xl font-bold text-tinta">{title}</h2>
+          <button onClick={onClose} className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-ink bg-quente text-ink hover:bg-lavanda" aria-label="Fechar">
             <X size={16} />
           </button>
         </div>
-        {subtitle && <p className="px-6 text-sm text-vinho/60">{subtitle}</p>}
+        {subtitle && <p className="px-6 text-sm text-tinta/60">{subtitle}</p>}
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
-        {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t border-px-line px-6 py-4">{footer}</div>}
+        {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t-2 border-ink px-6 py-4">{footer}</div>}
       </div>
     </div>,
     document.body,

@@ -55,8 +55,8 @@ export function FocusMode() {
 
   return (
     <div className="fixed inset-0 z-[65] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Modo foco">
-      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_0%,#ECE5FB_0%,#EBC3CF_45%,#3E2723_120%)] backdrop-blur" />
-      <div className="relative w-full max-w-md animate-rise rounded-[28px] bg-white shadow-lift">
+      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_0%,#ECE5FB_0%,#DCD1F4_45%,#0C0A0E_120%)] backdrop-blur" />
+      <div className="relative w-full max-w-md animate-rise rounded-[28px] bg-quente shadow-lift">
         <div className="flex items-center justify-between px-6 pb-1 pt-5">
           <span className="flex items-center gap-2 text-xl font-bold text-tinta"><Icon name="hourglass" size={22} /> Modo foco</span>
           <button onClick={() => setFocusMode(false)} className="grid h-9 w-9 place-items-center rounded-full bg-rosa-50 text-vinho hover:bg-rosa-100" aria-label="Sair do modo foco"><X size={16} /></button>
@@ -73,12 +73,12 @@ export function FocusMode() {
               <form onSubmit={(e) => { e.preventDefault(); createMission() }} className="flex gap-2">
                 <input
                   value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="No que você vai focar agora?" aria-label="Nova tarefa"
-                  className="h-11 min-w-0 flex-1 rounded-xl border border-px-line bg-white px-3.5 text-sm text-tinta placeholder:text-vinho/40 focus:border-queimado focus:outline-none"
+                  className="h-11 min-w-0 flex-1 rounded-xl border-2 border-ink bg-quente px-3.5 text-sm text-tinta placeholder:text-vinho/40 focus:border-queimado focus:outline-none"
                 />
                 <Button type="submit" disabled={!draft.trim()}><Plus size={16} /> Criar</Button>
               </form>
               {pending.length > 0 && (
-                <select value="" onChange={(e) => setTaskId(e.target.value)} className="h-11 w-full rounded-xl border border-px-line bg-white px-3.5 text-sm text-vinho focus:outline-none" aria-label="Escolher tarefa pendente">
+                <select value="" onChange={(e) => setTaskId(e.target.value)} className="h-11 w-full rounded-xl border-2 border-ink bg-quente px-3.5 text-sm text-vinho focus:outline-none" aria-label="Escolher tarefa pendente">
                   <option value="">{course ? `Ou escolha uma pendente (agora: ${course.name})` : 'Ou escolha uma tarefa pendente'}</option>
                   {pending.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
                 </select>

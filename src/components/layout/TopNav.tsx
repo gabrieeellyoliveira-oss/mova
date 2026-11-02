@@ -31,35 +31,35 @@ export function TopNav() {
   const moreActive = more.some((i) => pathname.startsWith(i.path))
 
   return (
-    <header className="sticky top-0 z-30 hidden bg-creme/85 backdrop-blur-md lg:block">
-      <div className="mx-auto flex h-[76px] max-w-[1600px] items-center gap-4 px-6">
-        <Link to="/" className="shrink-0 pr-2"><Logo /></Link>
-        <nav className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto pl-6" aria-label="Menu principal">
+    <header className="sticky top-0 z-30 hidden bg-ink text-ink-fg lg:block">
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-6 px-6">
+        <Link to="/" className="shrink-0"><Logo light /></Link>
+        <nav className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto" aria-label="Menu principal">
           {main.map(({ label, path, sprite }) => (
             <NavLink
               key={path}
               to={path}
               end={path === '/'}
               className={({ isActive }) => cn(
-                'flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2.5 text-[15px] font-medium transition-colors',
-                isActive ? 'bg-vinho text-white shadow-soft' : 'text-tinta/85 hover:bg-rosa-100 hover:text-vinho',
+                'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition',
+                isActive ? 'bg-lavanda text-ink' : 'text-ink-fg/75 hover:bg-ink-fg/10 hover:text-ink-fg',
               )}
             >
-              {({ isActive }) => (<><Icon name={sprite} size={18} className={isActive ? 'text-white' : undefined} />{label}</>)}
+              {({ isActive }) => (<><Icon name={sprite} size={16} className={isActive ? 'text-ink' : undefined} />{label}</>)}
             </NavLink>
           ))}
           <div ref={moreRef} className="relative shrink-0">
-            <button onClick={() => setOpenMore((o) => !o)} className={cn('flex items-center gap-1 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-colors', moreActive ? 'bg-vinho text-white' : 'text-tinta/80 hover:bg-rosa-100')}>
-              Mais <ChevronDown size={15} />
+            <button onClick={() => setOpenMore((o) => !o)} className={cn('flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition', moreActive ? 'bg-lavanda text-ink' : 'text-ink-fg/75 hover:bg-ink-fg/10 hover:text-ink-fg')}>
+              Mais <ChevronDown size={16} />
             </button>
           </div>
         </nav>
         <HeaderActions />
       </div>
       {openMore && (
-        <div ref={dropRef} className="absolute z-50 rounded-2xl border border-px-line bg-white p-2 shadow-lift animate-rise" style={{ left: moreRef.current ? moreRef.current.getBoundingClientRect().left : 0, top: 70 }}>
+        <div ref={dropRef} className="absolute z-50 rounded-3xl border-2 border-ink bg-quente p-2 text-tinta shadow-pixel animate-rise" style={{ left: moreRef.current ? moreRef.current.getBoundingClientRect().left : 0, top: 64 }}>
           {more.map(({ label, path, sprite }) => (
-            <Link key={path} to={path} className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-vinho hover:bg-rosa-50"><Icon name={sprite} size={17} />{label}</Link>
+            <Link key={path} to={path} className="flex items-center gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium text-tinta hover:bg-lavanda-100"><Icon name={sprite} size={17} />{label}</Link>
           ))}
         </div>
       )}

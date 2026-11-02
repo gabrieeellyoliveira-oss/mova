@@ -4,50 +4,55 @@ export default {
   theme: {
     extend: {
       colors: {
-        // paleta do MOVA (nov/2026): Deep Espresso + Petal Reverie + Ivory Hearth, minimalista
-        vinho: { DEFAULT: '#3E2723', 950: '#1F1311', 900: '#2A1A17', 800: '#33201D', 700: '#5A3C36' },
-        cereja: { DEFAULT: '#3E2723', 600: '#33201D' }, // destaque (gráficos, progresso)
-        queimado: { DEFAULT: '#D99AAE', 300: '#EBC3CF' },
-        rosa: { DEFAULT: '#F4C9D6', 100: '#F9E1E8', 50: '#FCF0F3' },
-        nevoa: '#EAE3D6',
-        creme: { DEFAULT: '#F5F0E6', 100: '#EFE8DA', 200: '#E6DDCB' },
-        quente: '#FFFDF9',
-        tinta: '#3E2723',
-        oliva: { DEFAULT: '#6E8B6A', 100: '#E6EDE1', 600: '#4F6A4C' },
-        lima: { DEFAULT: '#F4C9D6', 300: '#F9E1E8' },
+        // paleta "moova*" (projeto Login Look Dashboard da Gabi): tinta quase preta, lavanda, sálvia, creme e vinho
+        ink: { DEFAULT: '#0C0A0E', soft: '#222126', fg: '#F6F1E7' },
+        lavanda: { DEFAULT: '#C3AEEC', 200: '#DCD1F4', 100: '#EBE4FA' },
+        salvia: { DEFAULT: '#A8CA96', 200: '#D2E5C8', deep: '#376139' },
+        vinho: { DEFAULT: '#0C0A0E', 950: '#050406', 900: '#0C0A0E', 800: '#1A181D', 700: '#222126' },
+        cereja: { DEFAULT: '#702335', 600: '#5E1C2C' }, // vinho do saldo e dos destaques
+        queimado: { DEFAULT: '#C3AEEC', 300: '#DCD1F4' },
+        rosa: { DEFAULT: '#C3AEEC', 100: '#DCD1F4', 50: '#EBE4FA' },
+        nevoa: '#EBE7E0',
+        creme: { DEFAULT: '#F1EFF4', 100: '#E8E5EC', 200: '#DEDAE3' },
+        quente: '#FEFCF7',
+        tinta: '#100E13',
+        oliva: { DEFAULT: '#376139', 100: '#D2E5C8', 600: '#2A4B2C' },
+        lima: { DEFAULT: '#A8CA96', 300: '#D2E5C8' },
         // superfícies (nomes antigos mantidos para não quebrar as telas)
         px: {
-          ink: '#3E2723',
-          line: '#E8DFD0',
-          panel: '#FFFDF9',
-          soft: '#F3EDE2',
-          field: '#FAF7F1',
-          gold: '#F4C9D6',
-          'gold-soft': '#FCF0F3',
-          brown: '#8A6F5C',
+          ink: '#0C0A0E',
+          line: '#0C0A0E',
+          panel: '#FEFCF7',
+          soft: '#F4F1EA',
+          field: '#FEFCF7',
+          gold: '#ECC980',
+          'gold-soft': '#FAF1DF',
+          brown: '#5F5C65',
         },
-        // blocos suaves (todos dentro da paleta: rosa e marfim)
-        pastel: { pink: '#F9E1E8', lilac: '#F3ECE0', peach: '#F7E6E0', mint: '#EEF0E6', yellow: '#F6EFE2', blue: '#F1EDE6' },
+        // blocos (lavanda, sálvia e creme do projeto)
+        pastel: { pink: '#EBE4FA', lilac: '#DCD1F4', peach: '#FAF1DF', mint: '#D2E5C8', yellow: '#FAF1DF', blue: '#EBE4FA' },
       },
       fontFamily: {
-        // tudo em DM Sans; os nomes antigos apontam para ela
-        logo: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
-        pixel: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
-        heading: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
-        display: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
-        sans: ['"DM Sans Variable"', 'system-ui', 'sans-serif'],
+        // títulos e números em Fraunces (serifa), texto em Figtree
+        serif: ['"Fraunces Variable"', 'Georgia', 'serif'],
+        logo: ['"Fraunces Variable"', 'Georgia', 'serif'],
+        heading: ['"Fraunces Variable"', 'Georgia', 'serif'],
+        display: ['"Fraunces Variable"', 'Georgia', 'serif'],
+        pixel: ['"Figtree Variable"', 'system-ui', 'sans-serif'],
+        sans: ['"Figtree Variable"', 'system-ui', 'sans-serif'],
       },
-      borderRadius: { '4xl': '2rem', px: '20px' },
-      // bordas finas: as telas usam border-2, que aqui vira 1px
-      borderWidth: { 2: '1px', px2: '1px', px3: '2px' },
+      borderRadius: { '4xl': '2rem', px: '28px' },
+      // bordas de 2px em tinta, como no projeto de referência
+      borderWidth: { 2: '2px', px2: '2px', px3: '2px' },
       boxShadow: {
-        soft: '0 1px 2px rgba(62,39,35,0.04), 0 8px 24px -12px rgba(62,39,35,0.14)',
-        lift: '0 2px 4px rgba(62,39,35,0.05), 0 18px 36px -16px rgba(62,39,35,0.22)',
-        // nomes antigos → sombras suaves
-        pixel: '0 1px 2px rgba(62,39,35,0.04), 0 8px 24px -14px rgba(62,39,35,0.16)',
-        'pixel-sm': '0 1px 2px rgba(62,39,35,0.06)',
+        // sombra "deslocada" sólida, como no projeto de referência
+        soft: 'none',
+        lift: '6px 6px 0 0 #0C0A0E',
+        pixel: '4px 4px 0 0 #0C0A0E',
+        'pixel-sm': '2px 2px 0 0 #0C0A0E',
         'pixel-press': 'none',
-        'pixel-glow': '0 0 0 3px rgba(244,201,214,0.6), 0 12px 28px -14px rgba(62,39,35,0.25)',
+        'pixel-glow': '0 0 0 3px #C3AEEC',
+        lavanda: '4px 4px 0 0 #C3AEEC',
       },
       keyframes: {
         pop: { '0%': { transform: 'scale(0.6)' }, '60%': { transform: 'scale(1.15)' }, '100%': { transform: 'scale(1)' } },

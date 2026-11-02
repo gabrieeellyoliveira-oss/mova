@@ -6,25 +6,17 @@ import { addMonths, daysBetween, fromISODate, monthKey, toISODate, today } from 
 import { money } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 
-/** Cartão com o saldo atual (inspirado no cartão rosa da referência). */
+/** Cartão escuro com o saldo atual (no estilo da capa do painel). */
 export function BalanceCard() {
   const s = useFinanceSummary()
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative pb-3">
-        <div aria-hidden className="absolute inset-x-3 bottom-0 h-full rounded-[22px] bg-[#7FA88E]" />
-        <div className="relative overflow-hidden rounded-[22px] bg-[linear-gradient(135deg,#D9849F_0%,#C1648A_55%,#A9547D_100%)] p-6 text-white shadow-lift">
-          <div aria-hidden className="absolute -right-10 -top-12 h-40 w-40 rounded-full bg-white/15 blur-xl" />
-          <div className="relative flex items-start justify-between">
-            <span className="h-8 w-11 rounded-md bg-[linear-gradient(135deg,#F4D58D,#D9A84E)] shadow-inner" />
-            <span className="text-sm font-semibold tracking-[0.2em]">MOVA</span>
-          </div>
-          <p className="relative mt-5 inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm tracking-[0.3em]">**** **** **** ****</p>
-          <div className="relative mt-6 flex items-end justify-between gap-3">
-            <span className="text-xs font-semibold tracking-[0.18em] text-white/85">SALDO</span>
-            <span className="text-[28px] font-extrabold leading-none tracking-tight">{money(s.balance)}</span>
-          </div>
+      <div className="flex min-h-[170px] flex-col rounded-3xl border-2 border-ink bg-ink p-6 text-ink-fg shadow-lavanda">
+        <div className="flex items-start justify-between">
+          <p className="text-xs uppercase tracking-[0.3em] text-lavanda">Saldo atual</p>
+          <span className="font-serif text-lg font-extrabold">mova<span className="text-lavanda">*</span></span>
         </div>
+        <p className="mt-auto pt-6 font-serif text-4xl font-bold leading-none">{money(s.balance)}</p>
       </div>
       <div className="flex flex-wrap gap-2">
         <Button variant="olive" onClick={() => openForm('transaction', { type: 'receita', category: 'Salário' })}><ArrowUpRight size={16} /> Receita</Button>
@@ -56,11 +48,11 @@ export function NextIncome() {
   }, [tx])
   const days = next ? daysBetween(today(), next.date) : null
   return (
-    <div className="flex min-h-[170px] flex-col rounded-[22px] border border-px-line bg-white p-5 shadow-pixel">
+    <div className="flex min-h-[170px] flex-col rounded-[22px] border-2 border-ink bg-quente p-5 shadow-pixel">
       <p className="text-lg font-bold text-tinta">Próxima receita</p>
       {next ? (
         <>
-          <p className="mt-2 truncate rounded-full border border-px-line px-3 py-1.5 text-sm text-tinta/70">{next.name} ({fromISODate(next.date).toLocaleDateString('pt-BR')})</p>
+          <p className="mt-2 truncate rounded-full border-2 border-ink px-3 py-1.5 text-sm text-tinta/70">{next.name} ({fromISODate(next.date).toLocaleDateString('pt-BR')})</p>
           <p className="mt-auto pt-3 text-center text-5xl font-extrabold leading-none text-vinho">{days === 0 ? 'Hoje' : days}</p>
           {days !== 0 && <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-tinta/50">{days === 1 ? 'dia' : 'dias'}</p>}
         </>
@@ -89,7 +81,7 @@ export function QuickGlance() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {tiles.map((t) => (
           <div key={t.label} className={`flex flex-col items-center gap-1.5 rounded-[20px] px-2 py-4 text-center ${t.bg}`}>
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-white/70 text-xl" aria-hidden>{t.emoji}</span>
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-quente/70 text-xl" aria-hidden>{t.emoji}</span>
             <span className="text-[15px] font-bold text-tinta">{money(t.value)}</span>
             <span className="text-[11px] font-semibold uppercase tracking-wide text-tinta/60">{t.label}</span>
           </div>

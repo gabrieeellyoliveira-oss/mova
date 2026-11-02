@@ -4,7 +4,7 @@ import { clamp } from '@/utils/format'
 
 /** Barra de progresso arredondada. */
 export function Progress({
-  value, color = '#3E2723', track, className, height = 8, segmented = false,
+  value, color = '#0C0A0E', track, className, height = 8, segmented = false,
 }: { value: number; color?: string; track?: string; className?: string; height?: number; segmented?: boolean }) {
   return (
     <div className={cn('px-track w-full', segmented && 'px-segments', className)} style={{ height, backgroundColor: track }}>
@@ -21,7 +21,7 @@ export function Progress({
 }
 
 /** Anel de progresso (usado no cofre, trabalho, estudos e rotina) */
-export function Ring({ value, size = 64, stroke = 7, color = '#3E2723', track = 'rgba(62,39,35,0.08)', children }: { value: number; size?: number; stroke?: number; color?: string; track?: string; children?: ReactNode }) {
+export function Ring({ value, size = 64, stroke = 7, color = '#0C0A0E', track = '#EBE4FA', children }: { value: number; size?: number; stroke?: number; color?: string; track?: string; children?: ReactNode }) {
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   return (

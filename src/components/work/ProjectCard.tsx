@@ -53,7 +53,7 @@ export function ProjectCard({ project: p, stats: s, onEdit, onRecord }: { projec
           <span className="text-sm font-semibold text-vinho">{Math.round(s.progress)}%</span>
         </div>
         <div className="relative">
-          <Progress value={s.progress} color={done ? '#6E8B6A' : p.color} height={9} />
+          <Progress value={s.progress} color={done ? '#376139' : p.color} height={9} />
           {s.expectedPct !== null && !done && (
             <span className="absolute -top-1 bottom-[-4px] w-[3px] bg-tinta/70" style={{ left: `calc(${s.expectedPct}% - 1px)` }} title="onde o ritmo esperado diz que você estaria hoje" />
           )}
@@ -71,14 +71,14 @@ export function ProjectCard({ project: p, stats: s, onEdit, onRecord }: { projec
       {p.metric === 'etapas' && !done && (
         <div className="mt-3 space-y-1">
           {p.steps.filter((x) => !x.done).slice(0, 4).map((x) => (
-            <div key={x.id} className="flex items-center gap-2 rounded-md px-1 py-0.5 hover:bg-white/60">
+            <div key={x.id} className="flex items-center gap-2 rounded-md px-1 py-0.5 hover:bg-quente/60">
               <Checkbox checked={x.done} onChange={() => toggleStep(x.id)} label={x.title} size={18} />
               <span className="truncate text-sm text-tinta">{x.title}</span>
             </div>
           ))}
           {p.steps.filter((x) => !x.done).length > 4 && <button onClick={onEdit} className="pl-1 text-xs font-semibold text-cereja hover:underline">+ {p.steps.filter((x) => !x.done).length - 4} etapas</button>}
           <form onSubmit={(e) => { e.preventDefault(); addStep() }} className="flex items-center gap-1.5 pt-1">
-            <input value={step} onChange={(e) => setStep(e.target.value)} placeholder="Nova etapa…" aria-label={`Nova etapa em ${p.name}`} className="h-8 min-w-0 flex-1 rounded-md border-2 border-dashed border-vinho/20 bg-white/50 px-2 text-sm placeholder:text-vinho/40 focus:border-cereja focus:outline-none" />
+            <input value={step} onChange={(e) => setStep(e.target.value)} placeholder="Nova etapa…" aria-label={`Nova etapa em ${p.name}`} className="h-8 min-w-0 flex-1 rounded-md border-2 border-dashed border-vinho/20 bg-quente/50 px-2 text-sm placeholder:text-vinho/40 focus:border-cereja focus:outline-none" />
             <Button type="submit" size="icon-sm" variant="soft" disabled={!step.trim()} aria-label="Adicionar etapa"><Plus size={14} /></Button>
           </form>
         </div>

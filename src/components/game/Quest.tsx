@@ -15,8 +15,8 @@ export function Quest({
     <div
       onClick={onClick}
       className={cn(
-        'relative rounded-[24px] border border-px-line shadow-pixel transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lift',
-        main ? 'bg-[linear-gradient(135deg,#3E2723,#3E2723)] p-6 text-white' : 'bg-white p-5 text-tinta',
+        'relative rounded-[24px] border-2 border-ink shadow-pixel transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lift',
+        main ? 'bg-[linear-gradient(135deg,#0C0A0E,#0C0A0E)] p-6 text-white' : 'bg-quente p-5 text-tinta',
         onClick && 'cursor-pointer',
       )}
     >
@@ -24,7 +24,7 @@ export function Quest({
         {main ? 'Meta principal' : 'Próxima meta'}{done && ' · concluída'}
       </p>
       <div className="flex items-start gap-3">
-        <span className={cn('grid shrink-0 place-items-center rounded-2xl', main ? 'h-14 w-14 bg-white/15' : 'h-11 w-11 bg-rosa-50')}>
+        <span className={cn('grid shrink-0 place-items-center rounded-2xl', main ? 'h-14 w-14 bg-quente/15' : 'h-11 w-11 bg-rosa-50')}>
           <Icon name={sprite} size={main ? 28 : 22} className={main ? 'text-white' : undefined} />
         </span>
         <div className="min-w-0 flex-1">
@@ -33,7 +33,7 @@ export function Quest({
         </div>
       </div>
       <div className="mt-3 flex items-center gap-3">
-        <Progress value={progress} color={done ? '#6E8B6A' : main ? '#FFFFFF' : '#3E2723'} track={main ? 'rgba(255,255,255,0.25)' : undefined} height={main ? 10 : 8} className="flex-1" />
+        <Progress value={progress} color={done ? '#376139' : main ? '#FFFFFF' : '#0C0A0E'} track={main ? 'rgba(255,255,255,0.25)' : undefined} height={main ? 10 : 8} className="flex-1" />
         <span className={cn('shrink-0 text-sm font-semibold tabular-nums', main ? 'text-white' : 'text-vinho')}>
           {total ? `${current} / ${total}` : `${Math.round(progress)}%`}
         </span>

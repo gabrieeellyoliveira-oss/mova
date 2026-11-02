@@ -80,7 +80,7 @@ export default function Reading() {
                 </button>
               ))}
               {Array.from({ length: Math.max(0, 5 - reading.length) }).map((_, i) => (
-                <button key={`empty${i}`} onClick={() => setShelf('quero')} className="hidden aspect-[2/3] rounded-md border-2 border-dashed border-px-line/25 bg-white/30 sm:block" aria-label="Escolher próxima leitura" />
+                <button key={`empty${i}`} onClick={() => setShelf('quero')} className="hidden aspect-[2/3] rounded-md border-2 border-dashed border-px-line/25 bg-quente/30 sm:block" aria-label="Escolher próxima leitura" />
               ))}
             </div>
             <div className="flex min-w-0 flex-col rounded-lg border-2 border-px-line bg-px-soft p-4">
@@ -88,7 +88,7 @@ export default function Reading() {
               <p className="mt-1 font-heading text-2xl leading-tight text-vinho">{current.title}</p>
               <p className="text-sm text-vinho/60">{current.author}</p>
               <p className="mt-3 text-xs text-vinho/70">Página {current.currentPage} de {current.pages}</p>
-              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#D99AAE" height={8} className="flex-1" /><span className="text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
+              <div className="mt-1 flex items-center gap-2"><Progress value={ratio(current.currentPage, current.pages)} color="#C3AEEC" height={8} className="flex-1" /><span className="text-sm font-semibold text-vinho">{Math.round(ratio(current.currentPage, current.pages))}%</span></div>
               <Button className="mt-4 self-start" onClick={() => setParams({ livro: current.id })}>Continuar lendo</Button>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function Reading() {
         <aside className="space-y-6">
           <Card>
             <CardHeader title={`Meta de ${year}`} subtitle={`${stats.readYear} de ${yearlyBooksGoal} livros`} />
-            <Progress value={ratio(stats.readYear, yearlyBooksGoal)} height={10} color="#6E8B6A" />
+            <Progress value={ratio(stats.readYear, yearlyBooksGoal)} height={10} color="#376139" />
             <div className="mt-5 flex h-24 items-end gap-1">
               {stats.perMonth.map((x) => (
                 <div key={x.m} className="flex flex-1 flex-col items-center gap-1">

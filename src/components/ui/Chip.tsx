@@ -8,10 +8,10 @@ export function Chip({
     <button
       type="button"
       className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors duration-150',
+        'inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 px-3.5 py-1.5 text-xs font-semibold transition-colors duration-150',
         active
-          ? 'border-vinho bg-vinho text-white'
-          : 'border-px-line bg-white text-vinho hover:bg-rosa-50',
+          ? 'border-ink bg-lavanda text-ink'
+          : 'border-ink bg-quente text-ink hover:bg-lavanda-100',
         className,
       )}
       {...p}
@@ -36,7 +36,7 @@ export function Segmented<T extends string>({
   options, value, onChange, className,
 }: { options: { value: T; label: ReactNode }[]; value: T; onChange: (v: T) => void; className?: string }) {
   return (
-    <div className={cn('inline-flex rounded-full bg-rosa-100 p-1', className)}>
+    <div className={cn('inline-flex rounded-full border-2 border-ink bg-quente p-1', className)}>
       {options.map((o) => (
         <button
           key={o.value}
@@ -44,7 +44,7 @@ export function Segmented<T extends string>({
           onClick={() => onChange(o.value)}
           className={cn(
             'rounded-full px-3.5 py-1.5 text-xs font-semibold transition',
-            value === o.value ? 'bg-white text-vinho shadow-pixel-sm' : 'text-vinho/60 hover:text-vinho',
+            value === o.value ? 'bg-ink text-ink-fg' : 'text-ink/60 hover:text-ink',
           )}
         >
           {o.label}

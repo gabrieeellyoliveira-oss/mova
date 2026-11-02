@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
-/** Ícones do MOVA (linha fina, cor ameixa). Os nomes vêm da época dos sprites e continuam valendo. */
+/** Ícones do mova (linha fina, cor do texto). Os nomes vêm da época dos sprites e continuam valendo. */
 const ICONS = {
   home: Home, day: CalendarDays, planner: CalendarRange, briefcase: Briefcase, sun: Sun, target: Target, coins: Wallet,
   piggy: PiggyBank, laptop: GraduationCap, cherry: Sparkles, cherries: Sparkles, heart: Heart, book: BookOpen, map: Map, pin: MapPin,
@@ -19,5 +19,5 @@ export type IconName = keyof typeof ICONS
 
 export const Icon = memo(function Icon({ name, size = 22, className, title }: { name: IconName; size?: number; className?: string; title?: string }) {
   const C = ICONS[name] ?? Star
-  return <C size={size} strokeWidth={1.8} className={cn('shrink-0 text-vinho', className)} aria-hidden={title ? undefined : true} aria-label={title} role={title ? 'img' : undefined} />
+  return <C size={size} strokeWidth={1.8} className={cn('shrink-0', className)} aria-hidden={title ? undefined : true} aria-label={title} role={title ? 'img' : undefined} />
 })

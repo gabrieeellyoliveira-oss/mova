@@ -51,7 +51,7 @@ export function CustomAchievementForm({ initial, onClose }: { initial?: CustomAc
           <div className="grid grid-cols-8 gap-1.5 sm:grid-cols-11">
             {ICONS.map((s) => (
               <button key={s} type="button" onClick={() => setSprite(s)} aria-label={`Ícone ${s}`} aria-pressed={sprite === s}
-                className={cn('grid aspect-square place-items-center rounded-md border-2 transition', sprite === s ? 'border-px-line bg-rosa-100 shadow-pixel-sm' : 'border-transparent bg-white/60 hover:border-px-line/30')}>
+                className={cn('grid aspect-square place-items-center rounded-md border-2 transition', sprite === s ? 'border-px-line bg-rosa-100 shadow-pixel-sm' : 'border-transparent bg-quente/60 hover:border-px-line/30')}>
                 <Icon name={s} size={22} />
               </button>
             ))}

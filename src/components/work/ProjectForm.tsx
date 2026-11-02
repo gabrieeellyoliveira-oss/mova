@@ -80,7 +80,7 @@ export function ProjectForm({ initial, onClose }: { initial?: WorkProject; onClo
         <Field group label={f.metric === 'etapas' ? 'Etapas (o avanço é a porcentagem concluída)' : 'Etapas (opcional, para organizar)'}>
           <div className="space-y-1.5">
             {f.steps.map((s) => (
-              <div key={s.id} className="flex items-center gap-2 rounded-md bg-white/60 px-2 py-1">
+              <div key={s.id} className="flex items-center gap-2 rounded-md bg-quente/60 px-2 py-1">
                 <Checkbox checked={s.done} onChange={() => set('steps', f.steps.map((x) => (x.id === s.id ? { ...x, done: !x.done } : x)))} label={s.title} size={18} />
                 <input value={s.title} onChange={(e) => set('steps', f.steps.map((x) => (x.id === s.id ? { ...x, title: e.target.value } : x)))} className={cn('min-w-0 flex-1 bg-transparent text-sm focus:outline-none', s.done && 'text-vinho/45 line-through')} aria-label="Etapa" />
                 <button type="button" onClick={() => set('steps', f.steps.filter((x) => x.id !== s.id))} className="text-vinho/40 hover:text-cereja" aria-label={`Remover ${s.title}`}><X size={14} /></button>
@@ -97,7 +97,7 @@ export function ProjectForm({ initial, onClose }: { initial?: WorkProject; onClo
           <Field group label="Registros">
             <ul className="max-h-40 space-y-1 overflow-y-auto">
               {[...f.entries].sort((a, b) => b.date.localeCompare(a.date)).map((e) => (
-                <li key={e.id} className="flex items-center gap-2 rounded-md bg-white/60 px-2 py-1 text-sm">
+                <li key={e.id} className="flex items-center gap-2 rounded-md bg-quente/60 px-2 py-1 text-sm">
                   <span className="w-12 shrink-0 text-xs text-vinho/55">{formatShort(e.date)}</span>
                   <span className="font-semibold text-tinta">{formatProject(e.amount, f)}</span>
                   <span className="min-w-0 flex-1 truncate text-xs text-vinho/55">{e.note}</span>

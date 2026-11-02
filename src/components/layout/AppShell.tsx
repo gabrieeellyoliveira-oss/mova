@@ -19,7 +19,7 @@ export function AppShell() {
     <div className="min-h-dvh text-tinta">
       <TopNav />
       <Topbar />
-      <main key={pathname} className="mx-auto w-full max-w-[1600px] px-4 pb-32 pt-5 animate-rise sm:px-6 sm:pt-6 lg:pb-12 lg:pt-7">
+      <main key={pathname} className="mx-auto w-full max-w-7xl px-4 pb-32 pt-5 animate-rise sm:px-6 sm:pt-6 lg:pb-12 lg:pt-8">
         <Outlet />
       </main>
       <BottomNav />

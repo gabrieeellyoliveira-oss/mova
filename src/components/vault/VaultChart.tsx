@@ -16,16 +16,16 @@ export function VaultChart() {
         <AreaChart data={v.months} margin={{ top: 16, right: 8, left: -8, bottom: 0 }}>
           <defs>
             <linearGradient id="vault-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3E2723" stopOpacity={0.35} />
-              <stop offset="100%" stopColor="#3E2723" stopOpacity={0} />
+              <stop offset="0%" stopColor="#0C0A0E" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="#0C0A0E" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid vertical={false} stroke="#3E2723" strokeOpacity={0.07} />
-          <XAxis dataKey="mes" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#3E2723', opacity: 0.6 }} />
-          <YAxis domain={[0, max]} ticks={ticks} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#3E2723', opacity: 0.45 }} tickFormatter={(n: number) => `${Math.round(n / 1000)}k`} />
+          <CartesianGrid vertical={false} stroke="#0C0A0E" strokeOpacity={0.07} />
+          <XAxis dataKey="mes" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#0C0A0E', opacity: 0.6 }} />
+          <YAxis domain={[0, max]} ticks={ticks} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#0C0A0E', opacity: 0.45 }} tickFormatter={(n: number) => `${Math.round(n / 1000)}k`} />
           <Tooltip formatter={(n: number, name: string) => [money(n), name]} contentStyle={tooltipStyle} />
-          <ReferenceLine y={v.target} stroke="#6E8B6A" strokeDasharray="5 5" label={{ value: `meta ${money(v.target).replace(',00', '')}`, position: 'insideTopRight', fill: '#4F6A4C', fontSize: 11 }} />
-          <Area type="monotone" dataKey="saldo" name="No cofre" stroke="#3E2723" strokeWidth={2.5} fill="url(#vault-fill)" dot={{ r: 3, fill: '#3E2723' }} />
+          <ReferenceLine y={v.target} stroke="#376139" strokeDasharray="5 5" label={{ value: `meta ${money(v.target).replace(',00', '')}`, position: 'insideTopRight', fill: '#2A4B2C', fontSize: 11 }} />
+          <Area type="monotone" dataKey="saldo" name="No cofre" stroke="#0C0A0E" strokeWidth={2.5} fill="url(#vault-fill)" dot={{ r: 3, fill: '#0C0A0E' }} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

@@ -6,10 +6,10 @@ import { Icon } from '@/components/ui/Icon'
 
 export function EmptyState({ title, text, action, doodle }: { title: string; text?: string; action?: ReactNode; doodle?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-rosa-50 px-6 py-10 text-center">
-      {doodle ?? <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white"><Icon name="sparkle" size={22} /></span>}
+    <div className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-ink/25 px-6 py-10 text-center">
+      {doodle ?? <span className="grid h-12 w-12 place-items-center rounded-2xl bg-lavanda"><Icon name="sparkle" size={22} /></span>}
       <p className="mt-1 text-base font-bold text-tinta">{title}</p>
-      {text && <p className="max-w-xs text-sm text-vinho/60">{text}</p>}
+      {text && <p className="max-w-xs text-sm text-tinta/60">{text}</p>}
       {action && <div className="mt-2">{action}</div>}
     </div>
   )
@@ -71,7 +71,7 @@ export function SectionTitle({ children, kicker, action, className }: { children
   return (
     <div className={cn('mb-4 flex items-end justify-between gap-3', className)}>
       <div>
-        {kicker && <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-queimado">{kicker}</p>}
+        {kicker && <p className="mb-1 text-xs uppercase tracking-[0.3em] text-tinta/55">{kicker}</p>}
         <h2 className="text-xl font-bold text-tinta sm:text-2xl">{children}</h2>
       </div>
       {action}

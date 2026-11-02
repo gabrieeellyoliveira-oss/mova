@@ -44,7 +44,7 @@ export function GoogleCalendarCard() {
       <CardHeader icon={<CalendarDays size={18} />} title="Google Agenda" subtitle={connected ? 'conectado pelo link · somente leitura' : 'conecte só com o link da agenda'} />
       {connected ? (
         <div className="space-y-3">
-          <div className="rounded-lg border-2 border-px-line/20 bg-white/60 p-3">
+          <div className="rounded-lg border-2 border-px-line/20 bg-quente/60 p-3">
             <p className="font-semibold text-tinta">{cache.name ?? 'Sua agenda'}</p>
             <p className="text-sm text-vinho/65">{cache.fetchedAt ? `${week} ${week === 1 ? 'evento' : 'eventos'} nos próximos 7 dias · atualizado ${since(cache.fetchedAt)}` : 'Lendo a agenda…'}</p>
             {cache.error && <p role="alert" className="mt-2 text-sm font-medium text-cereja"><span className="font-bold">! </span>{cache.error}</p>}
@@ -64,7 +64,7 @@ export function GoogleCalendarCard() {
           </form>
           {error && <p role="alert" className="text-sm font-medium text-cereja"><span className="font-bold">! </span>{error}</p>}
           {editing && <button type="button" onClick={() => setEditing(false)} className="text-xs font-semibold text-cereja hover:underline">Cancelar</button>}
-          <details className="rounded-lg bg-white/50 p-3 text-sm text-vinho/80">
+          <details className="rounded-lg bg-quente/50 p-3 text-sm text-vinho/80">
             <summary className="cursor-pointer font-semibold text-vinho">Como pegar o link</summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5">
               <li>No computador, abra o Google Agenda e clique na engrenagem → <b>Configurações</b>.</li>
