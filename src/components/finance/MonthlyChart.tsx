@@ -7,7 +7,7 @@ export const tooltipStyle = { borderRadius: 14, border: 'none', boxShadow: '0 8p
 export function MonthlyChart() {
   const data = useMonthlySeries(6)
   return (
-    <div className="h-64">
+    <div className="h-48">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barGap={4} margin={{ top: 8, right: 4, left: -12, bottom: 0 }}>
           <CartesianGrid vertical={false} stroke="#0C0A0E" strokeOpacity={0.07} />

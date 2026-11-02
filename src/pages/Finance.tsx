@@ -43,24 +43,20 @@ export default function Finance() {
   const tx = useTransactions()
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)]">
         <BalanceCard />
-        <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
-            <NextIncome />
-            <BudgetCard />
-          </div>
-          <QuickGlance />
-        </div>
+        <NextIncome />
+        <BudgetCard />
       </div>
-      <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-        <Card>
+      <QuickGlance />
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card className="flex flex-col">
           <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />
           <MonthlyChart />
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader icon={<Icon name="coins" size={20} />} title="Para onde foi o dinheiro" subtitle="gastos do mês por categoria" />
-          <CategoryDonut transactions={s.monthTx} />
+          <div className="flex min-h-48 flex-1 items-center"><div className="w-full"><CategoryDonut transactions={s.monthTx} /></div></div>
         </Card>
       </div>
       <FinancialGoals />

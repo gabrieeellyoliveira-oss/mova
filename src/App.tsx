@@ -9,7 +9,8 @@ import Studies from '@/pages/Studies'
 import Reading from '@/pages/Reading'
 import Profile from '@/pages/Profile'
 import Login from '@/pages/Login'
-import Achievements from '@/pages/Achievements'
+import Journal from '@/pages/Journal'
+import Evolution from '@/pages/Evolution'
 import { useSession } from '@/lib/auth'
 import { BootScreen } from '@/components/auth/BootScreen'
 
@@ -27,12 +28,14 @@ export default function App() {
           <Route path="agenda" element={<Agenda />} />
           <Route path="planejamento" element={<Navigate to="/agenda" replace />} />
           <Route path="trabalho" element={<Work />} />
+          <Route path="evolucao" element={<Evolution />} />
           <Route path="financas" element={<Finance />} />
           <Route path="sair-de-casa" element={<Vault />} />
           <Route path="estudos" element={<Studies />} />
           <Route path="leitura" element={<Reading />} />
           <Route path="metas" element={<Navigate to="/" replace />} />
-          <Route path="conquistas" element={<Achievements />} />
+          <Route path="diario" element={<Journal />} />
+          <Route path="conquistas" element={<Navigate to="/" replace />} />
           <Route path="notas" element={<Navigate to="/" replace />} />
           <Route path="perfil" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+  <g fill="#C39EF4">
+    <path id="p" d="M0 -4 C -5 -18 -27 -42 -27 -62 A 27 27 0 1 1 27 -62 C 27 -42 5 -18 0 -4 Z" />
+    <use href="#p" transform="rotate(60)" />
+    <use href="#p" transform="rotate(120)" />
+    <use href="#p" transform="rotate(180)" />
+    <use href="#p" transform="rotate(240)" />
+    <use href="#p" transform="rotate(300)" />
+  </g>
+</svg>

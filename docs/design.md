@@ -26,8 +26,8 @@ demais abas no mesmo estilo.
 - Sem cereja, pixel art, XP, nível ou linguagem de jogo.
 
 ## Peças
-- `TopNav` / `Topbar` / `BottomNav` / `HeaderActions` — navegação (Configurações só no menu da conta).
-- `components/home/HomeCards.tsx` — Visão geral (HeroCard, DateWeather, StatTiles, MyDayCard, WeekChart, FinanceCard, InProgress).
+- `TopNav` / `Topbar` / `BottomNav` / `HeaderActions` — navegação (todas as abas no menu; Configurações só no menu da conta).
+- `components/home/HomeCards.tsx` — Visão geral (HeroCard com DateWeather, FinanceCard, InProgress).
 - `pages/Login.tsx` + `components/auth/AuthField.tsx` — login escuro com a ilustração.
 - `components/finance/FinanceTop.tsx` — cartão escuro do saldo, próxima receita, resumo rápido.
 - Primitivos em `components/ui/` (Card, Button, Chip/Segmented, Form, Modal, Progress, Checkbox, Icon).

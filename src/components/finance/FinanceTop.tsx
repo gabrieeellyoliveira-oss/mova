@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { ArrowUpRight, Plus } from 'lucide-react'
 import { useFinanceSummary, useTransactions, useVault } from '@/hooks/useData'
+import { db } from '@/store/db'
 import { openForm } from '@/hooks/useQuickAdd'
 import { addMonths, daysBetween, fromISODate, monthKey, toISODate, today } from '@/utils/date'
 import { money } from '@/utils/format'
@@ -47,9 +48,14 @@ export function NextIncome() {
     return { name: fixed.description, date: toISODate(when) }
   }, [tx])
   const days = next ? daysBetween(today(), next.date) : null
+  const incomes = [...new Set(tx.filter((x) => x.type === 'receita').sort((a, b) => b.date.localeCompare(a.date)).map((x) => x.description))]
+  const markFixed = (description: string) => {
+    const latest = tx.filter((x) => x.type === 'receita' && x.description === description).sort((a, b) => b.date.localeCompare(a.date))[0]
+    if (latest) db.transactions.update(latest.id, { recurring: true })
+  }
   return (
     <div className="flex min-h-[170px] flex-col rounded-[22px] border-2 border-ink bg-quente p-5 shadow-pixel">
-      <p className="text-lg font-bold text-tinta">Próxima receita</p>
+      <p className="font-serif text-xl font-bold text-tinta">Próxima receita</p>
       {next ? (
         <>
           <p className="mt-2 truncate rounded-full border-2 border-ink px-3 py-1.5 text-sm text-tinta/70">{next.name} ({fromISODate(next.date).toLocaleDateString('pt-BR')})</p>
@@ -57,7 +63,17 @@ export function NextIncome() {
           {days !== 0 && <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-tinta/50">{days === 1 ? 'dia' : 'dias'}</p>}
         </>
       ) : (
-        <p className="mt-auto text-sm text-tinta/60">Marque uma receita como fixa (ex.: salário) para ver a contagem aqui.</p>
+        <div className="mt-auto space-y-2">
+          <p className="text-sm text-tinta/60">Qual receita se repete todo mês?</p>
+          {incomes.length ? (
+            <select value="" onChange={(e) => markFixed(e.target.value)} className="h-10 w-full rounded-2xl border-2 border-ink bg-quente px-3 text-sm text-tinta focus:outline-none" aria-label="Escolher receita fixa">
+              <option value="" disabled>Escolher receita fixa…</option>
+              {incomes.map((d) => <option key={d} value={d}>{d}</option>)}
+            </select>
+          ) : (
+            <p className="text-xs text-tinta/50">Lance uma receita (ex.: salário) e marque "Se repete todo mês".</p>
+          )}
+        </div>
       )}
     </div>
   )
@@ -77,10 +93,10 @@ export function QuickGlance() {
   ]
   return (
     <div>
-      <p className="mb-3 text-lg font-bold text-tinta">Resumo rápido</p>
+      <p className="mb-3 font-serif text-xl font-bold text-tinta">Resumo rápido</p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {tiles.map((t) => (
-          <div key={t.label} className={`flex flex-col items-center gap-1.5 rounded-[20px] px-2 py-4 text-center ${t.bg}`}>
+          <div key={t.label} className={`flex flex-col items-center gap-1.5 rounded-[20px] border-2 border-ink px-2 py-4 text-center ${t.bg}`}>
             <span className="grid h-10 w-10 place-items-center rounded-full bg-quente/70 text-xl" aria-hidden>{t.emoji}</span>
             <span className="text-[15px] font-bold text-tinta">{money(t.value)}</span>
             <span className="text-[11px] font-semibold uppercase tracking-wide text-tinta/60">{t.label}</span>

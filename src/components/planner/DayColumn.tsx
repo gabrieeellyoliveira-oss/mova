@@ -56,7 +56,7 @@ export function DayColumn({
       onDragLeave={() => setOver(false)}
       onDrop={() => { setOver(false); onDrop(date) }}
       className={cn(
-        'flex min-h-[220px] flex-col rounded-px border-2 p-3 transition-all xl:p-2',
+        'flex min-h-[220px] flex-col rounded-px border-2 p-3 transition-all xl:min-h-[calc(100dvh-200px)] xl:p-2',
         isToday ? 'border-px-line bg-px-panel shadow-pixel-sm' : 'border-px-line/25 bg-px-panel/70',
         over && 'border-dashed border-queimado bg-rosa-50',
         dragging && !over && 'border-dashed border-vinho/10',

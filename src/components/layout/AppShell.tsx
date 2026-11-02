@@ -5,7 +5,6 @@ import { Topbar } from './Topbar'
 import { BottomNav } from './BottomNav'
 import { Toaster } from './Toaster'
 import { FormHost } from '@/components/modals/FormHost'
-import { GameWatcher } from '@/components/game/GameWatcher'
 import { FocusMode } from '@/components/game/FocusMode'
 import { useGoogleCalendarSync } from '@/lib/googleCalendar'
 
@@ -25,7 +24,6 @@ export function AppShell() {
       <BottomNav />
       <FormHost />
       <Toaster />
-      <GameWatcher />
       <FocusMode />
     </div>
   )

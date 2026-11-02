@@ -27,6 +27,9 @@ export const useGoals = () => useCollection(db.goals)
 export const useHabits = () => useCollection(db.habits)
 export const usePriorities = () => useCollection(db.priorities)
 export const useNotes = () => useCollection(db.notes)
+export const useWorkouts = () => useCollection(db.workouts)
+export const useBodyCheckins = () => useCollection(db.bodyCheckins)
+export const useJournal = () => useCollection(db.journal)
 
 /* ---------- seletores puros ---------- */
 

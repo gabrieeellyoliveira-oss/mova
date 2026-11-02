@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Bell, ChevronDown, Hourglass, LogOut, Search, Settings, Trophy } from 'lucide-react'
+import { Bell, ChevronDown, Hourglass, LogOut, Search, Settings } from 'lucide-react'
 import { useSettings } from '@/hooks/useData'
 import { useNotifications } from '@/hooks/useNotifications'
 import { useNow } from '@/hooks/useNow'
@@ -97,7 +97,6 @@ export function HeaderActions({ compact }: { compact?: boolean }) {
         {open === 'me' && (
           <div className={cn(popover, 'w-56')}>
             <p className="px-3 pb-2 pt-1.5 text-sm font-bold text-tinta">Olá, {settings.name}!</p>
-            <Link to="/conquistas" onClick={close} className="flex items-center gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium text-tinta hover:bg-lavanda-100"><Trophy size={16} /> Conquistas</Link>
             <Link to="/perfil" onClick={close} className="flex items-center gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium text-tinta hover:bg-lavanda-100"><Settings size={16} /> Configurações</Link>
             <button onClick={() => { close(); signOut() }} className="flex w-full items-center gap-2.5 rounded-2xl px-3 py-2 text-sm font-medium text-tinta hover:bg-lavanda-100"><LogOut size={16} /> Sair</button>
           </div>

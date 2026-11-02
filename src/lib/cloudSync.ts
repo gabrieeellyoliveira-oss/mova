@@ -27,6 +27,8 @@ let channel: RealtimeChannel | null = null
 let timer: ReturnType<typeof setTimeout> | undefined
 let lastPull = 0
 const version = new Map<string, number>()
+/** Horários dos envios feitos por este aparelho (por chave), para ignorar ecos atrasados de envios antigos. */
+const sentAt = new Map<string, number[]>()
 const dirty = new Set<string>(readDirty())
 
 function readDirty(): string[] {
@@ -36,8 +38,16 @@ const saveDirty = () => { try { localStorage.setItem(DIRTY_KEY, JSON.stringify([
 const setState = (state: SyncState) => syncStatus.set({ state, at: state === 'ok' ? new Date().toISOString() : syncStatus.get().at })
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
 
-function apply(key: string, value: unknown) {
+/** Eco atrasado de um envio antigo deste aparelho (chegou depois de um envio mais novo): ignorar. */
+function staleEcho(key: string, at?: string) {
+  const t = at ? Date.parse(at) : NaN
+  const mine = Number.isFinite(t) ? sentAt.get(key) : undefined
+  return !!mine && mine.includes(t) && mine[mine.length - 1] !== t
+}
+
+function apply(key: string, value: unknown, at?: string) {
   if (LOCAL_ONLY.has(key) || dirty.has(key)) return // mudança local ainda não enviada vence
+  if (staleEcho(key, at)) return
   if (same(localStorageAdapter.load(key), value)) return
   writeLocal(key, value)
   hydrateStore(key, value)
@@ -64,6 +74,7 @@ export async function flush() {
   setState('syncing')
   const { error } = await supabase.from(TABLE).upsert(rows, { onConflict: 'user_id,key' })
   if (error) { setState('offline'); return }
+  keys.forEach((k) => sentAt.set(k, [...(sentAt.get(k) ?? []), Date.parse(now)].slice(-10)))
   keys.forEach((k) => { if ((version.get(k) ?? 0) === sent.get(k)) dirty.delete(k) }) // não perde edição feita durante o envio
   saveDirty()
   setState(dirty.size ? 'syncing' : 'ok')
@@ -73,9 +84,9 @@ export async function flush() {
 /** Baixa tudo da nuvem. Devolve quantas linhas existem (0 = conta nova). */
 async function pull(): Promise<number> {
   if (!supabase) return 0
-  const { data, error } = await supabase.from(TABLE).select('key, value')
+  const { data, error } = await supabase.from(TABLE).select('key, value, updated_at')
   if (error) throw error
-  data.forEach((row) => apply(row.key as string, row.value))
+  data.forEach((row) => apply(row.key as string, row.value, row.updated_at as string | undefined))
   lastPull = Date.now()
   return data.length
 }
@@ -111,8 +122,8 @@ export async function startSync(uid: string) {
   channel = supabase
     .channel(`mova-${uid}`)
     .on('postgres_changes', { event: '*', schema: 'public', table: TABLE, filter: `user_id=eq.${uid}` }, (payload) => {
-      const row = payload.new as { key?: string; value?: unknown }
-      if (row?.key) apply(row.key, row.value)
+      const row = payload.new as { key?: string; value?: unknown; updated_at?: string }
+      if (row?.key) apply(row.key, row.value, row.updated_at)
     })
     .subscribe()
 }

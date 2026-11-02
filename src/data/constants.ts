@@ -37,7 +37,7 @@ export const AREAS: Record<AreaId, AreaMeta> = {
 /** Área de uma tarefa (cai em "Geral" se a área não existir mais). */
 export const areaMeta = (id: string): AreaMeta => AREAS[id as AreaId] ?? AREAS.geral
 
-/** Menu principal (as três últimas ficam em "Mais" no topo). */
+/** Abas do app (Configurações fica só no menu do perfil). */
 export const NAV_ITEMS: { label: string; path: string; sprite: IconName }[] = [
   { label: 'Dashboard', path: '/', sprite: 'home' },
   { label: 'Agenda', path: '/agenda', sprite: 'planner' },
@@ -46,7 +46,8 @@ export const NAV_ITEMS: { label: string; path: string; sprite: IconName }[] = [
   { label: 'Sair de casa', path: '/sair-de-casa', sprite: 'piggy' },
   { label: 'Estudos', path: '/estudos', sprite: 'laptop' },
   { label: 'Leitura', path: '/leitura', sprite: 'book' },
-  { label: 'Conquistas', path: '/conquistas', sprite: 'trophy' },
+  { label: 'Evolução', path: '/evolucao', sprite: 'dumbbell' },
+  { label: 'Diário', path: '/diario', sprite: 'note' },
   { label: 'Configurações', path: '/perfil', sprite: 'gear' },
 ]
 

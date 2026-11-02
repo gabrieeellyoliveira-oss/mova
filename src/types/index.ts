@@ -365,3 +365,37 @@ export interface Settings {
   weeklyStudyHours: number
   yearlyBooksGoal: number
 }
+
+/* ---------- Evolução (treinos) ---------- */
+export type WorkoutKind = 'musculacao' | 'corrida' | 'caminhada' | 'bike' | 'natacao' | 'pilates' | 'yoga' | 'funcional' | 'danca' | 'outro'
+
+/** Um treino feito. */
+export interface Workout extends Entity {
+  date: ISODate
+  kind: WorkoutKind
+  minutes: number
+  note?: string
+}
+
+/** Registro da evolução do corpo: foto e/ou medidas de um dia. */
+export interface BodyCheckin extends Entity {
+  date: ISODate
+  photo?: string
+  weight?: number
+  waist?: number
+  hip?: number
+  arm?: number
+  thigh?: number
+  note?: string
+}
+
+/* ---------- Diário ---------- */
+/** Uma página do diário: texto, fotos e como foi o dia. */
+export interface JournalEntry extends Entity {
+  date: ISODate
+  title?: string
+  mood?: string
+  text: string
+  photos: string[]
+  favorite?: boolean
+}
