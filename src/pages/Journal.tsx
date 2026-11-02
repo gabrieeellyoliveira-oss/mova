@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { FolderPlus, Heart, Images, PenLine, Pencil, Search } from 'lucide-react'
+import { ArrowLeft, FolderPlus, Heart, Images, Lock, PenLine, Pencil, Search } from 'lucide-react'
 import type { JournalEntry, JournalFolder } from '@/types'
 import { useJournal, useJournalFolders } from '@/hooks/useData'
 import { fromISODate, monthKey, today } from '@/utils/date'
@@ -8,7 +8,6 @@ import { Chip } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/Misc'
 import { JournalForm } from '@/components/journal/JournalForm'
 import { FolderForm, FolderShape } from '@/components/journal/Folder'
-import { cn } from '@/lib/cn'
 
 type Filter = 'todas' | 'mes' | 'fotos' | 'favoritas'
 const FILTERS: { id: Filter; label: string }[] = [
@@ -16,7 +15,7 @@ const FILTERS: { id: Filter; label: string }[] = [
 ]
 const longDate = (d: string) => fromISODate(d).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace('-feira', '')
 
-/** Um bloco do diário: foto de capa (se houver), data, humor, título e o começo do texto. */
+/** Um bloco do diário: só foto, data, humor e título — o texto só aparece ao abrir a página. */
 function EntryBlock({ entry, onOpen }: { entry: JournalEntry; onOpen: () => void }) {
   const [cover, ...rest] = entry.photos
   return (
@@ -35,100 +34,111 @@ function EntryBlock({ entry, onOpen }: { entry: JournalEntry; onOpen: () => void
             {entry.mood && <span className="text-lg leading-none">{entry.mood}</span>}
           </span>
         </div>
-        {entry.title && <p className="mt-3 line-clamp-2 font-serif text-xl font-bold leading-snug">{entry.title}</p>}
-        {entry.text && <p className={cn('mt-2 whitespace-pre-line text-sm leading-relaxed text-tinta/75', cover ? 'line-clamp-3' : 'line-clamp-6')}>{entry.text}</p>}
+        <p className="mt-3 line-clamp-2 font-serif text-xl font-bold leading-snug">{entry.title || 'Sem título'}</p>
+        <p className="mt-1 flex items-center gap-1.5 text-xs text-tinta/50"><Lock size={12} /> toque para ler</p>
       </div>
     </button>
   )
 }
 
-/** Diário: páginas em blocos, com fotos, humor e texto. */
+/**
+ * Diário: pastas opcionais (o que está numa pasta só aparece dentro dela) e páginas em blocos.
+ * Os blocos não mostram o texto — ele só aparece ao abrir a página.
+ */
 export default function Journal() {
   const entries = useJournal()
   const folders = useJournalFolders()
-  const [folder, setFolder] = useState<string | null>(null)
+  const [folderId, setFolderId] = useState<string | null>(null)
   const [editFolder, setEditFolder] = useState<JournalFolder | 'new' | null>(null)
-  const current = folders.find((x) => x.id === folder)
   const [filter, setFilter] = useState<Filter>('todas')
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<JournalEntry | 'new' | null>(null)
+  const current = folders.find((x) => x.id === folderId)
+  const folderExists = (id?: string) => !!id && folders.some((x) => x.id === id)
 
+  // fora de uma pasta: só as páginas sem pasta; dentro: só as da pasta
+  const scope = useMemo(() => entries.filter((e) => (current ? e.folderId === current.id : !folderExists(e.folderId))), [entries, current, folders]) // eslint-disable-line react-hooks/exhaustive-deps
   const list = useMemo(() => {
     const term = q.trim().toLowerCase()
-    return [...entries]
-      .filter((e) => !current || e.folderId === current.id)
+    return scope
       .filter((e) => filter === 'todas' || (filter === 'mes' ? monthKey(e.date) === monthKey(today()) : filter === 'fotos' ? e.photos.length > 0 : !!e.favorite))
       .filter((e) => !term || `${e.title ?? ''} ${e.text}`.toLowerCase().includes(term))
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))
-  }, [entries, filter, q, current])
-  const wroteToday = entries.some((e) => e.date === today())
+  }, [scope, filter, q])
+  const goTo = (id: string | null) => { setFolderId(id); setFilter('todas'); setQ('') }
 
   return (
     <div className="space-y-6">
       <section className="flex flex-col gap-5 rounded-[2rem] border-2 border-ink bg-ink p-7 text-ink-fg sm:p-9 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-lavanda">querido diário</p>
-          <p className="mt-2 font-serif text-3xl font-bold first-letter:uppercase sm:text-4xl">{longDate(today())}</p>
-          <p className="mt-2 text-ink-fg/75">{entries.length ? `${entries.length} ${entries.length === 1 ? 'página escrita' : 'páginas escritas'}${wroteToday ? ' · hoje já tem página ✓' : ''}` : 'Seu cantinho para guardar os dias.'}</p>
+        <div className="min-w-0">
+          {current ? (
+            <button onClick={() => goTo(null)} className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.3em] text-lavanda hover:underline"><ArrowLeft size={14} /> diário</button>
+          ) : (
+            <p className="text-xs uppercase tracking-[0.3em] text-lavanda">querido diário</p>
+          )}
+          <p className="mt-2 font-serif text-3xl font-bold first-letter:uppercase sm:text-4xl">{current ? current.name : longDate(today())}</p>
+          <p className="mt-2 text-ink-fg/75">{current ? `${scope.length} ${scope.length === 1 ? 'página' : 'páginas'} nesta pasta` : 'Seu cantinho para guardar os dias.'}</p>
         </div>
-        <Button size="lg" onClick={() => setOpen('new')}><PenLine size={18} /> {wroteToday ? 'Nova página' : 'Escrever sobre hoje'}</Button>
+        <div className="flex flex-wrap gap-2">
+          {current && <Button size="lg" variant="light" onClick={() => setEditFolder(current)}><Pencil size={16} /> Editar pasta</Button>}
+          <Button size="lg" onClick={() => setOpen('new')}><PenLine size={18} /> Nova página</Button>
+        </div>
       </section>
 
-      <section>
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="font-serif text-2xl font-bold">Pastas</h2>
-          <Button size="sm" variant="light" onClick={() => setEditFolder('new')}><FolderPlus size={14} /> Nova pasta</Button>
-        </div>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-6 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6">
-          {[{ id: null as string | null, name: 'Todas as páginas', color: '#0C0A0E', cover: undefined as string | undefined, f: undefined as JournalFolder | undefined }, ...folders.map((x) => ({ id: x.id as string | null, name: x.name, color: x.color, cover: x.cover, f: x }))].map((x) => {
-            const count = x.id ? entries.filter((e) => e.folderId === x.id).length : entries.length
-            const active = folder === x.id
-            return (
-              <div key={x.id ?? 'todas'} className="group relative">
-                <button onClick={() => setFolder(x.id)} aria-pressed={active} className="block w-full text-left">
-                  <FolderShape color={x.color} cover={x.cover} className={cn('transition', active ? '-translate-y-1' : 'group-hover:-translate-y-0.5')} />
-                  <p className={cn('mt-2 truncate text-sm font-bold', active && 'underline decoration-lavanda decoration-[3px] underline-offset-4')}>{x.name}</p>
+      {!current && (
+        <section>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="font-serif text-2xl font-bold">Pastas</h2>
+            <Button size="sm" variant="light" onClick={() => setEditFolder('new')}><FolderPlus size={14} /> Nova pasta</Button>
+          </div>
+          <div className="grid grid-cols-2 gap-x-5 gap-y-6 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6">
+            {folders.map((x) => {
+              const count = entries.filter((e) => e.folderId === x.id).length
+              return (
+                <button key={x.id} onClick={() => goTo(x.id)} className="group block w-full text-left">
+                  <FolderShape color={x.color} cover={x.cover} className="transition group-hover:-translate-y-1" />
+                  <p className="mt-2 truncate text-sm font-bold">{x.name}</p>
                   <p className="text-xs text-tinta/55">{count} {count === 1 ? 'página' : 'páginas'}</p>
                 </button>
-                {x.f && (
-                  <button onClick={() => setEditFolder(x.f!)} aria-label={`Editar pasta ${x.name}`} className="absolute right-2 top-[18%] grid h-8 w-8 place-items-center rounded-full border-2 border-ink bg-quente opacity-0 transition group-hover:opacity-100 focus:opacity-100">
-                    <Pencil size={13} />
-                  </button>
-                )}
-              </div>
-            )
-          })}
-          {folders.length === 0 && (
-            <button onClick={() => setEditFolder('new')} className="flex aspect-[4/3] flex-col items-center justify-center gap-2 self-start rounded-2xl border-2 border-dashed border-ink/30 px-3 text-center text-xs text-tinta/60 transition hover:border-ink hover:text-ink">
-              <FolderPlus size={22} /> Crie pastas para separar seus diários (opcional)
+              )
+            })}
+            <button onClick={() => setEditFolder('new')} className="mt-[9%] flex aspect-[4/3] flex-col items-center justify-center gap-2 self-start rounded-2xl border-2 border-dashed border-ink/30 px-3 text-center text-xs text-tinta/60 transition hover:border-ink hover:text-ink">
+              <FolderPlus size={22} /> {folders.length ? 'Nova pasta' : 'Crie pastas para separar seus diários (opcional)'}
             </button>
+          </div>
+        </section>
+      )}
+
+      {(current || scope.length > 0) && (
+        <section className="space-y-4">
+          {!current && <h2 className="font-serif text-2xl font-bold">Páginas soltas</h2>}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+              {FILTERS.map((f) => <Chip key={f.id} active={filter === f.id} onClick={() => setFilter(f.id)}>{f.label}</Chip>)}
+            </div>
+            <label className="relative block sm:w-72">
+              <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-tinta/50" />
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={current ? 'Buscar nesta pasta' : 'Buscar nas páginas soltas'} aria-label="Buscar no diário"
+                className="h-10 w-full rounded-full border-2 border-ink bg-quente pl-10 pr-4 text-sm focus:outline-none focus:ring-4 focus:ring-lavanda/60" />
+            </label>
+          </div>
+          {list.length === 0 ? (
+            <EmptyState title={scope.length ? 'Nada por aqui' : 'Pasta vazia'} text={scope.length ? 'Tente outro filtro ou outra busca.' : 'Escreva a primeira página desta pasta.'}
+              action={!scope.length && <Button size="sm" onClick={() => setOpen('new')}><PenLine size={14} /> Nova página</Button>} />
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              {list.map((e) => <EntryBlock key={e.id} entry={e} onOpen={() => setOpen(e)} />)}
+            </div>
           )}
-        </div>
-      </section>
+        </section>
+      )}
 
-      {current && <h2 className="font-serif text-2xl font-bold">{current.name}</h2>}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-          {FILTERS.map((f) => <Chip key={f.id} active={filter === f.id} onClick={() => setFilter(f.id)}>{f.label}</Chip>)}
-        </div>
-        <label className="relative block sm:w-72">
-          <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-tinta/50" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar no diário" aria-label="Buscar no diário"
-            className="h-10 w-full rounded-full border-2 border-ink bg-quente pl-10 pr-4 text-sm focus:outline-none focus:ring-4 focus:ring-lavanda/60" />
-        </label>
-      </div>
-
-      {list.length === 0 ? (
-        <EmptyState title={entries.length ? 'Nada por aqui' : 'Seu diário está em branco'} text={entries.length ? 'Tente outro filtro ou outra busca.' : 'Escreva sobre o seu dia e adicione fotos — cada página vira um bloco aqui.'}
-          action={!entries.length && <Button size="sm" onClick={() => setOpen('new')}><PenLine size={14} /> Escrever a primeira página</Button>} />
-      ) : (
-        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 2xl:columns-4 [&>*]:mb-6 [&>*]:break-inside-avoid">
-          {list.map((e) => <EntryBlock key={e.id} entry={e} onOpen={() => setOpen(e)} />)}
-        </div>
+      {!current && !entries.length && !folders.length && (
+        <EmptyState title="Seu diário está em branco" text="Escreva sobre o seu dia e adicione fotos. Se quiser, crie pastas para separar os assuntos." />
       )}
 
       {open && <JournalForm initial={open === 'new' ? undefined : open} folderId={current?.id} onClose={() => setOpen(null)} />}
-      {editFolder && <FolderForm initial={editFolder === 'new' ? undefined : editFolder} onClose={() => setEditFolder(null)} />}
+      {editFolder && <FolderForm initial={editFolder === 'new' ? undefined : editFolder} onClose={() => { if (editFolder !== 'new' && !folders.some((x) => x.id === editFolder.id)) goTo(null); setEditFolder(null) }} />}
     </div>
   )
 }
