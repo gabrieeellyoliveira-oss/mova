@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Plus, Utensils, X } from 'lucide-react'
+import { Plus, Utensils } from 'lucide-react'
 import { db } from '@/store/db'
 import { useIncome, useMonthFinance } from '@/hooks/useData'
-import { formatShort, monthKey, today, toISODate } from '@/utils/date'
+import { monthKey, today, toISODate } from '@/utils/date'
 import { money, parseMoney } from '@/utils/format'
 import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/cn'
@@ -15,7 +15,7 @@ export function FoodCard({ month }: { month: string }) {
   const inc = useIncome()
   const m = useMonthFinance(month)
   const [f, setF] = useState({ description: '', amount: '' })
-  const spent = m.monthTx.filter((t) => t.type === 'despesa' && t.method === VA).sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))
+  const spent = m.monthTx.filter((t) => t.type === 'despesa' && t.method === VA)
   const used = spent.reduce((a, t) => a + t.amount, 0)
   const left = inc.voucher - used
   const add = () => {
@@ -50,17 +50,7 @@ export function FoodCard({ month }: { month: string }) {
         <button type="submit" className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink bg-salvia" aria-label="Adicionar gasto no vale"><Plus size={16} /></button>
       </form>
 
-      <ul className="mt-2 divide-y divide-ink/10">
-        {spent.map((t) => (
-          <li key={t.id} className="flex items-center gap-3 py-2.5 text-sm">
-            <span className="w-14 shrink-0 text-xs text-tinta/55">{formatShort(t.date)}</span>
-            <span className="min-w-0 flex-1 truncate">{t.description}</span>
-            <span className="font-semibold tabular-nums">{money(t.amount)}</span>
-            <button onClick={() => db.transactions.remove(t.id)} className="grid h-7 w-7 place-items-center rounded-full text-tinta/40 hover:bg-ink/5 hover:text-cereja" aria-label={`Remover ${t.description}`}><X size={14} /></button>
-          </li>
-        ))}
-      </ul>
-      {!spent.length && <p className="py-3 text-sm text-tinta/55">Nenhum gasto no vale neste mês. Também dá para lançar uma despesa com a forma de pagamento “Vale-alimentação”.</p>}
+      <p className="mt-3 text-xs text-tinta/55">{spent.length ? `${spent.length} ${spent.length === 1 ? 'gasto' : 'gastos'} no vale este mês — aparecem em Movimentações com a etiqueta “Vale-alimentação”.` : 'Os gastos no vale aparecem em Movimentações com a etiqueta “Vale-alimentação”.'}</p>
     </div>
   )
 }

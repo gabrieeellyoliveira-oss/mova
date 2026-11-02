@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Check, CreditCard, Plus, ReceiptText, X } from 'lucide-react'
 import type { FinanceCategory, MonthlyBill } from '@/types'
 import { db, settingsStore } from '@/store/db'
-import { useIncome, useMonthFinance, useMonthlyBills, useVault } from '@/hooks/useData'
+import { useIncome, useMonthFinance, useMonthlyBills, useTransactions, useVault } from '@/hooks/useData'
+import type { Transaction } from '@/types'
 import { EXPENSE_CATEGORIES } from '@/data/constants'
 import { monthKey, toISODate, today, fromISODate } from '@/utils/date'
 import { money, moneyInput, parseMoney } from '@/utils/format'
@@ -34,22 +35,47 @@ function useItems(): Item[] {
   return list
 }
 
-function pay(items: Item[], month: string) {
-  items.forEach((i) => db.transactions.add({ type: 'despesa', description: i.name, amount: i.amount, category: i.category, date: payDate(month), method: i.id === CARD_ID ? 'Crédito' : 'Pix', recurring: true, billId: i.id }))
-}
-function unpay(id: string, month: string) {
-  db.transactions.store.set((list) => list.filter((t) => !(t.billId === id && monthKey(t.date) === month)))
+/** Mês anterior / seguinte (`AAAA-MM`). */
+export const shiftMonth = (m: string, n: number) => { const [y, mm] = m.split('-').map(Number); const d = new Date(y, mm - 1 + n, 1); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
+const shortMonth = (m: string) => fromISODate(`${m}-01`).toLocaleDateString('pt-BR', { month: 'long' })
+/** A que mês uma conta paga se refere: `ref` ou, nos lançamentos antigos, o mês anterior ao pagamento. */
+export const refOf = (t: Transaction) => t.ref ?? shiftMonth(monthKey(t.date), -1)
+
+/** Contas já pagas que se referem ao mês `ref`. */
+function usePaidFor(ref: string) {
+  const tx = useTransactions()
+  return new Set(tx.filter((t) => t.billId && t.type === 'despesa' && refOf(t) === ref).map((t) => t.billId!))
 }
 
-/** Contas do mês: cada uma aparece como paga/pendente no mês escolhido; "Paguei as contas do mês" lança tudo em Movimentações. */
+/** Paga as contas de `ref` (competência) com data no mês `month` (quando o dinheiro sai). */
+function pay(items: Item[], month: string, ref: string) {
+  items.forEach((i) => db.transactions.add({ type: 'despesa', description: i.name, amount: i.amount, category: i.category, date: payDate(month), method: i.id === CARD_ID ? 'Crédito' : 'Pix', recurring: true, billId: i.id, ref, note: `referente a ${shortMonth(ref)}` }))
+}
+function unpay(id: string, ref: string) {
+  db.transactions.store.set((list) => list.filter((t) => !(t.billId === id && refOf(t) === ref)))
+}
+
+/**
+ * Contas do mês: as contas de um mês são pagas no mês seguinte. Vendo novembro, o card mostra as contas
+ * de outubro (pagas em novembro) e "Paguei as contas de outubro" lança tudo em Movimentações com data de novembro.
+ */
 export function BillsCard({ month }: { month: string }) {
   const items = useItems()
   const inc = useIncome()
-  const m = useMonthFinance(month)
+  const ref = shiftMonth(month, -1)
+  const paid = usePaidFor(ref)
   const [f, setF] = useState({ name: '', amount: '', dueDay: '', category: 'Casa' as FinanceCategory })
   const [card, setCard] = useState<string | null>(null)
   const future = month > monthKey(today())
-  const pending = items.filter((i) => !m.paid.has(i.id))
+  const pending = items.filter((i) => !paid.has(i.id))
+  const total = items.reduce((a, i) => a + i.amount, 0)
+  const tx = useTransactions()
+  const history = Object.values(tx.filter((t) => t.billId && t.type === 'despesa').reduce<Record<string, { ref: string; paidIn: string; total: number }>>((acc, t) => {
+    const r = refOf(t)
+    acc[r] = acc[r] ?? { ref: r, paidIn: monthKey(t.date), total: 0 }
+    acc[r].total += t.amount
+    return acc
+  }, {})).sort((x, y) => y.ref.localeCompare(x.ref)).slice(0, 4)
   const add = () => {
     const amount = parseMoney(f.amount)
     const day = Math.round(Number(f.dueDay))
@@ -63,7 +89,7 @@ export function BillsCard({ month }: { month: string }) {
     setCard(null)
   }
   const payAll = () => {
-    pay(pending, month)
+    pay(pending, month, ref)
     toast('Contas pagas ✓', { text: `${pending.length} ${pending.length === 1 ? 'conta lançada' : 'contas lançadas'} em Movimentações` })
   }
   return (
@@ -72,7 +98,7 @@ export function BillsCard({ month }: { month: string }) {
         <span className="grid h-10 w-10 place-items-center rounded-2xl bg-lavanda"><ReceiptText size={20} /></span>
         <div className="min-w-0 flex-1">
           <h2 className="font-serif text-xl font-bold">Contas do mês</h2>
-          <p className="text-xs text-tinta/60">{items.length ? `${items.length - pending.length} de ${items.length} pagas em ${monthName(month)}` : 'o que sai todo mês do salário'}</p>
+          <p className="text-xs text-tinta/60">Contas de <b>{shortMonth(ref)}</b> · pagar em {shortMonth(month)}{items.length ? ` · ${items.length - pending.length} de ${items.length} pagas` : ''}</p>
         </div>
       </div>
 
@@ -89,10 +115,10 @@ export function BillsCard({ month }: { month: string }) {
 
       <ul className="mt-2 divide-y divide-ink/10">
         {items.map((i) => {
-          const done = m.paid.has(i.id)
+          const done = paid.has(i.id)
           return (
             <li key={i.id} className="flex items-center gap-3 py-2.5 text-sm">
-              <button disabled={future} onClick={() => (done ? unpay(i.id, month) : pay([i], month))} aria-pressed={done} aria-label={done ? `Desmarcar ${i.name}` : `Paguei ${i.name}`}
+              <button disabled={future} onClick={() => (done ? unpay(i.id, ref) : pay([i], month, ref))} aria-pressed={done} aria-label={done ? `Desmarcar ${i.name}` : `Paguei ${i.name}`}
                 className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink transition disabled:opacity-30', done ? 'bg-ink text-ink-fg' : 'bg-quente hover:bg-lavanda-100')}>
                 {done && <Check size={14} strokeWidth={3} />}
               </button>
@@ -118,9 +144,20 @@ export function BillsCard({ month }: { month: string }) {
         </select>
       </form>
 
+      {history.length > 0 && (
+        <div className="mt-4 rounded-2xl border-2 border-ink/15 p-3">
+          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-tinta/55">Histórico das contas</p>
+          <ul className="space-y-1 text-xs">
+            {history.map((h) => (
+              <li key={h.ref} className="flex justify-between gap-2"><span className="capitalize">{shortMonth(h.ref)} <span className="normal-case text-tinta/55">· pagas em {shortMonth(h.paidIn)}</span></span><b className="tabular-nums">{money(h.total)}</b></li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {items.length > 0 && <p className="mt-3 text-xs text-tinta/60">As contas de {shortMonth(month)} ({money(total)}) ficam para pagar em {shortMonth(shiftMonth(month, 1))}.</p>}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t-2 border-ink pt-3 text-sm">
         <span>Falta pagar: <b className="tabular-nums">{money(pending.reduce((a, i) => a + i.amount, 0))}</b></span>
-        <Button size="sm" disabled={future || !pending.length} onClick={payAll}><Check size={14} /> Paguei as contas do mês</Button>
+        <Button size="sm" disabled={future || !pending.length} onClick={payAll}><Check size={14} /> Paguei as contas de {shortMonth(ref)}</Button>
       </div>
     </div>
   )
@@ -130,21 +167,28 @@ export function BillsCard({ month }: { month: string }) {
  * Projeção do mês: o que já entrou (salário recebido ou a receber + dinheiro extra)
  * menos o que já saiu (Movimentações) e as contas ainda não pagas. Mês passado = fechamento real.
  */
-export function ProjectionCard({ month }: { month: string }) {
+/** Conta do mês: entradas (recebidas ou a receber) − gastos lançados − contas pendentes = sobra. */
+export function useProjection(month: string) {
   const inc = useIncome()
   const items = useItems()
   const vault = useVault()
   const m = useMonthFinance(month)
+  const paidPrev = usePaidFor(shiftMonth(month, -1))
   const current = month === monthKey(today())
   const past = month < monthKey(today())
   const salaryToCome = !past && m.salaryReceived === 0 ? inc.salary : 0
   const voucherReceived = m.monthTx.filter((t) => t.type === 'receita' && /vale|alimenta/i.test(t.description)).reduce((a, t) => a + t.amount, 0)
   const voucherToCome = !past && voucherReceived === 0 ? inc.voucher : 0
-  const pendingBills = past ? 0 : items.filter((i) => !m.paid.has(i.id)).reduce((a, i) => a + i.amount, 0)
+  const pendingBills = past ? 0 : items.filter((i) => !paidPrev.has(i.id)).reduce((a, i) => a + i.amount, 0)
   const extras = m.extras - voucherReceived
   const left = m.salaryReceived + salaryToCome + voucherReceived + voucherToCome + extras - m.expenses - pendingBills
   const save = vault.remaining > 0 ? vault.neededPerMonth ?? 0 : 0
   const base = (m.salaryReceived || inc.salary) + (voucherReceived || inc.voucher)
+  return { inc, m, vault, current, past, salaryToCome, voucherReceived, voucherToCome, pendingBills, extras, left, save, base }
+}
+
+export function ProjectionCard({ month }: { month: string }) {
+  const { inc, m, vault, current, past, salaryToCome, voucherReceived, voucherToCome, pendingBills, extras, left, save, base } = useProjection(month)
   const pct = (n: number) => (base ? Math.round((n / base) * 100) : 0)
   const rows: { label: string; value: number; sign: '+' | '−'; hide?: boolean }[] = [
     { label: 'Salário recebido', value: m.salaryReceived, sign: '+', hide: !m.salaryReceived },
@@ -153,7 +197,7 @@ export function ProjectionCard({ month }: { month: string }) {
     { label: 'Vale-alimentação a receber', value: voucherToCome, sign: '+', hide: !voucherToCome },
     { label: 'Dinheiro extra', value: extras, sign: '+', hide: !extras },
     { label: 'Gastos lançados', value: m.expenses, sign: '−' },
-    { label: 'Contas ainda não pagas', value: pendingBills, sign: '−', hide: past },
+    { label: `Contas de ${shortMonth(shiftMonth(month, -1))} ainda não pagas`, value: pendingBills, sign: '−', hide: past },
   ]
   return (
     <div className="flex flex-col rounded-3xl border-2 border-ink bg-ink p-6 text-ink-fg shadow-lavanda">

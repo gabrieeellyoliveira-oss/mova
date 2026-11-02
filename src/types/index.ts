@@ -73,6 +73,8 @@ export interface Transaction extends Entity {
   note?: string
   /** Pagamento de uma conta do mês (`MonthlyBill.id`, ou 'cartao' para a fatura do cartão) */
   billId?: string
+  /** Mês de referência (competência) da conta paga, `AAAA-MM` — as contas de um mês são pagas no mês seguinte */
+  ref?: string
 }
 
 export interface FinancialGoal extends Entity {

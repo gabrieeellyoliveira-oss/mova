@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Repeat, Search } from 'lucide-react'
 import type { FinanceCategory, Transaction } from '@/types'
-import { EXPENSE_CATEGORIES, FINANCE_COLORS, INCOME_CATEGORIES } from '@/data/constants'
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/data/constants'
+import { styleOf } from './categoryStyle'
 import { money, normalize } from '@/utils/format'
 import { formatShort, monthKey, MONTHS } from '@/utils/date'
 import { openForm } from '@/hooks/useQuickAdd'
@@ -48,25 +49,30 @@ export function TransactionList({ transactions, month: fixedMonth }: { transacti
         <EmptyState title="Nada encontrado" text="Tente outro filtro." doodle={<Coin size={40} />} />
       ) : (
         <ul className="divide-y divide-dashed divide-vinho/10">
-          {list.map((t) => (
-            <li key={t.id}>
-              <button onClick={() => openForm('transaction', t as never)} className="flex w-full items-center gap-3 rounded-2xl px-2 py-3 text-left transition hover:bg-creme-100">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-xs font-bold text-quente" style={{ backgroundColor: FINANCE_COLORS[t.category] }}>
-                  {t.category.slice(0, 2)}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-1.5 truncate text-sm font-semibold text-tinta">
-                    {t.description}
-                    {t.recurring && <Repeat size={12} className="shrink-0 text-queimado" aria-label="recorrente" />}
+          {list.map((t) => {
+            const st = styleOf(t)
+            const va = t.method === 'Vale-alimentação'
+            return (
+              <li key={t.id}>
+                <button onClick={() => openForm('transaction', t as never)} className="flex w-full items-center gap-3 rounded-2xl px-2 py-3 text-left transition hover:bg-creme-100">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border-2 border-ink" style={{ backgroundColor: st.bg, color: st.fg }} aria-hidden>
+                    <st.icon size={18} strokeWidth={2} />
                   </span>
-                  <span className="block truncate text-xs text-vinho/55">{t.category} · {t.method} · {formatShort(t.date)}{t.note ? ` · ${t.note}` : ''}</span>
-                </span>
-                <span className={cn('shrink-0 text-sm font-bold tabular-nums', t.type === 'receita' ? 'text-oliva-600' : 'text-cereja')}>
-                  {t.type === 'receita' ? '+' : '−'} {money(t.amount)}
-                </span>
-              </button>
-            </li>
-          ))}
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-1.5 truncate text-sm font-semibold text-tinta">
+                      {t.description}
+                      {t.recurring && <Repeat size={12} className="shrink-0 text-tinta/40" aria-label="recorrente" />}
+                      {va && <span className="shrink-0 rounded-full border-2 border-ink bg-[#ECC980] px-2 py-px text-[10px] font-bold uppercase tracking-wide text-ink">Vale-alimentação</span>}
+                    </span>
+                    <span className="block truncate text-xs text-tinta/55">{t.category} · {va ? 'pago com o vale' : t.method} · {formatShort(t.date)}{t.note ? ` · ${t.note}` : ''}</span>
+                  </span>
+                  <span className={cn('shrink-0 text-sm font-bold tabular-nums', t.type === 'receita' ? 'text-oliva-600' : 'text-cereja')}>
+                    {t.type === 'receita' ? '+' : '−'} {money(t.amount)}
+                  </span>
+                </button>
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>

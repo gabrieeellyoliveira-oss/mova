@@ -9,6 +9,7 @@ import { useWeather, weatherKind } from '@/hooks/useWeather'
 import { fromISODate, today } from '@/utils/date'
 import { money, ratio } from '@/utils/format'
 import { cn } from '@/lib/cn'
+import { FinanceTip } from '@/components/finance/FinanceTip'
 
 /** Card padrão do projeto de referência: creme, borda de 2px em tinta e sombra deslocada. */
 export const card = 'min-w-0 rounded-3xl border-2 border-ink bg-quente p-6 shadow-pixel'
@@ -88,6 +89,7 @@ export function FinanceCard() {
           <p className="font-bold">{money(f.expenses)}</p>
         </div>
       </div>
+      <FinanceTip />
     </div>
   )
 }
