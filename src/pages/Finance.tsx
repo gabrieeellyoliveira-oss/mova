@@ -14,6 +14,7 @@ import { FinancialGoals } from '@/components/finance/FinancialGoals'
 import { Icon } from '@/components/ui/Icon'
 import { BalanceCard, NextIncome, QuickGlance } from '@/components/finance/FinanceTop'
 import { IncomeCard } from '@/components/finance/IncomeCard'
+import { BillsCard, ProjectionCard } from '@/components/finance/MonthPlan'
 
 function BudgetCard() {
   const s = useFinanceSummary()
@@ -51,6 +52,10 @@ export default function Finance() {
         <BudgetCard />
       </div>
       <QuickGlance />
+      <div className="grid gap-6 lg:grid-cols-2">
+        <BillsCard />
+        <ProjectionCard />
+      </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="flex flex-col">
           <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle="entradas e gastos dos últimos 6 meses" />

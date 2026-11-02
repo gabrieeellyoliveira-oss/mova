@@ -18,7 +18,7 @@ export function useIncome() {
   const s = useSettings()
   const salary = s.salary ?? 2185
   const voucher = s.mealVoucher ?? 500
-  return { salary, voucher, total: salary + voucher }
+  return { salary, voucher, total: salary + voucher, payday: s.payday ?? 5, card: s.creditCard ?? 0 }
 }
 export const useEvents = () => useCollection(db.events)
 export const useTasks = () => useCollection(db.tasks)
@@ -39,6 +39,7 @@ export const useWorkouts = () => useCollection(db.workouts)
 export const useBodyCheckins = () => useCollection(db.bodyCheckins)
 export const useJournal = () => useCollection(db.journal)
 export const useJournalFolders = () => useCollection(db.journalFolders)
+export const useMonthlyBills = () => useCollection(db.monthlyBills)
 
 /* ---------- seletores puros ---------- */
 

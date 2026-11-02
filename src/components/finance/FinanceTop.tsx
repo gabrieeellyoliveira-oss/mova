@@ -1,9 +1,7 @@
-import { useMemo } from 'react'
 import { ArrowUpRight, Plus } from 'lucide-react'
-import { useFinanceSummary, useTransactions, useVault } from '@/hooks/useData'
-import { db } from '@/store/db'
+import { useFinanceSummary, useIncome, useVault } from '@/hooks/useData'
 import { openForm } from '@/hooks/useQuickAdd'
-import { addMonths, daysBetween, fromISODate, monthKey, toISODate, today } from '@/utils/date'
+import { addMonths, daysBetween, fromISODate, toISODate, today } from '@/utils/date'
 import { money } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 
@@ -27,54 +25,26 @@ export function BalanceCard() {
   )
 }
 
-/** Próxima receita: a próxima entrada já lançada no futuro, ou a próxima de uma receita fixa. */
+/** Data do próximo pagamento no dia `day` (hoje conta). */
+export function nextPayday(day: number, from = today()): string {
+  const now = fromISODate(from)
+  const at = (y: number, m: number) => new Date(y, m, Math.min(day, new Date(y, m + 1, 0).getDate()))
+  let d = at(now.getFullYear(), now.getMonth())
+  if (toISODate(d) < from) { const nm = addMonths(now, 1); d = at(nm.getFullYear(), nm.getMonth()) }
+  return toISODate(d)
+}
+
+/** Próxima receita: o salário fixo de "Minha renda", no dia do pagamento. */
 export function NextIncome() {
-  const tx = useTransactions()
-  const next = useMemo(() => {
-    const t = today()
-    const future = tx.filter((x) => x.type === 'receita' && x.date > t).sort((a, b) => a.date.localeCompare(b.date))[0]
-    if (future) return { name: future.description, date: future.date }
-    const fixed = tx.filter((x) => x.type === 'receita' && x.recurring).sort((a, b) => b.date.localeCompare(a.date))[0]
-    if (!fixed) return null
-    const day = fromISODate(fixed.date).getDate()
-    const now = fromISODate(t)
-    const thisMonth = new Date(now.getFullYear(), now.getMonth(), Math.min(day, new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()))
-    const paidThisMonth = tx.some((x) => x.type === 'receita' && x.description === fixed.description && monthKey(x.date) === monthKey(t))
-    let when = thisMonth
-    if (toISODate(thisMonth) < t || paidThisMonth) {
-      const nm = addMonths(now, 1)
-      when = new Date(nm.getFullYear(), nm.getMonth(), Math.min(day, new Date(nm.getFullYear(), nm.getMonth() + 1, 0).getDate()))
-    }
-    return { name: fixed.description, date: toISODate(when) }
-  }, [tx])
-  const days = next ? daysBetween(today(), next.date) : null
-  const incomes = [...new Set(tx.filter((x) => x.type === 'receita').sort((a, b) => b.date.localeCompare(a.date)).map((x) => x.description))]
-  const markFixed = (description: string) => {
-    const latest = tx.filter((x) => x.type === 'receita' && x.description === description).sort((a, b) => b.date.localeCompare(a.date))[0]
-    if (latest) db.transactions.update(latest.id, { recurring: true })
-  }
+  const inc = useIncome()
+  const date = nextPayday(inc.payday)
+  const days = daysBetween(today(), date)
   return (
     <div className="flex min-h-[170px] flex-col rounded-[22px] border-2 border-ink bg-quente p-5 shadow-pixel">
       <p className="font-serif text-xl font-bold text-tinta">Próxima receita</p>
-      {next ? (
-        <>
-          <p className="mt-2 truncate rounded-full border-2 border-ink px-3 py-1.5 text-sm text-tinta/70">{next.name} ({fromISODate(next.date).toLocaleDateString('pt-BR')})</p>
-          <p className="mt-auto pt-3 text-center text-5xl font-extrabold leading-none text-vinho">{days === 0 ? 'Hoje' : days}</p>
-          {days !== 0 && <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-tinta/50">{days === 1 ? 'dia' : 'dias'}</p>}
-        </>
-      ) : (
-        <div className="mt-auto space-y-2">
-          <p className="text-sm text-tinta/60">Qual receita se repete todo mês?</p>
-          {incomes.length ? (
-            <select value="" onChange={(e) => markFixed(e.target.value)} className="h-10 w-full rounded-2xl border-2 border-ink bg-quente px-3 text-sm text-tinta focus:outline-none" aria-label="Escolher receita fixa">
-              <option value="" disabled>Escolher receita fixa…</option>
-              {incomes.map((d) => <option key={d} value={d}>{d}</option>)}
-            </select>
-          ) : (
-            <p className="text-xs text-tinta/50">Lance uma receita (ex.: salário) e marque "Se repete todo mês".</p>
-          )}
-        </div>
-      )}
+      <p className="mt-2 truncate rounded-full border-2 border-ink px-3 py-1.5 text-sm text-tinta/70">Salário · {money(inc.salary)} ({fromISODate(date).toLocaleDateString('pt-BR')})</p>
+      <p className="mt-auto pt-3 text-center font-serif text-5xl font-bold leading-none text-vinho">{days === 0 ? 'Hoje' : days}</p>
+      {days !== 0 && <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-tinta/50">{days === 1 ? 'dia' : 'dias'}</p>}
     </div>
   )
 }

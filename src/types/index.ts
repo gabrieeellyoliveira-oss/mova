@@ -368,6 +368,17 @@ export interface Settings {
   salary?: number
   /** Vale-alimentação mensal (R$) */
   mealVoucher?: number
+  /** Dia do mês em que o salário cai */
+  payday?: number
+  /** Valor da fatura do cartão de crédito do mês (R$) */
+  creditCard?: number
+}
+
+/** Conta que se paga todo mês (aluguel, internet…). */
+export interface MonthlyBill extends Entity {
+  name: string
+  amount: number
+  dueDay?: number
 }
 
 /* ---------- Evolução (treinos) ---------- */
