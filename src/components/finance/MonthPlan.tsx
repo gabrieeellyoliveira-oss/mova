@@ -69,10 +69,23 @@ export function BillsCard({ month }: { month: string }) {
   const prevDone = items.length > 0 && items.every((i) => paidPrev.has(i.id))
   const ref = prevDone ? month : prevRef
   const paid = prevDone ? paidCur : paidPrev
-  const prevTotal = useTransactions().filter((t) => t.billId && t.type === 'despesa' && refOf(t) === prevRef).reduce((a, t) => a + t.amount, 0)
+  const prevTx = useTransactions().filter((t) => t.billId && t.type === 'despesa' && refOf(t) === prevRef)
+  const prevTotal = prevTx.reduce((a, t) => a + t.amount, 0)
+  const [showPrev, setShowPrev] = useState(false)
   const [f, setF] = useState({ name: '', amount: '', dueDay: '', category: 'Casa' as FinanceCategory })
   const [card, setCard] = useState<string | null>(null)
   const [payOn, setPayOn] = useState(() => payDate(month))
+  const [editAmt, setEditAmt] = useState<{ id: string; v: string } | null>(null)
+  const refTx = useTransactions().filter((t) => t.billId && t.type === 'despesa' && refOf(t) === ref)
+  /** Valor real: numa conta paga, muda o lançamento; numa pendente, muda o valor desta conta (e da fatura). */
+  const saveAmt = (i: Item, txId?: string) => {
+    const v = parseMoney(editAmt?.v ?? '')
+    setEditAmt(null)
+    if (!Number.isFinite(v) || v < 0) return
+    if (txId) db.transactions.update(txId, { amount: v })
+    else if (i.id === CARD_ID) settingsStore.set((p) => ({ ...p, creditCard: v }))
+    else db.monthlyBills.update(i.id, { amount: v })
+  }
   const future = month > monthKey(today())
   const pending = items.filter((i) => !paid.has(i.id))
   const total = items.reduce((a, i) => a + i.amount, 0)
@@ -110,9 +123,25 @@ export function BillsCard({ month }: { month: string }) {
       </div>
 
       {prevDone && (
-        <div className="mb-3 flex items-center gap-3 rounded-2xl border-2 border-ink bg-salvia px-3 py-2.5 text-sm">
-          <Check size={18} strokeWidth={3} className="shrink-0" />
-          <span className="flex-1"><b>Contas de {shortMonth(prevRef)} pagas</b> em {shortMonth(month)} · {money(prevTotal)}</span>
+        <div className="mb-3 rounded-2xl border-2 border-ink bg-salvia px-3 py-2.5 text-sm">
+          <div className="flex items-center gap-3">
+            <Check size={18} strokeWidth={3} className="shrink-0" />
+            <span className="flex-1"><b>Contas de {shortMonth(prevRef)} pagas</b> em {shortMonth(month)} · {money(prevTotal)}</span>
+            <button onClick={() => setShowPrev(!showPrev)} className="shrink-0 text-xs font-semibold underline underline-offset-4">{showPrev ? 'fechar' : 'ver e corrigir valores'}</button>
+          </div>
+          {showPrev && (
+            <ul className="mt-2 divide-y divide-ink/15 border-t border-ink/20">
+              {prevTx.map((t) => (
+                <li key={t.id} className="flex items-center gap-3 py-2">
+                  <span className="min-w-0 flex-1 truncate">{t.description}</span>
+                  <input inputMode="decimal" defaultValue={moneyInput(t.amount)} aria-label={`Valor pago de ${t.description} em ${shortMonth(prevRef)}`}
+                    onBlur={(e) => { const v = parseMoney(e.target.value); if (Number.isFinite(v) && v >= 0 && v !== t.amount) db.transactions.update(t.id, { amount: v }) }}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
+                    className="h-8 w-28 rounded-xl border-2 border-ink bg-quente px-2 text-right font-semibold focus:outline-none" />
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
       <div className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-lavanda-100 px-3 py-2.5">
@@ -129,6 +158,8 @@ export function BillsCard({ month }: { month: string }) {
       <ul className="mt-2 divide-y divide-ink/10">
         {items.map((i) => {
           const done = paid.has(i.id)
+          const paidTx = done ? refTx.find((t) => t.billId === i.id) : undefined
+          const shown = paidTx ? refTx.filter((t) => t.billId === i.id).reduce((a, t) => a + t.amount, 0) : i.amount
           return (
             <li key={i.id} className="flex items-center gap-3 py-2.5 text-sm">
               <button disabled={future} onClick={() => (done ? unpay(i.id, ref) : pay([i], month, ref, payOn))} aria-pressed={done} aria-label={done ? `Desmarcar ${i.name}` : `Paguei ${i.name}`}
@@ -137,7 +168,14 @@ export function BillsCard({ month }: { month: string }) {
               </button>
               <span className="w-12 shrink-0 text-xs text-tinta/55">{i.dueDay ? `dia ${i.dueDay}` : i.id === CARD_ID ? 'cartão' : '—'}</span>
               <span className={cn('min-w-0 flex-1 truncate', done && 'text-tinta/45 line-through')}>{i.name}</span>
-              <span className="font-semibold tabular-nums">{money(i.amount)}</span>
+              {editAmt?.id === i.id ? (
+                <input autoFocus inputMode="decimal" value={editAmt.v} onChange={(e) => setEditAmt({ id: i.id, v: e.target.value })} aria-label={`Valor pago de ${i.name}`}
+                  onBlur={() => saveAmt(i, paidTx?.id)} onKeyDown={(e) => e.key === 'Enter' && saveAmt(i, paidTx?.id)}
+                  className="h-8 w-28 rounded-xl border-2 border-ink bg-quente px-2 text-right text-sm font-semibold focus:outline-none" />
+              ) : (
+                <button onClick={() => setEditAmt({ id: i.id, v: moneyInput(shown) })} title={done ? 'Alterar o valor que foi pago' : 'Alterar o valor desta conta'} aria-label={`Alterar valor de ${i.name}`}
+                  className="font-semibold tabular-nums underline decoration-ink/20 decoration-dashed underline-offset-4 hover:decoration-ink">{money(shown)}</button>
+              )}
               {i.bill ? (
                 <button onClick={() => db.monthlyBills.remove(i.id)} className="grid h-7 w-7 place-items-center rounded-full text-tinta/40 hover:bg-ink/5 hover:text-cereja" aria-label={`Remover ${i.name}`}><X size={14} /></button>
               ) : <span className="w-7" />}
