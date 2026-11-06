@@ -48,8 +48,8 @@ function usePaidFor(ref: string) {
 }
 
 /** Paga as contas de `ref` (competência) com data no mês `month` (quando o dinheiro sai). */
-function pay(items: Item[], month: string, ref: string) {
-  items.forEach((i) => db.transactions.add({ type: 'despesa', description: i.name, amount: i.amount, category: i.category, date: payDate(month), method: i.id === CARD_ID ? 'Crédito' : 'Pix', recurring: true, billId: i.id, ref, note: `referente a ${shortMonth(ref)}` }))
+function pay(items: Item[], month: string, ref: string, on?: string) {
+  items.forEach((i) => db.transactions.add({ type: 'despesa', description: i.name, amount: i.amount, category: i.category, date: on || payDate(month), method: i.id === CARD_ID ? 'Crédito' : 'Pix', recurring: true, billId: i.id, ref, note: `referente a ${shortMonth(ref)}` }))
 }
 function unpay(id: string, ref: string) {
   db.transactions.store.set((list) => list.filter((t) => !(t.billId === id && refOf(t) === ref)))
@@ -62,10 +62,17 @@ function unpay(id: string, ref: string) {
 export function BillsCard({ month }: { month: string }) {
   const items = useItems()
   const inc = useIncome()
-  const ref = shiftMonth(month, -1)
-  const paid = usePaidFor(ref)
+  const prevRef = shiftMonth(month, -1)
+  const paidPrev = usePaidFor(prevRef)
+  const paidCur = usePaidFor(month)
+  // depois de pagar tudo do mês passado, o card passa a mostrar as contas deste mês (que vencem no próximo)
+  const prevDone = items.length > 0 && items.every((i) => paidPrev.has(i.id))
+  const ref = prevDone ? month : prevRef
+  const paid = prevDone ? paidCur : paidPrev
+  const prevTotal = useTransactions().filter((t) => t.billId && t.type === 'despesa' && refOf(t) === prevRef).reduce((a, t) => a + t.amount, 0)
   const [f, setF] = useState({ name: '', amount: '', dueDay: '', category: 'Casa' as FinanceCategory })
   const [card, setCard] = useState<string | null>(null)
+  const [payOn, setPayOn] = useState(() => payDate(month))
   const future = month > monthKey(today())
   const pending = items.filter((i) => !paid.has(i.id))
   const total = items.reduce((a, i) => a + i.amount, 0)
@@ -89,7 +96,7 @@ export function BillsCard({ month }: { month: string }) {
     setCard(null)
   }
   const payAll = () => {
-    pay(pending, month, ref)
+    pay(pending, month, ref, payOn)
     toast('Contas pagas ✓', { text: `${pending.length} ${pending.length === 1 ? 'conta lançada' : 'contas lançadas'} em Movimentações` })
   }
   return (
@@ -98,10 +105,16 @@ export function BillsCard({ month }: { month: string }) {
         <span className="grid h-10 w-10 place-items-center rounded-2xl bg-lavanda"><ReceiptText size={20} /></span>
         <div className="min-w-0 flex-1">
           <h2 className="font-serif text-xl font-bold">Contas do mês</h2>
-          <p className="text-xs text-tinta/60">Contas de <b>{shortMonth(ref)}</b> · pagar em {shortMonth(month)}{items.length ? ` · ${items.length - pending.length} de ${items.length} pagas` : ''}</p>
+          <p className="text-xs text-tinta/60">Contas de <b>{shortMonth(ref)}</b> · pagar em {shortMonth(shiftMonth(ref, 1))}{items.length ? ` · ${items.length - pending.length} de ${items.length} pagas` : ''}</p>
         </div>
       </div>
 
+      {prevDone && (
+        <div className="mb-3 flex items-center gap-3 rounded-2xl border-2 border-ink bg-salvia px-3 py-2.5 text-sm">
+          <Check size={18} strokeWidth={3} className="shrink-0" />
+          <span className="flex-1"><b>Contas de {shortMonth(prevRef)} pagas</b> em {shortMonth(month)} · {money(prevTotal)}</span>
+        </div>
+      )}
       <div className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-lavanda-100 px-3 py-2.5">
         <CreditCard size={18} className="shrink-0" />
         <span className="flex-1 text-sm font-semibold">Fatura do cartão (valor do mês)</span>
@@ -118,7 +131,7 @@ export function BillsCard({ month }: { month: string }) {
           const done = paid.has(i.id)
           return (
             <li key={i.id} className="flex items-center gap-3 py-2.5 text-sm">
-              <button disabled={future} onClick={() => (done ? unpay(i.id, ref) : pay([i], month, ref))} aria-pressed={done} aria-label={done ? `Desmarcar ${i.name}` : `Paguei ${i.name}`}
+              <button disabled={future} onClick={() => (done ? unpay(i.id, ref) : pay([i], month, ref, payOn))} aria-pressed={done} aria-label={done ? `Desmarcar ${i.name}` : `Paguei ${i.name}`}
                 className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink transition disabled:opacity-30', done ? 'bg-ink text-ink-fg' : 'bg-quente hover:bg-lavanda-100')}>
                 {done && <Check size={14} strokeWidth={3} />}
               </button>
@@ -154,10 +167,15 @@ export function BillsCard({ month }: { month: string }) {
           </ul>
         </div>
       )}
-      {items.length > 0 && <p className="mt-3 text-xs text-tinta/60">As contas de {shortMonth(month)} ({money(total)}) ficam para pagar em {shortMonth(shiftMonth(month, 1))}.</p>}
+      {!prevDone && items.length > 0 && <p className="mt-3 text-xs text-tinta/60">As contas de {shortMonth(month)} ({money(total)}) ficam para pagar em {shortMonth(shiftMonth(month, 1))}.</p>}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t-2 border-ink pt-3 text-sm">
         <span>Falta pagar: <b className="tabular-nums">{money(pending.reduce((a, i) => a + i.amount, 0))}</b></span>
-        <Button size="sm" disabled={future || !pending.length} onClick={payAll}><Check size={14} /> Paguei as contas de {shortMonth(ref)}</Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-1.5 text-xs text-tinta/60">pago em
+            <input type="date" value={payOn} onChange={(e) => setPayOn(e.target.value || payDate(month))} aria-label="Data do pagamento" className="h-8 rounded-xl border-2 border-ink bg-quente px-2 text-xs text-tinta focus:outline-none" />
+          </label>
+          <Button size="sm" disabled={future || !pending.length} onClick={payAll}><Check size={14} /> Paguei as contas de {shortMonth(ref)}</Button>
+        </div>
       </div>
     </div>
   )
@@ -180,21 +198,33 @@ export function useProjection(month: string) {
   const voucherReceived = m.monthTx.filter((t) => t.type === 'receita' && /vale|alimenta/i.test(t.description)).reduce((a, t) => a + t.amount, 0)
   const voucherToCome = !past && voucherReceived === 0 ? inc.voucher : 0
   const pendingBills = past ? 0 : items.filter((i) => !paidPrev.has(i.id)).reduce((a, i) => a + i.amount, 0)
-  const extras = m.extras - voucherReceived
-  const left = m.salaryReceived + salaryToCome + voucherReceived + voucherToCome + extras - m.expenses - pendingBills
+  const thirteenth = m.monthTx.filter((t) => t.type === 'receita' && t.category === '13º salário').reduce((a, t) => a + t.amount, 0)
+  const extras = m.extras - voucherReceived - thirteenth
+  const left = m.salaryReceived + salaryToCome + voucherReceived + voucherToCome + thirteenth + extras - m.expenses - pendingBills
   const save = vault.remaining > 0 ? vault.neededPerMonth ?? 0 : 0
   const base = (m.salaryReceived || inc.salary) + (voucherReceived || inc.voucher)
-  return { inc, m, vault, current, past, salaryToCome, voucherReceived, voucherToCome, pendingBills, extras, left, save, base }
+  return { inc, m, vault, current, past, salaryToCome, voucherReceived, voucherToCome, thirteenth, pendingBills, extras, left, save, base }
 }
 
 export function ProjectionCard({ month }: { month: string }) {
-  const { inc, m, vault, current, past, salaryToCome, voucherReceived, voucherToCome, pendingBills, extras, left, save, base } = useProjection(month)
+  const { inc, m, vault, current, past, salaryToCome, voucherReceived, voucherToCome, thirteenth, pendingBills, extras, left, save, base } = useProjection(month)
   const pct = (n: number) => (base ? Math.round((n / base) * 100) : 0)
+  const [receiving, setReceiving] = useState<null | 'Salário' | '13º salário'>(null)
+  const [amount, setAmount] = useState('')
+  const startReceive = (k: 'Salário' | '13º salário') => { setReceiving(k); setAmount(k === 'Salário' ? moneyInput(inc.salary) : '') }
+  const receive = () => {
+    const v = parseMoney(amount)
+    if (!receiving || !(v > 0)) return
+    db.transactions.add({ type: 'receita', description: receiving === 'Salário' ? `Salário de ${shortMonth(month)}` : '13º salário', amount: v, category: receiving, date: payDate(month), method: 'Transferência', recurring: receiving === 'Salário' })
+    toast(receiving === 'Salário' ? 'Salário registrado 💸' : '13º registrado 🎁', { text: money(v) })
+    setReceiving(null)
+  }
   const rows: { label: string; value: number; sign: '+' | '−'; hide?: boolean }[] = [
     { label: 'Salário recebido', value: m.salaryReceived, sign: '+', hide: !m.salaryReceived },
-    { label: 'Salário a receber', value: salaryToCome, sign: '+', hide: !salaryToCome },
+    { label: 'Salário a receber (estimado)', value: salaryToCome, sign: '+', hide: !salaryToCome },
     { label: 'Vale-alimentação recebido', value: voucherReceived, sign: '+', hide: !voucherReceived },
     { label: 'Vale-alimentação a receber', value: voucherToCome, sign: '+', hide: !voucherToCome },
+    { label: '13º salário', value: thirteenth, sign: '+', hide: !thirteenth },
     { label: 'Dinheiro extra', value: extras, sign: '+', hide: !extras },
     { label: 'Gastos lançados', value: m.expenses, sign: '−' },
     { label: `Contas de ${shortMonth(shiftMonth(month, -1))} ainda não pagas`, value: pendingBills, sign: '−', hide: past },
@@ -208,6 +238,24 @@ export function ProjectionCard({ month }: { month: string }) {
           <li key={r.label} className="flex justify-between"><span className="text-ink-fg/75">{r.sign} {r.label}</span><span className="tabular-nums">{money(r.value)}</span></li>
         ))}
       </ul>
+      {!past && (
+        <div className="mt-3">
+          {receiving ? (
+            <form onSubmit={(e) => { e.preventDefault(); receive() }} className="flex flex-wrap items-center gap-2 rounded-2xl bg-ink-fg/10 p-2.5">
+              <span className="text-sm">{receiving === 'Salário' ? 'Quanto caiu de salário?' : 'Quanto veio de 13º?'}</span>
+              <input autoFocus inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} aria-label={receiving === 'Salário' ? 'Valor do salário recebido' : 'Valor do 13º'} placeholder="R$"
+                className="h-9 w-32 rounded-xl border-2 border-ink-fg/60 bg-transparent px-3 text-right font-bold text-ink-fg focus:outline-none focus:ring-2 focus:ring-lavanda" />
+              <button type="submit" className="h-9 rounded-full bg-lavanda px-4 text-sm font-semibold text-ink">Salvar</button>
+              <button type="button" onClick={() => setReceiving(null)} className="text-xs text-ink-fg/60 hover:text-ink-fg">cancelar</button>
+            </form>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {!m.salaryReceived && <button onClick={() => startReceive('Salário')} className="rounded-full border-2 border-ink-fg/70 px-3 py-1 text-xs font-semibold hover:bg-ink-fg/10">💸 Recebi o salário</button>}
+              <button onClick={() => startReceive('13º salário')} className="rounded-full border-2 border-ink-fg/70 px-3 py-1 text-xs font-semibold hover:bg-ink-fg/10">🎁 Recebi o 13º</button>
+            </div>
+          )}
+        </div>
+      )}
       <div className="mt-3 flex items-end justify-between border-t border-ink-fg/25 pt-3">
         <span className="text-sm text-ink-fg/75">{past ? 'Sobrou no mês' : 'Vai sobrar no mês'}</span>
         <span className={cn('font-serif text-3xl font-bold', left < 0 ? 'text-[#E07A8C]' : 'text-ink-fg')}>{money(left)}</span>
@@ -226,7 +274,7 @@ export function ProjectionCard({ month }: { month: string }) {
           </div>
         </div>
       )}
-      <p className="mt-3 text-xs text-ink-fg/60">Usa as Movimentações do mês: lance o salário quando cair e qualquer dinheiro extra que receber. A renda é salário + vale-alimentação ({money(inc.total)}).</p>
+      <p className="mt-3 text-xs text-ink-fg/60">Usa as Movimentações do mês. O salário varia: quando cair, toque em “Recebi o salário” e coloque o valor real. A renda é salário + vale-alimentação ({money(inc.total)}).</p>
     </div>
   )
 }

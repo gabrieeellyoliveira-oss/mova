@@ -1,5 +1,5 @@
 import {
-  ArrowDownLeft, BookOpen, Briefcase, Car, Gamepad2, HeartPulse, Home, Package, Repeat, ShoppingBag, Utensils, type LucideIcon,
+  ArrowDownLeft, BookOpen, Gift, Briefcase, Car, Gamepad2, HeartPulse, Home, Package, Repeat, ShoppingBag, Utensils, type LucideIcon,
 } from 'lucide-react'
 import type { FinanceCategory, Transaction } from '@/types'
 
@@ -17,6 +17,7 @@ export const CATEGORY_STYLE: Record<FinanceCategory, CategoryStyle> = {
   Saúde: { icon: HeartPulse, bg: '#E07A8C', fg: '#0C0A0E' },
   Outros: { icon: Package, bg: '#EBE7E0', fg: '#0C0A0E' },
   Salário: { icon: Briefcase, bg: '#376139', fg: '#F6F1E7' },
+  '13º salário': { icon: Gift, bg: '#376139', fg: '#F6F1E7' },
   Freela: { icon: ArrowDownLeft, bg: '#376139', fg: '#F6F1E7' },
 }
 
@@ -24,4 +25,4 @@ const INCOME: CategoryStyle = { icon: ArrowDownLeft, bg: '#376139', fg: '#F6F1E7
 
 /** Estilo de uma movimentação: entrada (Pix, salário, extra) = verde; saída = cor da categoria. */
 export const styleOf = (t: Pick<Transaction, 'type' | 'category'>): CategoryStyle =>
-  t.type === 'receita' ? (t.category === 'Salário' ? CATEGORY_STYLE.Salário : INCOME) : CATEGORY_STYLE[t.category] ?? CATEGORY_STYLE.Outros
+  t.type === 'receita' ? (t.category === 'Salário' || t.category === '13º salário' ? CATEGORY_STYLE[t.category] : INCOME) : CATEGORY_STYLE[t.category] ?? CATEGORY_STYLE.Outros

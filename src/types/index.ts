@@ -59,6 +59,7 @@ export type FinanceCategory =
   | 'Saúde'
   | 'Outros'
   | 'Salário'
+  | '13º salário'
   | 'Freela'
 export type PaymentMethod = 'Pix' | 'Crédito' | 'Débito' | 'Dinheiro' | 'Boleto' | 'Transferência' | 'Vale-alimentação'
 

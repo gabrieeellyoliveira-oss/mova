@@ -14,6 +14,7 @@ import { Icon } from '@/components/ui/Icon'
 import { BalanceCard, QuickGlance } from '@/components/finance/FinanceTop'
 import { IncomeCard } from '@/components/finance/IncomeCard'
 import { FoodCard } from '@/components/finance/FoodCard'
+import { FinanceHistory } from '@/components/finance/FinanceHistory'
 import { BillsCard, ProjectionCard, monthName } from '@/components/finance/MonthPlan'
 
 function BudgetCard({ month }: { month: string }) {
@@ -53,7 +54,7 @@ export default function Finance() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-1 rounded-full border-2 border-ink bg-quente p-1">
           <Button size="icon-sm" variant="ghost" onClick={() => shift(-1)} aria-label="Mês anterior"><ChevronLeft size={16} /></Button>
-          <span className="min-w-[160px] px-2 text-center font-serif text-lg font-bold capitalize">{monthName(month)}</span>
+          <span className="min-w-[160px] px-2 text-center font-serif text-lg font-bold first-letter:uppercase">{monthName(month)}</span>
           <Button size="icon-sm" variant="ghost" onClick={() => shift(1)} aria-label="Próximo mês"><ChevronRight size={16} /></Button>
         </div>
         {month !== now ? <Button size="sm" variant="light" onClick={() => setMonth(now)}>Voltar para o mês atual</Button> : <span className="text-sm text-tinta/60">mês atual</span>}
@@ -65,7 +66,7 @@ export default function Finance() {
       </div>
       <QuickGlance month={month} />
       <div className="grid gap-6 lg:grid-cols-2">
-        <BillsCard month={month} />
+        <BillsCard key={month} month={month} />
         <ProjectionCard month={month} />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
@@ -75,6 +76,7 @@ export default function Finance() {
         </Card>
         <FoodCard month={month} />
       </div>
+      <FinanceHistory current={month} onPick={(mm) => { setMonth(mm); window.scrollTo({ top: 0, behavior: 'smooth' }) }} />
       <Card className="flex flex-col">
         <CardHeader icon={<Icon name="piggy" size={20} />} title="Evolução mensal" subtitle={`entradas e gastos até ${monthName(month)} · contas pagas em lavanda`} />
         <MonthlyChart month={month} />

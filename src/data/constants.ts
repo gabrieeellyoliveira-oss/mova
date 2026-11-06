@@ -69,7 +69,7 @@ export const PRIORITIES: Record<Priority, { label: string; color: string }> = {
 export const EXPENSE_CATEGORIES: FinanceCategory[] = [
   'Casa', 'Alimentação', 'Transporte', 'Lazer', 'Estudos', 'Assinaturas', 'Compras', 'Saúde', 'Outros',
 ]
-export const INCOME_CATEGORIES: FinanceCategory[] = ['Salário', 'Freela', 'Outros']
+export const INCOME_CATEGORIES: FinanceCategory[] = ['Salário', '13º salário', 'Freela', 'Outros']
 
 export const FINANCE_COLORS: Record<FinanceCategory, string> = {
   Casa: '#0C0A0E',
@@ -82,6 +82,7 @@ export const FINANCE_COLORS: Record<FinanceCategory, string> = {
   Saúde: '#2A4B2C',
   Outros: '#bfaeae',
   Salário: '#376139',
+  '13º salário': '#376139',
   Freela: '#C3AEEC',
 }
 
