@@ -76,6 +76,8 @@ export interface Transaction extends Entity {
   billId?: string
   /** Mês de referência (competência) da conta paga, `AAAA-MM` — as contas de um mês são pagas no mês seguinte */
   ref?: string
+  /** Recebimento lançado pelos botões da projeção: o salário do mês ou o 13º */
+  income?: 'salario' | '13'
 }
 
 export interface FinancialGoal extends Entity {

@@ -80,7 +80,9 @@ export function useMonthFinance(month: string) {
   return useMemo(() => {
     const monthTx = tx.filter((t) => monthKey(t.date) === month)
     const incomeTx = monthTx.filter((t) => t.type === 'receita')
-    const salaryReceived = incomeTx.filter((t) => t.category === 'Salário').reduce((a, t) => a + t.amount, 0)
+    // o salário lançado pelo botão "Salário do mês" vale como o salário do mês; sem ele, conta a categoria Salário
+    const marked = incomeTx.filter((t) => t.income === 'salario')
+    const salaryReceived = (marked.length ? marked : incomeTx.filter((t) => t.category === 'Salário' && !t.income)).reduce((a, t) => a + t.amount, 0)
     const income = incomeTx.reduce((a, t) => a + t.amount, 0)
     const expenses = monthTx.filter((t) => t.type === 'despesa').reduce((a, t) => a + t.amount, 0)
     const billsPaid = monthTx.filter((t) => t.billId && t.type === 'despesa').reduce((a, t) => a + t.amount, 0)

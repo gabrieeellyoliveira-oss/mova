@@ -198,7 +198,7 @@ export function useProjection(month: string) {
   const voucherReceived = m.monthTx.filter((t) => t.type === 'receita' && /vale|alimenta/i.test(t.description)).reduce((a, t) => a + t.amount, 0)
   const voucherToCome = !past && voucherReceived === 0 ? inc.voucher : 0
   const pendingBills = past ? 0 : items.filter((i) => !paidPrev.has(i.id)).reduce((a, i) => a + i.amount, 0)
-  const thirteenth = m.monthTx.filter((t) => t.type === 'receita' && t.category === '13º salário').reduce((a, t) => a + t.amount, 0)
+  const thirteenth = m.monthTx.filter((t) => t.type === 'receita' && (t.income === '13' || t.category === '13º salário')).reduce((a, t) => a + t.amount, 0)
   const extras = m.extras - voucherReceived - thirteenth
   const left = m.salaryReceived + salaryToCome + voucherReceived + voucherToCome + thirteenth + extras - m.expenses - pendingBills
   const save = vault.remaining > 0 ? vault.neededPerMonth ?? 0 : 0
@@ -211,12 +211,22 @@ export function ProjectionCard({ month }: { month: string }) {
   const pct = (n: number) => (base ? Math.round((n / base) * 100) : 0)
   const [receiving, setReceiving] = useState<null | 'Salário' | '13º salário'>(null)
   const [amount, setAmount] = useState('')
-  const startReceive = (k: 'Salário' | '13º salário') => { setReceiving(k); setAmount(k === 'Salário' ? moneyInput(inc.salary) : '') }
+  // o lançamento feito pelo botão (um por mês): dá para alterar o valor quantas vezes quiser
+  const salaryTx = m.monthTx.find((t) => t.income === 'salario')
+  const thirteenthTx = m.monthTx.find((t) => t.income === '13')
+  const startReceive = (k: 'Salário' | '13º salário') => {
+    const cur = k === 'Salário' ? salaryTx : thirteenthTx
+    setReceiving(k)
+    setAmount(cur ? moneyInput(cur.amount) : k === 'Salário' ? moneyInput(m.salaryReceived || inc.salary) : '')
+  }
   const receive = () => {
     const v = parseMoney(amount)
-    if (!receiving || !(v > 0)) return
-    db.transactions.add({ type: 'receita', description: receiving === 'Salário' ? `Salário de ${shortMonth(month)}` : '13º salário', amount: v, category: receiving, date: payDate(month), method: 'Transferência', recurring: receiving === 'Salário' })
-    toast(receiving === 'Salário' ? 'Salário registrado 💸' : '13º registrado 🎁', { text: money(v) })
+    if (!receiving || !(v >= 0)) return
+    const cur = receiving === 'Salário' ? salaryTx : thirteenthTx
+    if (cur && v === 0) db.transactions.remove(cur.id)
+    else if (cur) db.transactions.update(cur.id, { amount: v })
+    else if (v > 0) db.transactions.add({ type: 'receita', description: receiving === 'Salário' ? `Salário de ${shortMonth(month)}` : '13º salário', amount: v, category: receiving, date: payDate(month), method: 'Transferência', recurring: false, income: receiving === 'Salário' ? 'salario' : '13' })
+    toast(receiving === 'Salário' ? 'Salário do mês salvo 💸' : '13º salvo 🎁', { text: money(v) })
     setReceiving(null)
   }
   const rows: { label: string; value: number; sign: '+' | '−'; hide?: boolean }[] = [
@@ -242,7 +252,7 @@ export function ProjectionCard({ month }: { month: string }) {
         <div className="mt-3">
           {receiving ? (
             <form onSubmit={(e) => { e.preventDefault(); receive() }} className="flex flex-wrap items-center gap-2 rounded-2xl bg-ink-fg/10 p-2.5">
-              <span className="text-sm">{receiving === 'Salário' ? 'Quanto caiu de salário?' : 'Quanto veio de 13º?'}</span>
+              <span className="text-sm">{receiving === 'Salário' ? 'Quanto caiu de salário este mês?' : 'Quanto veio de 13º?'}</span>
               <input autoFocus inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} aria-label={receiving === 'Salário' ? 'Valor do salário recebido' : 'Valor do 13º'} placeholder="R$"
                 className="h-9 w-32 rounded-xl border-2 border-ink-fg/60 bg-transparent px-3 text-right font-bold text-ink-fg focus:outline-none focus:ring-2 focus:ring-lavanda" />
               <button type="submit" className="h-9 rounded-full bg-lavanda px-4 text-sm font-semibold text-ink">Salvar</button>
@@ -250,8 +260,8 @@ export function ProjectionCard({ month }: { month: string }) {
             </form>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {!m.salaryReceived && <button onClick={() => startReceive('Salário')} className="rounded-full border-2 border-ink-fg/70 px-3 py-1 text-xs font-semibold hover:bg-ink-fg/10">💸 Recebi o salário</button>}
-              <button onClick={() => startReceive('13º salário')} className="rounded-full border-2 border-ink-fg/70 px-3 py-1 text-xs font-semibold hover:bg-ink-fg/10">🎁 Recebi o 13º</button>
+              <button onClick={() => startReceive('Salário')} className="rounded-full border-2 border-ink-fg/70 px-3 py-1 text-xs font-semibold hover:bg-ink-fg/10">💸 {salaryTx ? `Salário do mês: ${money(salaryTx.amount)} · alterar` : 'Recebi o salário'}</button>
+              <button onClick={() => startReceive('13º salário')} className="rounded-full border-2 border-ink-fg/70 px-3 py-1 text-xs font-semibold hover:bg-ink-fg/10">🎁 {thirteenthTx ? `13º: ${money(thirteenthTx.amount)} · alterar` : 'Recebi o 13º'}</button>
             </div>
           )}
         </div>

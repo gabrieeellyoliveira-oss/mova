@@ -17,7 +17,7 @@ export function BalanceCard() {
         <p className="mt-auto pt-6 font-serif text-4xl font-bold leading-none">{money(s.balance)}</p>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button variant="olive" onClick={() => openForm('transaction', { type: 'receita', category: 'Salário' })}><ArrowUpRight size={16} /> Receita</Button>
+        <Button variant="olive" onClick={() => openForm('transaction', { type: 'receita', category: 'Outros' })}><ArrowUpRight size={16} /> Receita</Button>
         <Button onClick={() => openForm('transaction', { type: 'despesa' })}><Plus size={16} /> Despesa</Button>
       </div>
     </div>

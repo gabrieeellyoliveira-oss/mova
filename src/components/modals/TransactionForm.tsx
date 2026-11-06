@@ -50,7 +50,7 @@ export function TransactionForm({ initial, onClose }: { initial?: Partial<Transa
       <form onSubmit={(e) => { e.preventDefault(); save() }} className="space-y-4">
         <Segmented<TransactionType>
           value={f.type}
-          onChange={(v) => setF((p) => ({ ...p, type: v, category: v === 'despesa' ? 'Alimentação' : 'Salário' }))}
+          onChange={(v) => setF((p) => ({ ...p, type: v, category: v === 'despesa' ? 'Alimentação' : 'Outros' }))}
           options={[{ value: 'despesa', label: 'Despesa' }, { value: 'receita', label: 'Receita' }]}
         />
         <FormGrid>

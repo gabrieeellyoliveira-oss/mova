@@ -15,8 +15,9 @@ export function FinanceHistory({ current, onPick }: { current: string; onPick: (
     return months.map((m) => {
       const list = tx.filter((t) => monthKey(t.date) === m)
       const income = list.filter((t) => t.type === 'receita').reduce((a, t) => a + t.amount, 0)
-      const salary = list.filter((t) => t.type === 'receita' && t.category === 'Salário').reduce((a, t) => a + t.amount, 0)
-      const thirteenth = list.filter((t) => t.type === 'receita' && t.category === '13º salário').reduce((a, t) => a + t.amount, 0)
+      const marked = list.filter((t) => t.type === 'receita' && t.income === 'salario')
+      const salary = (marked.length ? marked : list.filter((t) => t.type === 'receita' && t.category === 'Salário' && !t.income)).reduce((a, t) => a + t.amount, 0)
+      const thirteenth = list.filter((t) => t.type === 'receita' && (t.income === '13' || t.category === '13º salário')).reduce((a, t) => a + t.amount, 0)
       const out = list.filter((t) => t.type === 'despesa').reduce((a, t) => a + t.amount, 0)
       const bills = list.filter((t) => t.type === 'despesa' && t.billId).reduce((a, t) => a + t.amount, 0)
       const saved = vault.filter((e) => monthKey(e.date) === m).reduce((a, e) => a + vaultNet(e), 0)
