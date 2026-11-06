@@ -4,12 +4,11 @@ import {
   ArrowRight, BookOpen, Calendar, ChevronDown, Cloud, CloudRain,
   GraduationCap, Home as HomeIcon, Layers, Sun, Wallet,
 } from 'lucide-react'
-import { useBooks, useFinanceSummary, useSettings, useStudyWeek, useVault } from '@/hooks/useData'
+import { useBooks, useSettings, useStudyWeek, useVault } from '@/hooks/useData'
 import { useWeather, weatherKind } from '@/hooks/useWeather'
 import { fromISODate, today } from '@/utils/date'
-import { money, ratio } from '@/utils/format'
+import { ratio } from '@/utils/format'
 import { cn } from '@/lib/cn'
-import { FinanceTip } from '@/components/finance/FinanceTip'
 import { SalaryFlow } from '@/components/finance/SalaryFlow'
 
 /** Card padrão do projeto de referência: creme, borda de 2px em tinta e sombra deslocada. */
@@ -71,17 +70,13 @@ export function DateWeather() {
 
 /** Finanças: saldo atual, o salário do mês passo a passo (contas do mês passado, gastos, disponível) e a dica do mês. */
 export function FinanceCard() {
-  const f = useFinanceSummary()
   return (
     <div className={card}>
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><Wallet size={20} /> Finanças</h2>
         <IconBtn label="Abrir finanças" to="/financas"><ArrowRight size={16} /></IconBtn>
       </div>
-      <p className="mt-4 text-xs text-tinta/60">Saldo atual</p>
-      <p className="font-serif text-4xl font-bold text-cereja">{money(f.balance)}</p>
       <SalaryFlow />
-      <FinanceTip />
     </div>
   )
 }

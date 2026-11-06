@@ -3,7 +3,8 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAx
 import { useVaultEntries } from '@/hooks/useData'
 import { monthKey } from '@/utils/date'
 import { money } from '@/utils/format'
-import { tooltipStyle } from '@/components/finance/MonthlyChart'
+
+const tooltipStyle = { borderRadius: 14, border: '2px solid #0C0A0E', fontSize: 12 }
 
 /** Movimento do cofre mês a mês: quanto foi guardado e quanto foi retirado em cada mês (não o acumulado). */
 export function VaultChart() {
