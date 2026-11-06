@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  ArrowDown, ArrowRight, ArrowUp, BookOpen, Calendar, ChevronDown, Cloud, CloudRain,
+  ArrowRight, BookOpen, Calendar, ChevronDown, Cloud, CloudRain,
   GraduationCap, Home as HomeIcon, Layers, Sun, Wallet,
 } from 'lucide-react'
 import { useBooks, useFinanceSummary, useSettings, useStudyWeek, useVault } from '@/hooks/useData'
@@ -10,6 +10,7 @@ import { fromISODate, today } from '@/utils/date'
 import { money, ratio } from '@/utils/format'
 import { cn } from '@/lib/cn'
 import { FinanceTip } from '@/components/finance/FinanceTip'
+import { SalaryFlow } from '@/components/finance/SalaryFlow'
 
 /** Card padrão do projeto de referência: creme, borda de 2px em tinta e sombra deslocada. */
 export const card = 'min-w-0 rounded-3xl border-2 border-ink bg-quente p-6 shadow-pixel'
@@ -68,7 +69,7 @@ export function DateWeather() {
   )
 }
 
-/** Finanças: saldo atual e o mês em receitas/despesas. */
+/** Finanças: saldo atual, o salário do mês passo a passo (contas do mês passado, gastos, disponível) e a dica do mês. */
 export function FinanceCard() {
   const f = useFinanceSummary()
   return (
@@ -79,16 +80,7 @@ export function FinanceCard() {
       </div>
       <p className="mt-4 text-xs text-tinta/60">Saldo atual</p>
       <p className="font-serif text-4xl font-bold text-cereja">{money(f.balance)}</p>
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border-2 border-ink bg-salvia p-3">
-          <p className="flex items-center gap-1 text-xs"><ArrowUp size={12} /> Receitas</p>
-          <p className="font-bold">{money(f.income)}</p>
-        </div>
-        <div className="rounded-2xl border-2 border-ink bg-lavanda p-3">
-          <p className="flex items-center gap-1 text-xs"><ArrowDown size={12} /> Despesas</p>
-          <p className="font-bold">{money(f.expenses)}</p>
-        </div>
-      </div>
+      <SalaryFlow />
       <FinanceTip />
     </div>
   )

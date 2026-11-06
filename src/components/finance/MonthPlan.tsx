@@ -25,7 +25,7 @@ const payDate = (month: string) => {
 type Item = { id: string; name: string; amount: number; category: FinanceCategory; dueDay?: number; bill?: MonthlyBill }
 
 /** As contas do mês + a fatura do cartão, como itens pagáveis. */
-function useItems(): Item[] {
+export function useItems(): Item[] {
   const bills = useMonthlyBills()
   const inc = useIncome()
   const list: Item[] = [...bills]
@@ -42,7 +42,7 @@ const shortMonth = (m: string) => fromISODate(`${m}-01`).toLocaleDateString('pt-
 export const refOf = (t: Transaction) => t.ref ?? shiftMonth(monthKey(t.date), -1)
 
 /** Contas já pagas que se referem ao mês `ref`. */
-function usePaidFor(ref: string) {
+export function usePaidFor(ref: string) {
   const tx = useTransactions()
   return new Set(tx.filter((t) => t.billId && t.type === 'despesa' && refOf(t) === ref).map((t) => t.billId!))
 }

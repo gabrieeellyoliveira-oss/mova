@@ -32,13 +32,13 @@ export function FinanceTip() {
     title = `O mês fecha em ${money(p.left)}`
     text = `Do jeito que está, falta dinheiro.${top ? ` O que mais pesou foi ${top[0].toLowerCase()} (${money(top[1])}) —` : ''} segure os gastos que não são contas nos próximos ${daysLeft} dias.`
   } else if (p.save > 0 && p.left < p.save) {
-    title = `Vão sobrar ${money(p.left)}`
+    title = `Fim do mês: ${money(p.left)}`
     text = `É menos que os ${money(p.save)} para sair de casa no prazo. Faltam ${money(p.save - p.left)}${top ? ` — dá para tirar de ${top[0].toLowerCase()}, onde já foram ${money(top[1])}` : ''}.`
   } else if (vaPct > elapsed + 0.2) {
     title = `Vale em ${Math.round(vaPct * 100)}%`
     text = `O vale-alimentação já foi ${Math.round(vaPct * 100)}% e o mês está em ${Math.round(elapsed * 100)}%. Vá com calma no mercado: restam ${money(p.inc.voucher - vaUsed)} para ${daysLeft} dias.`
   } else {
-    title = `Vão sobrar ${money(p.left)}`
+    title = `Fim do mês: ${money(p.left)}`
     text = p.save > 0
       ? `Guarde ${money(p.save)} para sair de casa assim que o salário cair; fica ${money(p.left - p.save)} livre para o mês.`
       : `Mês no azul. Se quiser acelerar a saída de casa, mande uma parte disso para o cofre.`
@@ -48,7 +48,7 @@ export function FinanceTip() {
 
   return (
     <div className="mt-4 rounded-2xl border-2 border-ink bg-lavanda-100 p-4">
-      <p className="text-xs uppercase tracking-[0.2em] text-tinta/60">Este mês</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-tinta/60">Previsão do fim do mês · com o vale</p>
       <p className={`mt-1 font-serif text-2xl font-bold ${p.left < 0 ? 'text-cereja' : ''}`}>{title}</p>
       <p className="mt-1.5 text-sm leading-snug text-tinta/75">{text}</p>
       <p className="mt-3 border-t border-ink/15 pt-2.5 text-xs leading-snug text-tinta/65"><b className="text-tinta">💡 Ensinamento:</b> {lesson}</p>
