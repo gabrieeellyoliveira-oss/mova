@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom'
 import { History, ListChecks, Sparkles, TrendingUp } from 'lucide-react'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { VaultHero, VaultKpis } from '@/components/vault/VaultHero'
@@ -5,12 +6,32 @@ import { VaultChart, useTrail } from '@/components/vault/VaultChart'
 import { CostList } from '@/components/vault/CostList'
 import { AfterMove } from '@/components/vault/AfterMove'
 import { EntryList } from '@/components/vault/EntryList'
+import { MovePlanning } from '@/components/vault/MovePlanning'
+import { cn } from '@/lib/cn'
 import { IncomeCard } from '@/components/finance/IncomeCard'
 
 const monthLong = (k: string) => { const [y, m] = k.split('-').map(Number); return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long' }) }
 
-/** Sair de casa: veredito, 3 números, custos da mudança, a vida depois de sair, a trilha e o histórico. */
+const TABS = [{ id: 'financeiro', label: '💰 Planejamento financeiro' }, { id: 'planejamento', label: '📝 Planejamento' }] as const
+
+/** Sair de casa: duas sub-abas — o cofre (financeiro) e a pesquisa (casas, móveis, links). */
 export default function Vault() {
+  const [params, setParams] = useSearchParams()
+  const tab = params.get('aba') === 'planejamento' ? 'planejamento' : 'financeiro'
+  return (
+    <div className="space-y-6">
+      <div role="tablist" aria-label="Sair de casa" className="flex w-full gap-1 rounded-full border-2 border-ink bg-quente p-1 sm:w-fit">
+        {TABS.map((t) => (
+          <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setParams(t.id === 'financeiro' ? {} : { aba: t.id }, { replace: true })}
+            className={cn('flex-1 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition sm:flex-none sm:px-5', tab === t.id ? 'bg-ink text-ink-fg' : 'hover:bg-lavanda-100')}>{t.label}</button>
+        ))}
+      </div>
+      {tab === 'financeiro' ? <VaultFinance /> : <MovePlanning />}
+    </div>
+  )
+}
+
+function VaultFinance() {
   const { end } = useTrail()
   return (
     <div className="space-y-6">

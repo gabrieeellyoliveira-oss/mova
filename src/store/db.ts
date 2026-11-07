@@ -2,7 +2,7 @@ import type {
   Book, CalendarEvent, Course, FinancialGoal, FocusSession, Goal, Habit,
   Experience, Note, Place, Settings, Task, Transaction, VaultCost, VaultEntry, VaultSettings, WeeklyPriority,
   WorkEntry, WorkGoal, WorkSettings, WorkProject, CustomAchievement, Integrations, GoogleCalendarCache, LinkedInData,
-  Workout, BodyCheckin, JournalEntry, JournalFolder, MonthlyBill, Degree, Assignment, Discipline,
+  Workout, BodyCheckin, JournalEntry, JournalFolder, MoveNote, MonthlyBill, Degree, Assignment, Discipline,
 } from '@/types'
 import * as seed from '@/data/seed'
 import { createCollection } from './collections'
@@ -32,6 +32,7 @@ export const db = {
   bodyCheckins: createCollection<BodyCheckin>('bodyCheckins', () => []),
   journal: createCollection<JournalEntry>('journal', () => []),
   journalFolders: createCollection<JournalFolder>('journalFolders', () => []),
+  moveNotes: createCollection<MoveNote>('moveNotes', () => []),
   monthlyBills: createCollection<MonthlyBill>('monthlyBills', () => []),
   degrees: createCollection<Degree>('degrees', seed.seedDegrees),
   assignments: createCollection<Assignment>('assignments', seed.seedAssignments),

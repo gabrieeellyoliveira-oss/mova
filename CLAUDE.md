@@ -17,7 +17,9 @@
 - Valores em dinheiro: sempre ler com `parseMoney` (`src/utils/format.ts`, aceita "1.500", "1.500,90", "R$ 2.000") e preencher campos com `moneyInput`; nunca `Number(x.replace(',', '.'))`.
 
 ## Módulos
-- **Sair de casa** = sair da casa dos pais (mudança), **não** rolês. A aba `/sair-de-casa` é um cofre (refeita pelo mockup da Gabi, nov/2026). De cima para baixo:
+- **Sair de casa** = sair da casa dos pais (mudança), **não** rolês. A aba `/sair-de-casa` tem **duas sub-abas** (pílulas no topo, `?aba=planejamento` na URL):
+  - **📝 Planejamento** (`components/vault/MovePlanning.tsx` e `MoveNoteForm.tsx`): a pesquisa da mudança em cards no estilo do Diário (`db.moveNotes`). Cada anotação tem tipo (Casa/Móvel/Ideia/Outro), título, preço (na casa, aluguel por mês), situação (pesquisando/favorito/comprado/descartado), vários links (viram pílulas com o domínio e abrem a loja), anotações e fotos. Tem filtros por tipo e busca. A Gabi pediu que a aba não fosse só financeira.
+  - **💰 Planejamento financeiro** = o cofre (refeito pelo mockup da Gabi, nov/2026). De cima para baixo:
   - **Veredito** (`components/vault/VaultHero.tsx`): status No ritmo/Fora do ritmo (média mensal real × `neededPerMonth` = falta ÷ meses até a data meta), botões Guardar/Retirar à direita e a data meta num campo pequeno com ✎ (`vaultSettingsStore.targetDate`).
   - **3 números** (`VaultKpis`): Precisa guardar por mês (% **só do salário**, sem o VA), Guardado neste mês (% da parcela) e Sobra depois de sair.
   - **Custos da mudança** (`CostList.tsx`): campo **Aluguel alvo** (`targetRent`, padrão R$ 1.000) e caução **1x/2x/3x** (`depositMultiplier`). Os itens **Caução** e **Primeiro aluguel** são AUTO (calculados, não editáveis). Custos salvos com esses nomes em `db.vaultCosts` ficam guardados, mas não somam. A meta = auto + custos próprios (`vaultTarget` em `useData.ts`). Um item 100% coberto ganha o check verde.

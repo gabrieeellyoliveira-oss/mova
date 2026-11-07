@@ -435,6 +435,19 @@ export interface JournalEntry extends Entity {
   folderId?: string
 }
 
+/** Pesquisa da mudança (Sair de casa → Planejamento): casas, móveis, links do que vai comprar. */
+export type MoveNoteKind = 'casa' | 'movel' | 'ideia' | 'outro'
+export type MoveNoteStatus = 'pesquisando' | 'favorito' | 'comprado' | 'descartado'
+export interface MoveNote extends Entity {
+  kind: MoveNoteKind
+  title: string
+  text: string
+  links: string[]
+  price?: number
+  status: MoveNoteStatus
+  photos: string[]
+}
+
 /** Pasta do diário (ex.: "Diário pessoal", "Raivas do trabalho"). */
 export interface JournalFolder extends Entity {
   name: string
