@@ -22,8 +22,8 @@ export function CostList() {
     <div>
       <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
         <label className="block rounded-2xl border-2 border-ink px-4 py-2.5">
-          <span className="block text-xs text-tinta/60">Aluguel alvo (com condomínio)</span>
-          <input inputMode="decimal" aria-label="Aluguel alvo" value={rent ?? moneyInput(v.rent)} onFocus={() => setRent(moneyInput(v.rent))} onChange={(e) => setRent(e.target.value)}
+          <span className="block text-xs text-tinta/60">Moradia total (aluguel + condomínio + IPTU)</span>
+          <input inputMode="decimal" aria-label="Moradia total" value={rent ?? moneyInput(v.rent)} onFocus={() => setRent(moneyInput(v.rent))} onChange={(e) => setRent(e.target.value)}
             onBlur={saveRent} onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
             className="w-full bg-transparent text-xl font-bold focus:outline-none" />
         </label>

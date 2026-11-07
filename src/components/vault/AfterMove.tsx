@@ -7,7 +7,7 @@ import { cn } from '@/lib/cn'
 
 const r0 = (n: number) => money(n).replace(',00', '')
 
-/** Depois que eu sair: salário − aluguel (do aluguel alvo) − custos fixos editáveis = sobra no mês. Mercado fica fora (o VA cobre). */
+/** Depois que eu sair: salário − moradia total (aluguel + condomínio + IPTU) − custos fixos editáveis = sobra no mês. Mercado fica fora (o VA cobre). */
 export function AfterMove() {
   const v = useVault()
   const inc = useIncome()
@@ -25,7 +25,7 @@ export function AfterMove() {
     <div>
       <ul>
         <li className={row}><span>Salário</span><span className="shrink-0 whitespace-nowrap font-semibold tabular-nums text-oliva-600">+ {r0(inc.salary)}</span></li>
-        <li className={row}><span>Aluguel + condomínio <span className="hidden text-xs text-tinta/50 sm:inline">(aluguel alvo)</span></span><span className="shrink-0 whitespace-nowrap tabular-nums">− {r0(v.rent)}</span></li>
+        <li className={row}><span>Moradia <span className="hidden text-xs text-tinta/50 sm:inline">(aluguel + condomínio + IPTU)</span></span><span className="shrink-0 whitespace-nowrap tabular-nums">− {r0(v.rent)}</span></li>
         {v.livingCosts.map((c) => (
           <li key={c.id} className={cn(row, 'group')}>
             <span className="flex min-w-0 items-center gap-1.5">{c.name}
@@ -50,7 +50,7 @@ export function AfterMove() {
         <span className="font-semibold">Sobra no mês</span>
         <span className="font-serif text-3xl font-bold">{r0(left)}</span>
       </div>
-      <p className="mt-3 text-xs text-tinta/55">Mercado fica fora: o VA cobre. Toque num valor para editar — o aluguel vem do campo “aluguel alvo”.</p>
+      <p className="mt-3 text-xs text-tinta/55">Mercado fica fora: o VA cobre. Toque num valor para editar — a moradia vem do campo “moradia total”, que já inclui o IPTU.</p>
     </div>
   )
 }

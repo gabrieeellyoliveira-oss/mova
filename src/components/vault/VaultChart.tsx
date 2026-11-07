@@ -9,30 +9,41 @@ const r0 = (n: number) => money(Math.round(n)).replace(',00', '')
 const nextKey = (k: string) => { const [y, m] = k.split('-').map(Number); const d = new Date(y, m, 1); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
 const label = (k: string) => { const [y, m] = k.split('-').map(Number); return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') }
 
-/** Trilha do cofre: o guardado acumulado vs. quanto deveria ter em cada mês, do primeiro depósito até a data meta. */
+const prevKey = (k: string) => { const [y, m] = k.split('-').map(Number); const d = new Date(y, m - 2, 1); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
+
+/**
+ * Trilha do cofre: o guardado acumulado vs. quanto deveria ter em cada mês.
+ * A trilha parte do saldo do fim do mês passado (início do plano) e sobe a mesma parcela
+ * do topo ("precisa guardar por mês") até a data meta, terminando na meta do cofre.
+ */
 export function useTrail() {
   const v = useVault()
   return useMemo(() => {
     const now = monthKey(today())
-    const first = v.entries[0] ? monthKey(v.entries[0].date) : now
-    const start = first < now ? first : now
+    const planStart = prevKey(now)
+    const first = v.entries[0] ? monthKey(v.entries[0].date) : planStart
+    const start = first < planStart ? first : planStart
     const end = v.settings.targetDate ? monthKey(v.settings.targetDate) : null
     const last = end && end > now ? end : now
     const keys: string[] = []
     for (let k = start; k <= last && keys.length < 60; k = nextKey(k)) keys.push(k)
-    const span = end ? keys.filter((k) => k <= end).length : 0
+    const need = v.neededPerMonth ?? 0
     let acc = 0
-    const data = keys.map((k, i) => {
+    let base = 0
+    let step = 0
+    const data = keys.map((k) => {
       acc += v.entries.filter((e) => monthKey(e.date) === k).reduce((a, e) => a + (e.type === 'deposito' ? e.amount : -e.amount), 0)
-      return {
-        key: k, mes: label(k),
-        guardado: k <= now ? Math.round(acc * 100) / 100 : null,
-        trilha: span && k <= end! ? Math.round((v.target * (i + 1)) / span) : null,
+      if (k === planStart) base = acc
+      let trilha: number | null = null
+      if (end && k >= planStart && k <= end) {
+        trilha = k === planStart ? base : k === end ? v.target : Math.min(v.target, base + need * ++step)
+        trilha = Math.round(trilha * 100) / 100
       }
+      return { key: k, mes: label(k), guardado: k <= now ? Math.round(acc * 100) / 100 : null, trilha }
     })
     const cur = data.find((d) => d.key === now)
     return { data, cur, end, now, targetDate: v.settings.targetDate }
-  }, [v.entries, v.settings.targetDate, v.target])
+  }, [v.entries, v.settings.targetDate, v.target, v.neededPerMonth])
 }
 
 export function VaultChart() {
@@ -59,7 +70,7 @@ export function VaultChart() {
             <Tooltip formatter={(n: number, name: string) => [money(n), name]} contentStyle={tooltipStyle} />
             <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 12, color: '#0C0A0E' }} />
             {cur && <ReferenceLine x={cur.mes} stroke="#C3AEEC" strokeWidth={2} />}
-            <Line type="monotone" dataKey="trilha" name={tName} stroke="#0C0A0E" strokeDasharray="6 5" strokeWidth={2} dot={false} connectNulls />
+            <Line type="linear" dataKey="trilha" name={tName} stroke="#0C0A0E" strokeDasharray="6 5" strokeWidth={2} dot={false} connectNulls />
             <Line type="monotone" dataKey="guardado" name="Guardado (acumulado)" stroke="#376139" strokeWidth={3} dot={{ r: 3, fill: '#376139' }} connectNulls={false} />
             {cur?.guardado != null && <ReferenceDot x={cur.mes} y={cur.guardado} r={7} fill="#C3AEEC" stroke="#0C0A0E" strokeWidth={2} />}
           </LineChart>

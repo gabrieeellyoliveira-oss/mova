@@ -1,4 +1,4 @@
-import type { VaultEntry } from '@/types'
+import type { VaultEntry, VaultEntryCategory } from '@/types'
 import { useVault } from '@/hooks/useData'
 import { openForm } from '@/hooks/useQuickAdd'
 import { money } from '@/utils/format'
@@ -13,9 +13,13 @@ export const VAULT_CATEGORIES = [
   { value: 'extra', label: 'Extra', cls: 'bg-px-gold-soft' },
 ] as const
 
+/** Categoria do depósito; lançamentos antigos (sem categoria) com "salário" na observação contam como Salário. */
+export const entryCategory = (e: Partial<VaultEntry>): VaultEntryCategory =>
+  e.category ?? (/sal[aá]rio/i.test(e.note ?? '') ? 'salario' : 'deposito')
+
 export function entryChip(e: VaultEntry) {
   if (e.type !== 'deposito') return { label: 'Retirada', cls: 'bg-[#F6D6DC]' }
-  return VAULT_CATEGORIES.find((c) => c.value === (e.category ?? 'deposito'))!
+  return VAULT_CATEGORIES.find((c) => c.value === entryCategory(e))!
 }
 
 /** Histórico do cofre em cartões: categoria fixa, valor e data. */

@@ -29,8 +29,8 @@ export function VaultHero() {
           </span>
           <p className="mt-3 font-serif text-2xl leading-snug sm:text-3xl">
             {done ? <>Meta batida! Hora de procurar a casa nova 🔑</> : v.neededPerMonth !== null ? (
-              <>Faltam <span className="text-lavanda">{r0(v.remaining)}</span> em <span className="text-lavanda">{v.monthsLeft} {v.monthsLeft === 1 ? 'mês' : 'meses'}</span>.<br />
-                Precisa guardar <span className="text-lavanda">{money(v.neededPerMonth)}/mês</span> — hoje sua média é {r0(v.monthlyAvg)}.</>
+              <>Faltam <span className="text-lavanda">{r0(v.remaining)}</span> para a meta.<br />
+                Precisa guardar <span className="text-lavanda">{money(v.neededPerMonth)}/mês</span> por {v.monthsLeft} {v.monthsLeft === 1 ? 'mês' : 'meses'} — hoje sua média é {r0(v.monthlyAvg)}.</>
             ) : <>Faltam <span className="text-lavanda">{r0(v.remaining)}</span>. Escolha a data meta para saber quanto guardar por mês.</>}
           </p>
           <p className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-ink-fg/75">

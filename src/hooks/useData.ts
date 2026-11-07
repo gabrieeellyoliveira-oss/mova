@@ -133,7 +133,6 @@ export const vaultNet = (e: Pick<VaultEntry, 'type' | 'amount'>) => (e.type === 
 
 /** Custos fixos padrão de quando ela sair (o aluguel vem do "aluguel alvo"). */
 export const DEFAULT_LIVING_COSTS = [
-  { id: 'iptu', name: 'IPTU', amount: 50 },
   { id: 'luz', name: 'Luz', amount: 150 },
   { id: 'internet', name: 'Internet', amount: 100 },
   { id: 'gas', name: 'Gás', amount: 30 },
@@ -161,7 +160,8 @@ export function useVault() {
     const saved = sorted.reduce((a, e) => a + vaultNet(e), 0)
     const rent = settings.targetRent ?? 1000
     const mult = settings.depositMultiplier ?? 1
-    const livingCosts = settings.livingCosts ?? DEFAULT_LIVING_COSTS
+    // IPTU já entra na moradia total (aluguel + condomínio + IPTU): não descontar duas vezes
+    const livingCosts = (settings.livingCosts ?? DEFAULT_LIVING_COSTS).filter((c) => c.id !== 'iptu' && !/iptu/i.test(c.name))
     // Caução e Primeiro aluguel são calculados pelo aluguel alvo (itens antigos com esses nomes ficam guardados, mas não somam)
     const autoCosts = [
       { id: AUTO_DEPOSIT, name: `Caução (${mult}x)`, amount: rent * mult, order: -2, createdAt: '', auto: true },
@@ -198,8 +198,10 @@ export function useVault() {
     let neededPerMonth: number | null = null
     if (settings.targetDate) {
       const [ty, tm] = settings.targetDate.split('-').map(Number)
+      // meses para guardar: do mês atual até o mês anterior ao da mudança (ex.: nov→fev = nov, dez, jan)
       monthsLeft = Math.max(1, (ty - now.getFullYear()) * 12 + (tm - 1 - now.getMonth()))
-      neededPerMonth = remaining / monthsLeft
+      // parcela do plano: parte do saldo do início deste mês, então não muda a cada depósito do mês
+      neededPerMonth = Math.max(0, target - (saved - thisMonth)) / monthsLeft
     }
     const onTrack = neededPerMonth === null ? null : remaining <= 0 || monthlyAvg >= neededPerMonth
 

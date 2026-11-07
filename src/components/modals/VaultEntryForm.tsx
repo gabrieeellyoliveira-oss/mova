@@ -1,7 +1,7 @@
 import { moneyInput, parseMoney } from '@/utils/format'
 import { useState } from 'react'
 import type { VaultEntry, VaultEntryCategory, VaultEntryType } from '@/types'
-import { VAULT_CATEGORIES } from '@/components/vault/EntryList'
+import { VAULT_CATEGORIES, entryCategory } from '@/components/vault/EntryList'
 import { cn } from '@/lib/cn'
 import { db } from '@/store/db'
 import { today } from '@/utils/date'
@@ -16,7 +16,7 @@ export function VaultEntryForm({ initial, onClose }: { initial?: Partial<VaultEn
   const [type, setType] = useState<VaultEntryType>(initial?.type ?? 'deposito')
   const [amount, setAmount] = useState(initial?.amount ? moneyInput(initial.amount) : '')
   const [date, setDate] = useState(initial?.date ?? today())
-  const [category, setCategory] = useState<VaultEntryCategory>(initial?.category ?? 'salario')
+  const [category, setCategory] = useState<VaultEntryCategory>(initial?.id ? entryCategory(initial) : 'salario')
   const [note, setNote] = useState(initial?.note ?? '')
   const value = parseMoney(amount)
   const valid = value > 0 && !!date
