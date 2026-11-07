@@ -48,16 +48,24 @@ export function CostList() {
       <ul className="divide-y divide-ink/10">
         {v.coverage.map(({ cost, covered, progress }) => {
           const full = progress >= 100
-          const auto = 'auto' in cost && cost.auto
+          const auto = cost.auto
+          // edita o custo salvo (sem o preço vindo da pesquisa)
+          const stored = () => db.vaultCosts.store.get().find((c) => c.id === cost.id)
           return (
             <li key={cost.id} className="py-2.5">
-              <button disabled={auto} onClick={() => !auto && setEditing(cost as VaultCost)} className="flex w-full items-center gap-3 text-left disabled:cursor-default">
-                <span className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-md border-2', full ? 'border-oliva-600 bg-oliva-600 text-white' : 'border-ink')} aria-label={full ? 'coberto' : 'falta'}>{full && <Check size={14} strokeWidth={3} />}</span>
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">{cost.name}{auto && <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-[#6A4FB6]">auto</span>}</span>
-                <span className="shrink-0 text-sm tabular-nums text-tinta/70"><b className={cn(covered > 0 ? 'text-tinta' : 'font-normal')}>{r0(covered)}</b> / {r0(cost.amount)}</span>
+              <button disabled={auto} onClick={() => { const c = stored(); if (c) setEditing(c) }} className="flex w-full items-center gap-3 text-left disabled:cursor-default">
+                <span className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-md border-2', full ? 'border-oliva-600 bg-oliva-600 text-white' : 'border-ink')} aria-label={cost.bought ? 'comprado' : full ? 'coberto' : 'falta'}>{full && <Check size={14} strokeWidth={3} />}</span>
+                <span className="min-w-0 flex-1">
+                  <span className={cn('block truncate text-sm font-medium', cost.bought && 'text-tinta/55 line-through decoration-ink/30')}>{cost.name}{auto && <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-[#6A4FB6]">auto</span>}</span>
+                  {cost.bought && <span className="block text-[11px] text-tinta/50">🛍️ comprado (pela pesquisa) · fora da meta</span>}
+                  {!cost.bought && cost.fromNote && <span className="block text-[11px] text-tinta/50">🔗 preço do favorito da pesquisa</span>}
+                </span>
+                {cost.bought
+                  ? <span className="shrink-0 text-sm font-semibold text-oliva-600">✓ {r0(cost.amount)}</span>
+                  : <span className="shrink-0 text-sm tabular-nums text-tinta/70"><b className={cn(covered > 0 ? 'text-tinta' : 'font-normal')}>{r0(covered)}</b> / {r0(cost.amount)}</span>}
               </button>
               {covered > 0 && !full && <div className="mt-2 pl-9"><Progress value={progress} height={6} /></div>}
-              {!auto && researched.get(cost.id) && (() => {
+              {!auto && !cost.bought && !cost.fromNote && researched.get(cost.id) && (() => {
                 const r = researched.get(cost.id)!
                 if (Math.round(r.price) === Math.round(cost.amount)) return <p className="mt-1 pl-9 text-xs text-oliva-600">preço pesquisado ✓ ({r.title})</p>
                 return (
@@ -76,8 +84,9 @@ export function CostList() {
         <span>Meta do cofre</span>
         <span className="font-serif text-xl font-bold">{money(v.target)}</span>
       </div>
+      {v.boughtTotal > 0 && <p className="mt-1 text-right text-xs text-oliva-600">já comprado: {r0(v.boughtTotal)} (fora da meta)</p>}
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-xs text-tinta/55">✓ fica verde quando o item está 100% coberto · toque num item para editar · móveis da pesquisa ligados a um item mostram o preço achado</p>
+        <p className="text-xs text-tinta/55">✓ fica verde quando o item está 100% coberto ou foi comprado · toque num item para editar · móveis da pesquisa ligados a um item mostram o preço achado</p>
         <Button size="sm" variant="light" aria-label="Adicionar custo da mudança" onClick={() => setEditing('new')}><Plus size={14} /> Custo</Button>
       </div>
       {editing && <CostForm initial={editing === 'new' ? undefined : editing} onClose={() => setEditing(null)} />}

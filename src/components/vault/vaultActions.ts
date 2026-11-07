@@ -6,7 +6,7 @@ import { celebrate, toast } from '@/hooks/useToast'
 import { money } from '@/utils/format'
 
 const currentSaved = () => db.vaultEntries.store.get().reduce((a, e) => a + vaultNet(e), 0)
-const currentTarget = () => vaultTarget(db.vaultCosts.store.get(), vaultSettingsStore.get())
+const currentTarget = () => vaultTarget(db.vaultCosts.store.get(), vaultSettingsStore.get(), db.moveNotes.store.get())
 
 /** Salva um depósito/retirada e comemora ao cruzar 25%, 50%, 75% ou 100% da meta. */
 export function saveVaultEntry(data: Omit<VaultEntry, 'id' | 'createdAt'>, id?: string) {

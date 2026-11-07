@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CalendarClock, ExternalLink, FileCheck2, Images, KeyRound, Link2, PenLine, Scale, Search } from 'lucide-react'
 import type { MoveNote, MoveNoteKind } from '@/types'
-import { useMoveNotes } from '@/hooks/useData'
+import { useMoveNotes, useVaultCosts } from '@/hooks/useData'
 import { money } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
@@ -16,7 +16,7 @@ type Filter = 'todas' | MoveNoteKind
 const r0 = (n: number) => money(n).replace(',00', '')
 
 /** Um card da pesquisa, no formato dos blocos do Diário: foto, tipo, título, preço e links. */
-function NoteCard({ note, onOpen }: { note: MoveNote; onOpen: () => void }) {
+function NoteCard({ note, onOpen, costName }: { note: MoveNote; onOpen: () => void; costName?: string }) {
   const k = NOTE_KINDS.find((x) => x.value === note.kind) ?? NOTE_KINDS[3]
   const [cover, ...rest] = note.photos
   const st = note.status !== 'pesquisando' ? NOTE_STATUS.find((s) => s.value === note.status) : undefined
@@ -38,6 +38,7 @@ function NoteCard({ note, onOpen }: { note: MoveNote; onOpen: () => void }) {
           {note.kind === 'casa' && note.total ? <p className="mt-1 font-serif text-lg font-bold text-cereja">{r0(note.total)}<span className="font-sans text-xs font-normal text-tinta/55">/mês com tudo</span></p>
             : note.price ? <p className="mt-1 font-serif text-lg font-bold text-cereja">{r0(note.price)}{note.kind === 'casa' && <span className="font-sans text-xs font-normal text-tinta/55">/mês</span>}</p> : null}
           {note.text && <p className="mt-2 line-clamp-2 text-sm text-tinta/65">{note.text}</p>}
+          {costName && <p className="mt-2 text-xs font-semibold text-tinta/60">🔗 {costName}</p>}
         </div>
       </button>
       {note.links.length > 0 && (
@@ -57,6 +58,7 @@ function NoteCard({ note, onOpen }: { note: MoveNote; onOpen: () => void }) {
 /** Planejamento da mudança: anotações de pesquisa (casas, móveis, ideias) com links, preço e fotos. */
 export function MovePlanning() {
   const notes = useMoveNotes()
+  const costs = useVaultCosts()
   const [filter, setFilter] = useState<Filter>('todas')
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<MoveNote | 'new' | null>(null)
@@ -118,7 +120,7 @@ export function MovePlanning() {
           action={<Button size="sm" onClick={() => setOpen('new')}><PenLine size={14} /> Nova anotação</Button>} />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-          {list.map((n) => <NoteCard key={n.id} note={n} onOpen={() => setOpen(n)} />)}
+          {list.map((n) => <NoteCard key={n.id} note={n} onOpen={() => setOpen(n)} costName={costs.find((c) => c.id === n.costId)?.name} />)}
         </div>
       )}
       {open && <MoveNoteForm initial={open === 'new' ? undefined : open} kind={filter !== 'todas' ? filter : undefined} onClose={() => setOpen(null)} />}

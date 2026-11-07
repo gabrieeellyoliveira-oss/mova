@@ -9,7 +9,7 @@ import { useCollection } from '@/store/collections'
 import { useStore } from '@/store/createStore'
 import { monthKey, startOfWeek, today, weekDays } from '@/utils/date'
 import { ratio } from '@/utils/format'
-import type { Goal, Habit, Transaction, VaultCost, VaultEntry, VaultSettings } from '@/types'
+import type { Goal, Habit, MoveNote, Transaction, VaultCost, VaultEntry, VaultSettings } from '@/types'
 
 export const useSettings = () => useStore(settingsStore)
 
@@ -142,9 +142,21 @@ export const AUTO_DEPOSIT = 'auto-caucao'
 export const AUTO_RENT = 'auto-aluguel'
 export const isAutoName = (n: string) => /cau[cç][aã]o|primeiro aluguel/i.test(n)
 /** Meta do cofre = caução (aluguel × mult) + primeiro aluguel + custos próprios. */
-export const vaultTarget = (costs: VaultCost[], s: VaultSettings) => {
+/**
+ * Liga a pesquisa (moveNotes) aos custos: favorito/comprado com preço vira o valor previsto;
+ * comprado marca o item como já pago (sai da meta). Os custos salvos não mudam.
+ */
+export function linkCosts(costs: VaultCost[], notes: MoveNote[]) {
+  return costs.map((c) => {
+    const linked = notes.filter((n) => n.costId === c.id && n.status !== 'descartado')
+    const bought = linked.find((n) => n.status === 'comprado')
+    const priced = bought?.price ? bought : linked.find((n) => n.status === 'favorito' && n.price)
+    return { ...c, amount: priced?.price ?? c.amount, bought: !!bought, noteId: (bought ?? priced ?? linked[0])?.id, fromNote: !!priced }
+  })
+}
+export const vaultTarget = (costs: VaultCost[], s: VaultSettings, notes: MoveNote[] = []) => {
   const rent = s.targetRent ?? 1000
-  return rent * (s.depositMultiplier ?? 1) + rent + costs.filter((c) => !isAutoName(c.name)).reduce((a, c) => a + c.amount, 0)
+  return rent * (s.depositMultiplier ?? 1) + rent + linkCosts(costs.filter((c) => !isAutoName(c.name)), notes).filter((c) => !c.bought).reduce((a, c) => a + c.amount, 0)
 }
 
 /**
@@ -154,6 +166,7 @@ export const vaultTarget = (costs: VaultCost[], s: VaultSettings) => {
 export function useVault() {
   const entries = useVaultEntries()
   const costs = useVaultCosts()
+  const notes = useMoveNotes()
   const settings = useVaultSettings()
   return useMemo(() => {
     const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt))
@@ -164,12 +177,14 @@ export function useVault() {
     const livingCosts = (settings.livingCosts ?? DEFAULT_LIVING_COSTS).filter((c) => c.id !== 'iptu' && !/iptu/i.test(c.name))
     // Caução e Primeiro aluguel são calculados pelo aluguel alvo (itens antigos com esses nomes ficam guardados, mas não somam)
     const autoCosts = [
-      { id: AUTO_DEPOSIT, name: `Caução (${mult}x)`, amount: rent * mult, order: -2, createdAt: '', auto: true },
-      { id: AUTO_RENT, name: 'Primeiro aluguel', amount: rent, order: -1, createdAt: '', auto: true },
+      { id: AUTO_DEPOSIT, name: `Caução (${mult}x)`, amount: rent * mult, order: -2, createdAt: '', auto: true, bought: false, fromNote: false, noteId: undefined as string | undefined },
+      { id: AUTO_RENT, name: 'Primeiro aluguel', amount: rent, order: -1, createdAt: '', auto: true, bought: false, fromNote: false, noteId: undefined as string | undefined },
     ]
-    const ownCosts = [...costs].filter((c) => !isAutoName(c.name)).sort((a, b) => a.order - b.order).map((c) => ({ ...c, auto: false }))
+    const ownCosts = linkCosts([...costs].filter((c) => !isAutoName(c.name)).sort((a, b) => a.order - b.order), notes).map((c) => ({ ...c, auto: false }))
     const orderedCosts = [...autoCosts, ...ownCosts]
-    const target = orderedCosts.reduce((a, c) => a + c.amount, 0)
+    // itens já comprados saem da meta (já foram pagos)
+    const target = orderedCosts.filter((c) => !c.bought).reduce((a, c) => a + c.amount, 0)
+    const boughtTotal = orderedCosts.filter((c) => c.bought).reduce((a, c) => a + c.amount, 0)
     const remaining = Math.max(0, target - saved)
     const progress = ratio(saved, target)
 
@@ -208,6 +223,7 @@ export function useVault() {
     // o saldo vai "cobrindo" os custos na ordem da lista
     let left = Math.max(0, saved)
     const coverage = orderedCosts.map((c) => {
+      if (c.bought) return { cost: c, covered: c.amount, progress: 100 }
       const covered = Math.min(c.amount, left)
       left -= covered
       return { cost: c, covered, progress: ratio(covered, c.amount) }
@@ -218,7 +234,7 @@ export function useVault() {
 
     return {
       entries: sorted, costs: orderedCosts, settings, saved, target, remaining, progress, months, monthlyAvg, thisMonth,
-      monthsToGoal, forecast, monthsLeft, neededPerMonth, onTrack, coverage, rent, mult, livingCosts, livingTotal,
+      monthsToGoal, forecast, monthsLeft, neededPerMonth, onTrack, coverage, rent, mult, livingCosts, livingTotal, boughtTotal,
     }
-  }, [entries, costs, settings])
+  }, [entries, costs, notes, settings])
 }

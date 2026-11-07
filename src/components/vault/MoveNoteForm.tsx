@@ -37,6 +37,9 @@ export function MoveNoteForm({ initial, kind, onClose }: { initial?: MoveNote; k
     guarantee: initial?.guarantee ?? '', visitScore: initial?.visitScore ?? 0, costId: initial?.costId ?? '',
   })
   const costs = useVaultCosts().filter((c) => !isAutoName(c.name)).sort((a, b) => a.order - b.order)
+  const norm = (x: string) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9 ]/g, '').trim()
+  // sugere o item dos custos com nome parecido com o título (ex.: "Geladeira Consul" → "Geladeira usada")
+  const suggestion = !f.costId && norm(f.title).length > 2 ? costs.find((c) => { const w = norm(c.name).split(' ')[0]; return (w.length > 2 && norm(f.title).includes(w)) || norm(c.name).includes(norm(f.title)) }) : undefined
   const [link, setLink] = useState('')
   const file = useRef<HTMLInputElement>(null)
   const valid = !!f.title.trim()
@@ -109,10 +112,12 @@ export function MoveNoteForm({ initial, kind, onClose }: { initial?: MoveNote; k
         )}
         {f.kind === 'movel' && costs.length > 0 && (
           <Field label="Conta em qual custo da mudança?" hint="o preço pesquisado aparece no item, para você usar no lugar da estimativa">
-            <Select value={f.costId} onChange={(e) => setF({ ...f, costId: e.target.value })}>
+            <Select value={f.costId} onChange={(e) => setF({ ...f, costId: e.target.value })} aria-label="Item dos custos da mudança">
               <option value="">Nenhum</option>
               {costs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </Select>
+            {suggestion && <button type="button" onClick={() => setF({ ...f, costId: suggestion.id })} className="mt-1.5 text-xs font-semibold text-[#6A4FB6] hover:underline">Ligar a “{suggestion.name}”?</button>}
+            {f.costId && <p className="mt-1.5 text-xs text-tinta/55">♥ Favorito com preço → vira o valor do item. ✓ Comprado → o item fica verde e sai da meta do cofre.</p>}
           </Field>
         )}
         <Field label="Links" group>
