@@ -1,6 +1,6 @@
 import { useAgendaEvents } from './useAgenda'
 import { useMemo } from 'react'
-import { useCourses, useFinanceSummary, useTransactions, useVault } from './useData'
+import { useCourses, useFinanceSummary, useIncome, useTransactions, useVault } from './useData'
 import { daysBetween, fromISODate, monthKey, relativeDay, toISODate, today } from '@/utils/date'
 import { money } from '@/utils/format'
 
@@ -19,6 +19,7 @@ export function useNotifications(now: Date): Notice[] {
   const fin = useFinanceSummary()
   const vault = useVault()
   const tx = useTransactions()
+  const inc = useIncome()
 
   return useMemo(() => {
     const t = today()
@@ -26,7 +27,11 @@ export function useNotifications(now: Date): Notice[] {
     const list: Notice[] = []
     const upcoming = events.filter((e) => e.date === t && !e.allDay && e.time >= hhmm).sort((a, b) => a.time.localeCompare(b.time))
     if (upcoming[0]) list.push({ id: `ev-${upcoming[0].id}`, emoji: '🗓️', title: `Às ${upcoming[0].time}: ${upcoming[0].title}`, text: upcoming.length > 1 ? `e mais ${upcoming.length - 1} hoje` : 'seu próximo compromisso', path: '/agenda' })
-    if (vault.remaining > 0 && vault.thisMonth <= 0)
+    // ensaio de morar sozinha: a partir do dia do pagamento, guardar o custo de viver fora (moradia + contas)
+    const rehearsalLeft = Math.max(0, vault.livingTotal - Math.max(0, vault.thisMonth))
+    if (vault.remaining > 0 && now.getDate() >= inc.payday && rehearsalLeft > 0)
+      list.push({ id: `ensaio-${t.slice(0, 7)}`, emoji: '🔑', title: `Ensaio do mês: guarde ${money(Math.round(rehearsalLeft))}`, text: 'o custo de morar sozinha vai para o cofre', path: '/sair-de-casa' })
+    else if (vault.remaining > 0 && vault.thisMonth <= 0)
       list.push({ id: `vault-${t.slice(0, 7)}`, emoji: '🪙', title: 'Que tal guardar um pouquinho no cofre?', text: `faltam ${Math.round(100 - vault.progress)}% para sair de casa`, path: '/sair-de-casa' })
     if (fin.budgetUsed >= 80) list.push({ id: 'budget', emoji: '🪙', title: `Você já usou ${Math.round(fin.budgetUsed)}% do orçamento`, text: 'Que tal um rolê grátis essa semana?', path: '/financas' })
     courses.filter((c) => c.active && c.deadline && daysBetween(t, c.deadline) >= 0 && daysBetween(t, c.deadline) <= 10).forEach((c) =>
@@ -46,5 +51,5 @@ export function useNotifications(now: Date): Notice[] {
       if (d >= 0 && d <= 3) list.push({ id: `bill-${x.description}-${monthKey(t)}`, emoji: '🧾', title: `${money(x.amount)} · ${x.description}`, text: d === 0 ? 'vence hoje' : `em ${d} ${d === 1 ? 'dia' : 'dias'} (${relativeDay(due)})`, path: '/financas' })
     })
     return list
-  }, [events, courses, fin.budgetUsed, vault, tx, now])
+  }, [events, courses, fin.budgetUsed, vault, tx, now, inc.payday])
 }

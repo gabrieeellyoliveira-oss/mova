@@ -16,7 +16,7 @@ export function VaultEntryForm({ initial, onClose }: { initial?: Partial<VaultEn
   const [type, setType] = useState<VaultEntryType>(initial?.type ?? 'deposito')
   const [amount, setAmount] = useState(initial?.amount ? moneyInput(initial.amount) : '')
   const [date, setDate] = useState(initial?.date ?? today())
-  const [category, setCategory] = useState<VaultEntryCategory>(initial?.id ? entryCategory(initial) : 'salario')
+  const [category, setCategory] = useState<VaultEntryCategory>(initial?.id ? entryCategory(initial) : initial?.category ?? 'salario')
   const [note, setNote] = useState(initial?.note ?? '')
   const value = parseMoney(amount)
   const valid = value > 0 && !!date

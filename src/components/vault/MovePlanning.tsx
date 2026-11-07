@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ExternalLink, Images, Link2, PenLine, Search } from 'lucide-react'
+import { CalendarClock, ExternalLink, FileCheck2, Images, KeyRound, Link2, PenLine, Scale, Search } from 'lucide-react'
 import type { MoveNote, MoveNoteKind } from '@/types'
 import { useMoveNotes } from '@/hooks/useData'
 import { money } from '@/utils/format'
@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/Misc'
 import { cn } from '@/lib/cn'
+import { Card, CardHeader } from '@/components/ui/Card'
 import { MoveNoteForm, NOTE_KINDS, NOTE_STATUS, domainOf } from './MoveNoteForm'
+import { HouseCompare } from './HouseCompare'
+import { DocsChecklist, GuaranteeCard, MoveTimeline } from './MoveChecklist'
 
 type Filter = 'todas' | MoveNoteKind
 const r0 = (n: number) => money(n).replace(',00', '')
@@ -32,7 +35,8 @@ function NoteCard({ note, onOpen }: { note: MoveNote; onOpen: () => void }) {
             {st && <span className={cn('text-xs font-semibold', note.status === 'comprado' ? 'text-oliva-600' : note.status === 'favorito' ? 'text-cereja' : 'text-tinta/55')}>{st.label}</span>}
           </div>
           <p className="mt-3 line-clamp-2 font-serif text-xl font-bold leading-snug">{note.title}</p>
-          {note.price ? <p className="mt-1 font-serif text-lg font-bold text-cereja">{r0(note.price)}{note.kind === 'casa' && <span className="font-sans text-xs font-normal text-tinta/55">/mês</span>}</p> : null}
+          {note.kind === 'casa' && note.total ? <p className="mt-1 font-serif text-lg font-bold text-cereja">{r0(note.total)}<span className="font-sans text-xs font-normal text-tinta/55">/mês com tudo</span></p>
+            : note.price ? <p className="mt-1 font-serif text-lg font-bold text-cereja">{r0(note.price)}{note.kind === 'casa' && <span className="font-sans text-xs font-normal text-tinta/55">/mês</span>}</p> : null}
           {note.text && <p className="mt-2 line-clamp-2 text-sm text-tinta/65">{note.text}</p>}
         </div>
       </button>
@@ -77,6 +81,25 @@ export function MovePlanning() {
         </div>
         <Button size="lg" onClick={() => setOpen('new')}><PenLine size={18} /> Nova anotação</Button>
       </section>
+
+      <Card>
+        <CardHeader icon={<Scale size={18} />} title="Comparar casas" subtitle="as casas da pesquisa lado a lado, contra o seu teto" />
+        <HouseCompare onOpen={(n) => setOpen(n)} />
+      </Card>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Card>
+          <CardHeader icon={<KeyRound size={18} />} title="Garantia do aluguel" subtitle="renda exigida e como compensar" />
+          <GuaranteeCard />
+        </Card>
+        <Card>
+          <CardHeader icon={<FileCheck2 size={18} />} title="Documentos" subtitle="o que separar antes de fechar" />
+          <DocsChecklist />
+        </Card>
+        <Card>
+          <CardHeader icon={<CalendarClock size={18} />} title="Linha do tempo" subtitle="etapas até a data meta · mande para a Agenda" />
+          <MoveTimeline />
+        </Card>
+      </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">

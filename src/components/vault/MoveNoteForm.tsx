@@ -2,13 +2,14 @@ import { useRef, useState } from 'react'
 import { ExternalLink, ImagePlus, Plus, X } from 'lucide-react'
 import type { MoveNote, MoveNoteKind, MoveNoteStatus } from '@/types'
 import { db } from '@/store/db'
+import { isAutoName, useVaultCosts } from '@/hooks/useData'
 import { fileToDataUrl } from '@/utils/image'
 import { moneyInput, parseMoney } from '@/utils/format'
 import { toast } from '@/hooks/useToast'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
-import { Field, Input, Textarea } from '@/components/ui/Form'
-import { DeleteButton } from '@/components/ui/Misc'
+import { Field, Input, Select, Textarea } from '@/components/ui/Form'
+import { DeleteButton, StarRating } from '@/components/ui/Misc'
 import { cn } from '@/lib/cn'
 
 export const NOTE_KINDS: { value: MoveNoteKind; label: string; emoji: string; cls: string }[] = [
@@ -32,7 +33,10 @@ export function MoveNoteForm({ initial, kind, onClose }: { initial?: MoveNote; k
   const [f, setF] = useState({
     kind: initial?.kind ?? kind ?? 'movel', title: initial?.title ?? '', text: initial?.text ?? '', links: initial?.links ?? [],
     price: initial?.price ? moneyInput(initial.price) : '', status: initial?.status ?? 'pesquisando', photos: initial?.photos ?? [],
+    total: initial?.total ? moneyInput(initial.total) : '', commute: initial?.commute ?? '', kitchen: initial?.kitchen ?? '',
+    guarantee: initial?.guarantee ?? '', visitScore: initial?.visitScore ?? 0, costId: initial?.costId ?? '',
   })
+  const costs = useVaultCosts().filter((c) => !isAutoName(c.name)).sort((a, b) => a.order - b.order)
   const [link, setLink] = useState('')
   const file = useRef<HTMLInputElement>(null)
   const valid = !!f.title.trim()
@@ -42,7 +46,14 @@ export function MoveNoteForm({ initial, kind, onClose }: { initial?: MoveNote; k
     if (!valid) return
     const links = link.trim() ? [...f.links, normUrl(link.trim())] : f.links
     const price = parseMoney(f.price)
-    const data = { kind: f.kind as MoveNoteKind, title: f.title.trim(), text: f.text.trim(), links, price: price > 0 ? price : undefined, status: f.status as MoveNoteStatus, photos: f.photos }
+    const total = parseMoney(f.total)
+    const casa = f.kind === 'casa', movel = f.kind === 'movel'
+    const data = {
+      kind: f.kind as MoveNoteKind, title: f.title.trim(), text: f.text.trim(), links, price: price > 0 ? price : undefined, status: f.status as MoveNoteStatus, photos: f.photos,
+      total: casa && total > 0 ? total : undefined, commute: casa && f.commute.trim() ? f.commute.trim() : undefined,
+      kitchen: casa && f.kitchen ? (f.kitchen as 'sim' | 'nao') : undefined, guarantee: casa && f.guarantee.trim() ? f.guarantee.trim() : undefined,
+      visitScore: casa && f.visitScore ? f.visitScore : undefined, costId: movel && f.costId ? f.costId : undefined,
+    }
     let id = initial?.id
     if (initial) db.moveNotes.update(initial.id, data)
     else id = db.moveNotes.add(data).id
@@ -79,6 +90,31 @@ export function MoveNoteForm({ initial, kind, onClose }: { initial?: MoveNote; k
             ))}
           </div>
         </Field>
+        {f.kind === 'casa' && (
+          <div className="grid gap-4 rounded-3xl border-2 border-dashed border-ink/25 p-4 sm:grid-cols-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-tinta/60 sm:col-span-2">Para comparar as casas</p>
+            <Field label="Total por mês (R$)" hint="aluguel + condomínio + IPTU"><Input inputMode="decimal" value={f.total} onChange={(e) => setF({ ...f, total: e.target.value })} placeholder={f.price || 'ex.: 850'} /></Field>
+            <Field label="Tempo até o trabalho"><Input value={f.commute} onChange={(e) => setF({ ...f, commute: e.target.value })} placeholder="ex.: 25 min de ônibus" /></Field>
+            <Field label="Tem cozinha?" group>
+              <div className="flex gap-2">
+                {([['sim', 'Sim'], ['nao', 'Não']] as const).map(([val, lab]) => (
+                  <button key={val} type="button" aria-pressed={f.kitchen === val} onClick={() => setF({ ...f, kitchen: f.kitchen === val ? '' : val })}
+                    className={cn('rounded-full border-2 border-ink px-4 py-1.5 text-sm font-semibold', f.kitchen === val ? 'bg-ink text-ink-fg' : 'bg-quente hover:bg-lavanda-100')}>{lab}</button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Garantia que aceita"><Input value={f.guarantee} onChange={(e) => setF({ ...f, guarantee: e.target.value })} placeholder="ex.: caução 2x, direto com o dono" /></Field>
+            <Field label="Nota da visita" group><StarRating value={f.visitScore} onChange={(n) => setF({ ...f, visitScore: n })} size={22} /></Field>
+          </div>
+        )}
+        {f.kind === 'movel' && costs.length > 0 && (
+          <Field label="Conta em qual custo da mudança?" hint="o preço pesquisado aparece no item, para você usar no lugar da estimativa">
+            <Select value={f.costId} onChange={(e) => setF({ ...f, costId: e.target.value })}>
+              <option value="">Nenhum</option>
+              {costs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </Select>
+          </Field>
+        )}
         <Field label="Links" group>
           <ul className="space-y-2">
             {f.links.map((l, i) => (

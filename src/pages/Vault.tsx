@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { History, ListChecks, Sparkles, TrendingUp } from 'lucide-react'
+import { History, ListChecks, Sparkles, TrendingUp, Wallet, Home as HomeIcon } from 'lucide-react'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { VaultHero, VaultKpis } from '@/components/vault/VaultHero'
 import { VaultChart, useTrail } from '@/components/vault/VaultChart'
@@ -7,6 +7,7 @@ import { CostList } from '@/components/vault/CostList'
 import { AfterMove } from '@/components/vault/AfterMove'
 import { EntryList } from '@/components/vault/EntryList'
 import { MovePlanning } from '@/components/vault/MovePlanning'
+import { MonthFit, Rehearsal } from '@/components/vault/Rehearsal'
 import { cn } from '@/lib/cn'
 import { IncomeCard } from '@/components/finance/IncomeCard'
 
@@ -37,6 +38,16 @@ function VaultFinance() {
     <div className="space-y-6">
       <VaultHero />
       <VaultKpis />
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card className="flex flex-col">
+          <CardHeader icon={<HomeIcon size={18} />} title={<span className="flex items-center gap-2">Ensaio de morar sozinha <span className="hidden rounded-full sm:inline border-2 border-ink bg-lavanda px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-wide">novo</span></span>} subtitle="viva desde já com o orçamento da casa nova" />
+          <Rehearsal />
+        </Card>
+        <Card className="flex flex-col">
+          <CardHeader icon={<Wallet size={18} />} title="Cabe no meu mês?" subtitle="a conta de Finanças contra a parcela do cofre" />
+          <MonthFit />
+        </Card>
+      </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader icon={<ListChecks size={18} />} title="Custos da mudança" subtitle="o saldo cobre os itens na ordem da lista" />

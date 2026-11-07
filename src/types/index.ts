@@ -174,7 +174,13 @@ export interface VaultSettings {
   depositMultiplier?: 1 | 2 | 3
   /** Custos fixos depois de sair (além do aluguel) */
   livingCosts?: { id: string; name: string; amount: number }[]
+  /** Garantia escolhida para o aluguel */
+  guarantee?: MoveGuarantee
+  /** Itens marcados da checklist da mudança (documentos e linha do tempo) e tarefa criada na Agenda */
+  checklist?: Record<string, { done?: boolean; taskId?: string }>
 }
+
+export type MoveGuarantee = 'proprietario' | 'caucao' | 'seguro' | 'fiador'
 
 /* ---------- Trabalho (meta do mês) ---------- */
 export type WorkUnit = 'moeda' | 'numero'
@@ -446,6 +452,18 @@ export interface MoveNote extends Entity {
   price?: number
   status: MoveNoteStatus
   photos: string[]
+  /** Casa: total do mês (aluguel + condomínio + IPTU) */
+  total?: number
+  /** Casa: tempo até o trabalho (ex.: "25 min de ônibus") */
+  commute?: string
+  /** Casa: tem cozinha? */
+  kitchen?: 'sim' | 'nao'
+  /** Casa: garantias aceitas (texto livre, ex.: "caução 2x") */
+  guarantee?: string
+  /** Casa: nota da visita (0–5) */
+  visitScore?: number
+  /** Móvel: item dos custos da mudança que este móvel cobre */
+  costId?: string
 }
 
 /** Pasta do diário (ex.: "Diário pessoal", "Raivas do trabalho"). */
