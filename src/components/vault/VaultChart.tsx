@@ -1,41 +1,70 @@
 import { useMemo } from 'react'
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { useVaultEntries } from '@/hooks/useData'
-import { monthKey } from '@/utils/date'
+import { CartesianGrid, Legend, Line, LineChart, ReferenceDot, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { useVault } from '@/hooks/useData'
+import { monthKey, today } from '@/utils/date'
 import { money } from '@/utils/format'
 
 const tooltipStyle = { borderRadius: 14, border: '2px solid #0C0A0E', fontSize: 12 }
+const r0 = (n: number) => money(Math.round(n)).replace(',00', '')
+const nextKey = (k: string) => { const [y, m] = k.split('-').map(Number); const d = new Date(y, m, 1); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
+const label = (k: string) => { const [y, m] = k.split('-').map(Number); return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') }
 
-/** Movimento do cofre mês a mês: quanto foi guardado e quanto foi retirado em cada mês (não o acumulado). */
-export function VaultChart() {
-  const entries = useVaultEntries()
-  const data = useMemo(() => {
-    const now = new Date()
-    return Array.from({ length: 12 }, (_, i) => {
-      const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1)
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-      const list = entries.filter((e) => monthKey(e.date) === key)
+/** Trilha do cofre: o guardado acumulado vs. quanto deveria ter em cada mês, do primeiro depósito até a data meta. */
+export function useTrail() {
+  const v = useVault()
+  return useMemo(() => {
+    const now = monthKey(today())
+    const first = v.entries[0] ? monthKey(v.entries[0].date) : now
+    const start = first < now ? first : now
+    const end = v.settings.targetDate ? monthKey(v.settings.targetDate) : null
+    const last = end && end > now ? end : now
+    const keys: string[] = []
+    for (let k = start; k <= last && keys.length < 60; k = nextKey(k)) keys.push(k)
+    const span = end ? keys.filter((k) => k <= end).length : 0
+    let acc = 0
+    const data = keys.map((k, i) => {
+      acc += v.entries.filter((e) => monthKey(e.date) === k).reduce((a, e) => a + (e.type === 'deposito' ? e.amount : -e.amount), 0)
       return {
-        mes: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
-        guardado: list.filter((e) => e.type === 'deposito').reduce((a, e) => a + e.amount, 0),
-        retirado: list.filter((e) => e.type !== 'deposito').reduce((a, e) => a + e.amount, 0),
+        key: k, mes: label(k),
+        guardado: k <= now ? Math.round(acc * 100) / 100 : null,
+        trilha: span && k <= end! ? Math.round((v.target * (i + 1)) / span) : null,
       }
     })
-  }, [entries])
-  const fmt = (v: number) => (v < 1000 ? String(v) : `${(v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}k`)
+    const cur = data.find((d) => d.key === now)
+    return { data, cur, end, now, targetDate: v.settings.targetDate }
+  }, [v.entries, v.settings.targetDate, v.target])
+}
+
+export function VaultChart() {
+  const { data, cur, targetDate } = useTrail()
+  const tName = targetDate ? `Trilha para sair em ${targetDate.slice(8, 10)}/${targetDate.slice(5, 7)}` : 'Trilha'
+  const fmt = (n: number) => (n < 1000 ? String(n) : `${(n / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}k`)
+  const diff = cur && cur.trilha != null && cur.guardado != null ? cur.guardado - cur.trilha : null
   return (
-    <div className="h-64 min-h-64 flex-1">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} barGap={3} margin={{ top: 16, right: 8, left: -8, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke="#0C0A0E" strokeOpacity={0.07} />
-          <XAxis dataKey="mes" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#0C0A0E', opacity: 0.6 }} />
-          <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#0C0A0E', opacity: 0.45 }} tickFormatter={fmt} />
-          <Tooltip formatter={(n: number, name: string) => [money(n), name]} cursor={{ fill: '#C3AEEC', fillOpacity: 0.2 }} contentStyle={tooltipStyle} />
-          <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: '#0C0A0E' }} />
-          <Bar dataKey="guardado" name="Guardado" fill="#376139" radius={[8, 8, 3, 3]} maxBarSize={22} />
-          <Bar dataKey="retirado" name="Retirado" fill="#702335" radius={[8, 8, 3, 3]} maxBarSize={22} />
-        </BarChart>
-      </ResponsiveContainer>
+    <div>
+      {cur && (
+        <div className="mb-3 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border-2 border-ink bg-quente px-4 py-2 text-sm">
+          <span className="font-semibold capitalize">{cur.mes} (agora)</span>
+          <span>Você: <b>{money(cur.guardado ?? 0)}</b></span>
+          {cur.trilha != null && <span>Deveria ter: <b>{r0(cur.trilha)}</b></span>}
+          {diff != null && <span className={diff >= 0 ? 'font-semibold text-oliva-600' : 'font-semibold text-cereja'}>{diff >= 0 ? '+' : '−'}{r0(Math.abs(diff))}</span>}
+        </div>
+      )}
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 12, right: 12, left: -8, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke="#0C0A0E" strokeOpacity={0.07} />
+            <XAxis dataKey="mes" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#0C0A0E', opacity: 0.6 }} />
+            <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#0C0A0E', opacity: 0.45 }} tickFormatter={fmt} />
+            <Tooltip formatter={(n: number, name: string) => [money(n), name]} contentStyle={tooltipStyle} />
+            <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 12, color: '#0C0A0E' }} />
+            {cur && <ReferenceLine x={cur.mes} stroke="#C3AEEC" strokeWidth={2} />}
+            <Line type="monotone" dataKey="trilha" name={tName} stroke="#0C0A0E" strokeDasharray="6 5" strokeWidth={2} dot={false} connectNulls />
+            <Line type="monotone" dataKey="guardado" name="Guardado (acumulado)" stroke="#376139" strokeWidth={3} dot={{ r: 3, fill: '#376139' }} connectNulls={false} />
+            {cur?.guardado != null && <ReferenceDot x={cur.mes} y={cur.guardado} r={7} fill="#C3AEEC" stroke="#0C0A0E" strokeWidth={2} />}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

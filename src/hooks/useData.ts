@@ -9,7 +9,7 @@ import { useCollection } from '@/store/collections'
 import { useStore } from '@/store/createStore'
 import { monthKey, startOfWeek, today, weekDays } from '@/utils/date'
 import { ratio } from '@/utils/format'
-import type { Goal, Habit, Transaction, VaultEntry } from '@/types'
+import type { Goal, Habit, Transaction, VaultCost, VaultEntry, VaultSettings } from '@/types'
 
 export const useSettings = () => useStore(settingsStore)
 
@@ -130,7 +130,27 @@ export function useStudyWeek() {
 
 export const vaultNet = (e: Pick<VaultEntry, 'type' | 'amount'>) => (e.type === 'deposito' ? e.amount : -e.amount)
 
-/** Resumo do cofre "Sair de casa": quanto tenho, quanto falta e quando chego lá */
+/** Custos fixos padrão de quando ela sair (o aluguel vem do "aluguel alvo"). */
+export const DEFAULT_LIVING_COSTS = [
+  { id: 'iptu', name: 'IPTU', amount: 50 },
+  { id: 'luz', name: 'Luz', amount: 150 },
+  { id: 'internet', name: 'Internet', amount: 100 },
+  { id: 'gas', name: 'Gás', amount: 30 },
+  { id: 'transporte', name: 'Transporte e outros', amount: 170 },
+]
+export const AUTO_DEPOSIT = 'auto-caucao'
+export const AUTO_RENT = 'auto-aluguel'
+export const isAutoName = (n: string) => /cau[cç][aã]o|primeiro aluguel/i.test(n)
+/** Meta do cofre = caução (aluguel × mult) + primeiro aluguel + custos próprios. */
+export const vaultTarget = (costs: VaultCost[], s: VaultSettings) => {
+  const rent = s.targetRent ?? 1000
+  return rent * (s.depositMultiplier ?? 1) + rent + costs.filter((c) => !isAutoName(c.name)).reduce((a, c) => a + c.amount, 0)
+}
+
+/**
+ * Resumo do cofre "Sair de casa": a meta é Caução (aluguel alvo × 1/2/3) + Primeiro aluguel (AUTO)
+ * + os outros custos da mudança; o saldo vai cobrindo os itens na ordem.
+ */
 export function useVault() {
   const entries = useVaultEntries()
   const costs = useVaultCosts()
@@ -138,8 +158,17 @@ export function useVault() {
   return useMemo(() => {
     const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt))
     const saved = sorted.reduce((a, e) => a + vaultNet(e), 0)
-    const orderedCosts = [...costs].sort((a, b) => a.order - b.order)
-    const target = orderedCosts.length ? orderedCosts.reduce((a, c) => a + c.amount, 0) : settings.manualTarget
+    const rent = settings.targetRent ?? 1000
+    const mult = settings.depositMultiplier ?? 1
+    const livingCosts = settings.livingCosts ?? DEFAULT_LIVING_COSTS
+    // Caução e Primeiro aluguel são calculados pelo aluguel alvo (itens antigos com esses nomes ficam guardados, mas não somam)
+    const autoCosts = [
+      { id: AUTO_DEPOSIT, name: `Caução (${mult}x)`, amount: rent * mult, order: -2, createdAt: '', auto: true },
+      { id: AUTO_RENT, name: 'Primeiro aluguel', amount: rent, order: -1, createdAt: '', auto: true },
+    ]
+    const ownCosts = [...costs].filter((c) => !isAutoName(c.name)).sort((a, b) => a.order - b.order).map((c) => ({ ...c, auto: false }))
+    const orderedCosts = [...autoCosts, ...ownCosts]
+    const target = orderedCosts.reduce((a, c) => a + c.amount, 0)
     const remaining = Math.max(0, target - saved)
     const progress = ratio(saved, target)
 
@@ -171,6 +200,7 @@ export function useVault() {
       monthsLeft = Math.max(1, (ty - now.getFullYear()) * 12 + (tm - 1 - now.getMonth()))
       neededPerMonth = remaining / monthsLeft
     }
+    const onTrack = neededPerMonth === null ? null : remaining <= 0 || monthlyAvg >= neededPerMonth
 
     // o saldo vai "cobrindo" os custos na ordem da lista
     let left = Math.max(0, saved)
@@ -180,6 +210,12 @@ export function useVault() {
       return { cost: c, covered, progress: ratio(covered, c.amount) }
     })
 
-    return { entries: sorted, costs: orderedCosts, settings, saved, target, remaining, progress, months, monthlyAvg, thisMonth, monthsToGoal, forecast, monthsLeft, neededPerMonth, coverage }
+    // depois de sair: aluguel + custos fixos
+    const livingTotal = rent + livingCosts.reduce((a, c) => a + c.amount, 0)
+
+    return {
+      entries: sorted, costs: orderedCosts, settings, saved, target, remaining, progress, months, monthlyAvg, thisMonth,
+      monthsToGoal, forecast, monthsLeft, neededPerMonth, onTrack, coverage, rent, mult, livingCosts, livingTotal,
+    }
   }, [entries, costs, settings])
 }

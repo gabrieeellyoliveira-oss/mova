@@ -145,11 +145,15 @@ export interface Experience extends Entity {
 /* ---------- Sair de casa (cofre da mudança) ---------- */
 export type VaultEntryType = 'deposito' | 'retirada'
 
+export type VaultEntryCategory = 'salario' | 'deposito' | 'extra'
+
 export interface VaultEntry extends Entity {
   type: VaultEntryType
   amount: number
   date: ISODate
   note?: string
+  /** Categoria fixa escolhida por chip (Salário, Depósito, Extra) */
+  category?: VaultEntryCategory
 }
 
 /** Custo previsto da mudança; a soma dos custos é a meta do cofre */
@@ -164,6 +168,12 @@ export interface VaultSettings {
   manualTarget: number
   /** Quando quero sair de casa (opcional) */
   targetDate?: ISODate
+  /** Aluguel alvo da casa nova, com condomínio — alimenta Caução e Primeiro aluguel */
+  targetRent?: number
+  /** Caução = aluguel × 1, 2 ou 3 */
+  depositMultiplier?: 1 | 2 | 3
+  /** Custos fixos depois de sair (além do aluguel) */
+  livingCosts?: { id: string; name: string; amount: number }[]
 }
 
 /* ---------- Trabalho (meta do mês) ---------- */

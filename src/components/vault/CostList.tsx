@@ -1,60 +1,65 @@
 import { useState } from 'react'
-import { Check, ChevronDown, ChevronUp, Plus } from 'lucide-react'
+import { Check, Plus } from 'lucide-react'
 import type { VaultCost } from '@/types'
-import { db } from '@/store/db'
+import { vaultSettingsStore } from '@/store/db'
 import { useVault } from '@/hooks/useData'
-import { money } from '@/utils/format'
+import { money, moneyInput, parseMoney } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
-import { EmptyState } from '@/components/ui/Misc'
+import { cn } from '@/lib/cn'
 import { CostForm } from './CostForm'
 
-/** Custos da mudança: o saldo do cofre vai cobrindo cada item na ordem da lista. */
+const r0 = (n: number) => money(n).replace(',00', '')
+
+/** Custos da mudança: aluguel alvo + caução 1x/2x/3x alimentam Caução e Primeiro aluguel (AUTO); o saldo cobre os itens na ordem. */
 export function CostList() {
   const v = useVault()
   const [editing, setEditing] = useState<VaultCost | 'new' | null>(null)
-
-  const move = (index: number, dir: -1 | 1) => {
-    const list = [...v.costs]
-    const j = index + dir
-    if (j < 0 || j >= list.length) return
-    ;[list[index], list[j]] = [list[j], list[index]]
-    list.forEach((c, order) => db.vaultCosts.update(c.id, { order }))
-  }
+  const [rent, setRent] = useState<string | null>(null)
+  const saveRent = () => { const n = parseMoney(rent ?? ''); if (Number.isFinite(n) && n > 0) vaultSettingsStore.set((p) => ({ ...p, targetRent: n })); setRent(null) }
 
   return (
     <div>
-      {v.costs.length === 0 ? (
-        <EmptyState title="Nenhum custo cadastrado" text="Liste o que precisa para sair de casa (caução, móveis…) e o total vira a meta." action={<Button size="sm" onClick={() => setEditing('new')}><Plus size={14} /> Adicionar custo</Button>} />
-      ) : (
-        <ul className="space-y-3">
-          {v.coverage.map(({ cost, covered, progress }, i) => (
-            <li key={cost.id} className="group flex items-center gap-2">
-              <div className="flex flex-col opacity-40 transition group-hover:opacity-100">
-                <button onClick={() => move(i, -1)} disabled={i === 0} className="disabled:opacity-20" aria-label={`Subir ${cost.name}`}><ChevronUp size={14} /></button>
-                <button onClick={() => move(i, 1)} disabled={i === v.costs.length - 1} className="disabled:opacity-20" aria-label={`Descer ${cost.name}`}><ChevronDown size={14} /></button>
-              </div>
-              <button onClick={() => setEditing(cost)} className="min-w-0 flex-1 rounded-2xl px-2 py-1.5 text-left transition hover:bg-creme-100">
-                <div className="mb-1.5 flex items-center justify-between gap-2 text-sm">
-                  <span className="flex min-w-0 items-center gap-1.5 font-semibold text-tinta">
-                    {progress >= 100 && <Check size={14} strokeWidth={3} className="shrink-0 text-oliva-600" />}
-                    <span className="truncate">{cost.name}</span>
-                  </span>
-                  <span className="shrink-0 tabular-nums text-vinho/70"><b className="text-vinho">{money(covered).replace(',00', '')}</b> / {money(cost.amount).replace(',00', '')}</span>
-                </div>
-                <Progress value={progress} color={progress >= 100 ? '#376139' : '#0C0A0E'} height={7} />
-              </button>
-            </li>
+      <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+        <label className="block rounded-2xl border-2 border-ink px-4 py-2.5">
+          <span className="block text-xs text-tinta/60">Aluguel alvo (com condomínio)</span>
+          <input inputMode="decimal" aria-label="Aluguel alvo" value={rent ?? moneyInput(v.rent)} onFocus={() => setRent(moneyInput(v.rent))} onChange={(e) => setRent(e.target.value)}
+            onBlur={saveRent} onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
+            className="w-full bg-transparent text-xl font-bold focus:outline-none" />
+        </label>
+        <div className="flex h-12 items-stretch overflow-hidden rounded-2xl border-2 border-ink sm:h-auto" role="group" aria-label="Caução">
+          <span className="grid place-items-center px-4 text-sm text-tinta/60">Caução</span>
+          {([1, 2, 3] as const).map((m) => (
+            <button key={m} onClick={() => vaultSettingsStore.set((p) => ({ ...p, depositMultiplier: m }))} aria-pressed={v.mult === m}
+              className={cn('border-l-2 border-ink px-4 text-sm font-semibold transition', v.mult === m ? 'bg-lavanda' : 'hover:bg-lavanda-100')}>{m}x</button>
           ))}
-        </ul>
-      )}
-      {v.costs.length > 0 && (
-        <div className="mt-4 flex items-center justify-between border-t border-dashed border-vinho/15 pt-3 text-sm">
-          <span className="text-vinho/70">Total (meta do cofre)</span>
-          <span className="font-extrabold text-vinho">{money(v.target)}</span>
         </div>
-      )}
-      {v.costs.length > 0 && <Button size="sm" variant="soft" className="mt-3" onClick={() => setEditing('new')}><Plus size={14} /> Adicionar custo</Button>}
+      </div>
+
+      <ul className="divide-y divide-ink/10">
+        {v.coverage.map(({ cost, covered, progress }) => {
+          const full = progress >= 100
+          const auto = 'auto' in cost && cost.auto
+          return (
+            <li key={cost.id} className="py-2.5">
+              <button disabled={auto} onClick={() => !auto && setEditing(cost as VaultCost)} className="flex w-full items-center gap-3 text-left disabled:cursor-default">
+                <span className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-md border-2', full ? 'border-oliva-600 bg-oliva-600 text-white' : 'border-ink')} aria-label={full ? 'coberto' : 'falta'}>{full && <Check size={14} strokeWidth={3} />}</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-medium">{cost.name}{auto && <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-[#6A4FB6]">auto</span>}</span>
+                <span className="shrink-0 text-sm tabular-nums text-tinta/70"><b className={cn(covered > 0 ? 'text-tinta' : 'font-normal')}>{r0(covered)}</b> / {r0(cost.amount)}</span>
+              </button>
+              {covered > 0 && !full && <div className="mt-2 pl-9"><Progress value={progress} height={6} /></div>}
+            </li>
+          )
+        })}
+      </ul>
+      <div className="mt-3 flex items-center justify-between border-t-2 border-ink pt-3">
+        <span>Meta do cofre</span>
+        <span className="font-serif text-xl font-bold">{money(v.target)}</span>
+      </div>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-tinta/55">✓ fica verde quando o item está 100% coberto · toque num item para editar</p>
+        <Button size="sm" variant="light" aria-label="Adicionar custo da mudança" onClick={() => setEditing('new')}><Plus size={14} /> Custo</Button>
+      </div>
       {editing && <CostForm initial={editing === 'new' ? undefined : editing} onClose={() => setEditing(null)} />}
     </div>
   )
