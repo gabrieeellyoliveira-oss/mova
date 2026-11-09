@@ -84,7 +84,8 @@ export async function flush() {
 /** Baixa tudo da nuvem. Devolve quantas linhas existem (0 = conta nova). */
 async function pull(): Promise<number> {
   if (!supabase) return 0
-  const { data, error } = await supabase.from(TABLE).select('key, value, updated_at')
+  // linhas `fit:*` são do MOVAFIT (mesma tabela e mesma conta): o mova não mexe nelas
+  const { data, error } = await supabase.from(TABLE).select('key, value, updated_at').not('key', 'like', 'fit:%')
   if (error) throw error
   data.forEach((row) => apply(row.key as string, row.value, row.updated_at as string | undefined))
   lastPull = Date.now()
@@ -123,7 +124,7 @@ export async function startSync(uid: string) {
     .channel(`mova-${uid}`)
     .on('postgres_changes', { event: '*', schema: 'public', table: TABLE, filter: `user_id=eq.${uid}` }, (payload) => {
       const row = payload.new as { key?: string; value?: unknown; updated_at?: string }
-      if (row?.key) apply(row.key, row.value, row.updated_at)
+      if (row?.key && !row.key.startsWith('fit:')) apply(row.key, row.value, row.updated_at)
     })
     .subscribe()
 }

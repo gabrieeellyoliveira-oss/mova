@@ -1,0 +1,14 @@
+{
+  "name": "MOVAFIT",
+  "short_name": "MOVAFIT",
+  "description": "Seus treinos em casa, registrados com leveza.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F1EFF4",
+  "theme_color": "#0C0A0E",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
