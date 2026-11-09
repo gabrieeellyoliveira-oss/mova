@@ -6,6 +6,7 @@
  * do mova sem se misturar. O app lê do navegador (abre na hora e funciona sem internet);
  * as mudanças sobem em lote e as de outros aparelhos chegam por tempo real ou ao voltar à aba.
  */
+import { useSyncExternalStore } from 'react'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import { supabase } from './supabase'
 import { localStorageAdapter, setCloudSink, writeLocal } from './storage'
@@ -14,8 +15,20 @@ import { resetAll } from '@/store/db'
 
 const TABLE = 'mova_store'
 const CLOUD_PREFIX = 'fit:'
-const toCloud = (key: string) => CLOUD_PREFIX + key
-const fromCloud = (key: string) => (key.startsWith(CLOUD_PREFIX) ? key.slice(CLOUD_PREFIX.length) : null)
+/**
+ * Chaves que são DO MOVA e o MOVAFIT também usa (sem prefixo): a evolução do corpo.
+ * Atualizou num app, aparece no outro. Nunca sobem na "primeira vez" (para não apagar o que o mova já tem)
+ * e só podem ser editadas depois de baixar a versão da nuvem (`sharedReady`).
+ */
+export const SHARED = new Set(['bodyCheckins'])
+const toCloud = (key: string) => (SHARED.has(key) ? key : CLOUD_PREFIX + key)
+const fromCloud = (key: string) => (key.startsWith(CLOUD_PREFIX) ? key.slice(CLOUD_PREFIX.length) : SHARED.has(key) ? key : null)
+
+/** Já baixou da nuvem nesta sessão (ou está sem nuvem): pode editar os dados compartilhados com o mova. */
+let ready = !supabase
+const readyListeners = new Set<() => void>()
+const setReady = (v: boolean) => { ready = v; readyListeners.forEach((l) => l()) }
+export const useSharedReady = () => useSyncExternalStore((l) => { readyListeners.add(l); return () => { readyListeners.delete(l) } }, () => ready)
 const LOCAL_ONLY = new Set<string>()
 const DIRTY_KEY = 'movafit:sync:dirty'
 const OWNER_KEY = 'movafit:sync:owner'
@@ -57,6 +70,7 @@ function apply(key: string, value: unknown, at?: string) {
 
 function queue(key: string) {
   if (LOCAL_ONLY.has(key) || !userId) return
+  if (SHARED.has(key) && !ready) return // sem a versão da nuvem, não sobrescreve o que está no mova
   dirty.add(key)
   version.set(key, (version.get(key) ?? 0) + 1)
   saveDirty()
@@ -83,17 +97,22 @@ export async function flush() {
   if (dirty.size) timer = setTimeout(flush, 800)
 }
 
-/** Baixa só as linhas do MOVAFIT. Devolve quantas existem (0 = primeira vez aqui). */
+/** Baixa as linhas do MOVAFIT e as compartilhadas com o mova. Devolve quantas `fit:` existem (0 = primeira vez aqui). */
 async function pull(): Promise<number> {
   if (!supabase) return 0
-  const { data, error } = await supabase.from(TABLE).select('key, value, updated_at').like('key', `${CLOUD_PREFIX}%`)
-  if (error) throw error
-  data.forEach((row) => {
+  const [own, shared] = await Promise.all([
+    supabase.from(TABLE).select('key, value, updated_at').like('key', `${CLOUD_PREFIX}%`),
+    supabase.from(TABLE).select('key, value, updated_at').in('key', [...SHARED]),
+  ])
+  if (own.error) throw own.error
+  if (shared.error) throw shared.error
+  ;[...own.data, ...shared.data].forEach((row) => {
     const key = fromCloud(row.key as string)
     if (key) apply(key, row.value, row.updated_at as string | undefined)
   })
   lastPull = Date.now()
-  return data.length
+  setReady(true)
+  return own.data.length
 }
 
 const withTimeout = <T,>(p: Promise<T>, ms: number) => Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))])
@@ -111,7 +130,7 @@ export async function startSync(uid: string) {
     const rows = await withTimeout(pull(), 8000)
     if (rows === 0) {
       snapshotStores().forEach(([k, value]) => {
-        if (LOCAL_ONLY.has(k)) return
+        if (LOCAL_ONLY.has(k) || SHARED.has(k)) return
         if (localStorageAdapter.load(k) === undefined) writeLocal(k, value)
         dirty.add(k)
       })
@@ -138,6 +157,7 @@ export async function stopSync() {
   channel = null
   userId = null
   setCloudSink(null)
+  setReady(!supabase)
   setState('off')
 }
 

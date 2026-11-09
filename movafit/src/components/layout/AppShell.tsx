@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { CalendarDays, Cloud, CloudOff, ExternalLink, House, LogOut, Plus } from 'lucide-react'
+import { CalendarDays, Cloud, CloudOff, Dumbbell, ExternalLink, House, LogOut, Plus, TrendingDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { Logo } from './Logo'
 import { Modal } from '@/components/ui/Modal'
@@ -14,7 +14,9 @@ import { useStore } from '@/store/createStore'
 
 const TABS: { route: Route; label: string; icon: ReactNode }[] = [
   { route: 'hoje', label: 'Hoje', icon: <House size={18} /> },
+  { route: 'programas', label: 'Programas', icon: <Dumbbell size={18} /> },
   { route: 'historico', label: 'Histórico', icon: <CalendarDays size={18} /> },
+  { route: 'evolucao', label: 'Evolução', icon: <TrendingDown size={18} /> },
 ]
 
 const MOVA_URL = 'https://mova-eosin.vercel.app'
@@ -69,10 +71,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <main className="px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8">{children}</main>
 
-      {/* celular: Hoje · + · Histórico */}
+      {/* celular: Hoje · Programas · + · Histórico · Evolução */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-ink bg-quente pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Abas">
-        <div className="grid h-[68px] grid-cols-3 items-center">
+        <div className="grid h-[68px] grid-cols-5 items-center">
           <BottomTab tab={TABS[0]} active={route === 'hoje'} />
+          <BottomTab tab={TABS[1]} active={route === 'programas'} />
           <div className="grid place-items-center">
             <button
               type="button"
@@ -83,7 +86,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Plus size={30} strokeWidth={2.4} />
             </button>
           </div>
-          <BottomTab tab={TABS[1]} active={route === 'historico'} />
+          <BottomTab tab={TABS[2]} active={route === 'historico'} />
+          <BottomTab tab={TABS[3]} active={route === 'evolucao'} />
         </div>
       </nav>
 
@@ -100,7 +104,7 @@ function BottomTab({ tab, active }: { tab: (typeof TABS)[number]; active: boolea
       aria-current={active ? 'page' : undefined}
       className={cn('flex flex-col items-center gap-0.5 text-[11px] font-semibold', active ? 'text-ink' : 'text-ink/50')}
     >
-      <span className={cn('grid h-8 w-14 place-items-center rounded-full transition', active && 'bg-lavanda')}>{tab.icon}</span>
+      <span className={cn('grid h-8 w-12 place-items-center rounded-full transition', active && 'bg-lavanda')}>{tab.icon}</span>
       {tab.label}
     </button>
   )

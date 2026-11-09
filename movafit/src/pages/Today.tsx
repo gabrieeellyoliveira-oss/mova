@@ -10,6 +10,7 @@ import { formatLong, monthKey, today, WEEKDAYS_SHORT, weekDays } from '@/utils/d
 import { FOCUS, formatMinutes, monthStats, recentTemplates, sortByDate, streak, weekStats } from '@/utils/workouts'
 import { openNewWorkout, repeatWorkout } from '@/hooks/useWorkoutForm'
 import { navigate } from '@/hooks/useRoute'
+import { TodayProgram } from '@/components/programs/TodayProgram'
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
@@ -58,6 +59,9 @@ export default function Today() {
           </div>
         </div>
       </section>
+
+      {/* o vídeo de hoje do programa */}
+      <TodayProgram />
 
       {/* números */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

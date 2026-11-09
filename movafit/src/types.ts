@@ -20,9 +20,35 @@ export interface Workout extends Entity {
   /** link do vídeo/aula que eu segui */
   link?: string
   notes?: string
+  /** treino feito dentro de um programa (ex.: dia 5 do Projeto MOVE) */
+  programId?: string
+  programDay?: number
+}
+
+/** Registro da evolução do corpo: foto e/ou medidas (o MESMO formato e os mesmos dados do mova). */
+export interface BodyCheckin extends Entity {
+  date: ISODate
+  photo?: string
+  weight?: number
+  waist?: number
+  hip?: number
+  arm?: number
+  thigh?: number
+  note?: string
+}
+
+/** Programa que estou fazendo: qual, quando comecei e os dias concluídos (dia → data). */
+export interface ActiveProgram {
+  id: string
+  start: ISODate
+  done: Record<number, ISODate>
 }
 
 export interface FitSettings {
   /** quantos treinos por semana eu quero fazer */
   weeklyGoal: number
+  program?: ActiveProgram
+  /** meta de peso (kg), opcional */
+  goalWeight?: number
+  heightCm?: number
 }

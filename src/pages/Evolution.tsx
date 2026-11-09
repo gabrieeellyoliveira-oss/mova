@@ -27,7 +27,11 @@ export default function Evolution() {
           <p className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Evolução</p>
           <p className="mt-2 text-ink-fg/75">{photos.length ? `${photos.length} ${photos.length === 1 ? 'foto' : 'fotos'} · ${before && after ? `${formatShort(before.date)} → ${formatShort(after.date)}` : 'falta só mais uma para comparar'}` : 'Tire uma foto no mesmo lugar e na mesma luz de tempos em tempos.'}</p>
         </div>
-        <Button size="lg" onClick={() => setEdit('new')}><Camera size={18} /> Adicionar foto</Button>
+        <div className="flex flex-wrap gap-2">
+          <Button size="lg" onClick={() => setEdit('new')}><Camera size={18} /> Adicionar foto</Button>
+          {/* mesmas fotos no MOVAFIT, que também mostra peso e medidas */}
+          <a href="https://movafit-five.vercel.app/#/evolucao" target="_blank" rel="noreferrer" className="inline-flex h-12 items-center rounded-full border-2 border-ink-fg/80 px-5 text-sm font-semibold hover:bg-ink-fg/10">Peso e medidas no movafit</a>
+        </div>
       </section>
 
       {photos.length === 0 ? (

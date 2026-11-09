@@ -6,6 +6,8 @@ import { useRoute } from '@/hooks/useRoute'
 import Login from '@/pages/Login'
 import Today from '@/pages/Today'
 import History from '@/pages/History'
+import Programs from '@/pages/Programs'
+import Evolution from '@/pages/Evolution'
 
 export default function App() {
   const session = useSession()
@@ -14,7 +16,7 @@ export default function App() {
   if (!session) return <Login />
   return (
     <AppShell>
-      {route === 'historico' ? <History /> : <Today />}
+      {route === 'historico' ? <History /> : route === 'programas' ? <Programs /> : route === 'evolucao' ? <Evolution /> : <Today />}
       <WorkoutForm />
     </AppShell>
   )

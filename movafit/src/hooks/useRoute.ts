@@ -1,8 +1,12 @@
 import { useSyncExternalStore } from 'react'
 
-export type Route = 'hoje' | 'historico'
+export type Route = 'hoje' | 'programas' | 'historico' | 'evolucao'
+const ROUTES: Route[] = ['hoje', 'programas', 'historico', 'evolucao']
 
-const read = (): Route => (window.location.hash.replace(/^#\/?/, '') === 'historico' ? 'historico' : 'hoje')
+const read = (): Route => {
+  const r = window.location.hash.replace(/^#\/?/, '').split('?')[0] as Route
+  return ROUTES.includes(r) ? r : 'hoje'
+}
 const subscribe = (l: () => void) => {
   window.addEventListener('hashchange', l)
   return () => window.removeEventListener('hashchange', l)
