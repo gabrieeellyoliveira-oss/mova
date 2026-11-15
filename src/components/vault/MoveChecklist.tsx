@@ -49,7 +49,7 @@ export function GuaranteeCard() {
   const v = useVault()
   const inc = useIncome()
   const required = v.rent * 3
-  const short = inc.salary < required
+  const short = inc.total < required
   const chosen = v.settings.guarantee
   return (
     <div>
@@ -57,7 +57,7 @@ export function GuaranteeCard() {
         {short && <AlertTriangle size={18} className="mt-0.5 shrink-0 text-cereja" />}
         <p>
           Imobiliárias costumam pedir renda de <b>3x o aluguel</b>: para {r0(v.rent)}, são <b>{r0(required)}</b>.{' '}
-          {short ? <>Seu salário ({r0(inc.salary)}) fica {r0(required - inc.salary)} abaixo, então vale escolher uma garantia que compense.</> : <>Seu salário ({r0(inc.salary)}) passa nessa regra ✓</>}
+          {short ? <>Sua renda (salário + VA = {r0(inc.total)}) fica {r0(required - inc.total)} abaixo, então vale escolher uma garantia que compense.</> : <>Sua renda (salário + VA = {r0(inc.total)}) passa nessa regra ✓</>}
         </p>
       </div>
       <p className="mt-4 text-xs font-semibold uppercase tracking-[0.15em] text-tinta/60">Qual garantia vou usar?</p>

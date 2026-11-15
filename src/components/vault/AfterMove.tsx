@@ -7,7 +7,7 @@ import { cn } from '@/lib/cn'
 
 const r0 = (n: number) => money(n).replace(',00', '')
 
-/** Depois que eu sair: salário − moradia total (aluguel + condomínio + IPTU) − custos fixos editáveis = sobra no mês. Mercado fica fora (o VA cobre). */
+/** Depois que eu sair: salário + VA − moradia total − custos fixos − mercado (editáveis) = sobra no mês. */
 export function AfterMove() {
   const v = useVault()
   const inc = useIncome()
@@ -19,12 +19,27 @@ export function AfterMove() {
     setEdit(null)
     if (Number.isFinite(n) && n >= 0) setCosts((l) => l.map((c) => (c.id === id ? { ...c, amount: n } : c)))
   }
-  const left = inc.salary - v.livingTotal
+  const groceries = v.settings.groceries ?? inc.voucher
+  const saveGroceries = () => {
+    const n = parseMoney(edit?.v ?? '')
+    setEdit(null)
+    if (Number.isFinite(n) && n >= 0) vaultSettingsStore.set((p) => ({ ...p, groceries: n }))
+  }
+  const left = inc.total - v.livingTotal - groceries
   const row = 'flex items-center justify-between gap-3 border-b border-dashed border-ink/15 py-2.5'
   return (
     <div>
       <ul>
         <li className={row}><span>Salário</span><span className="shrink-0 whitespace-nowrap font-semibold tabular-nums text-oliva-600">+ {r0(inc.salary)}</span></li>
+        <li className={row}><span>Vale-alimentação</span><span className="shrink-0 whitespace-nowrap font-semibold tabular-nums text-oliva-600">+ {r0(inc.voucher)}</span></li>
+        <li className={row}><span>Mercado <span className="hidden text-xs text-tinta/50 sm:inline">(comida do mês)</span></span>
+          {edit?.id === 'mercado' ? (
+            <input autoFocus inputMode="decimal" value={edit.v} onChange={(e) => setEdit({ id: 'mercado', v: e.target.value })} onBlur={saveGroceries} onKeyDown={(e) => e.key === 'Enter' && saveGroceries()}
+              aria-label="Valor de Mercado" className="h-8 w-24 rounded-xl border-2 border-ink bg-quente px-2 text-right text-sm focus:outline-none" />
+          ) : (
+            <button onClick={() => setEdit({ id: 'mercado', v: moneyInput(groceries) })} aria-label="Alterar Mercado" className="shrink-0 whitespace-nowrap tabular-nums underline decoration-dashed decoration-ink/25 underline-offset-4 hover:decoration-ink">− {r0(groceries)}</button>
+          )}
+        </li>
         <li className={row}><span>Moradia <span className="hidden text-xs text-tinta/50 sm:inline">(aluguel + condomínio + IPTU)</span></span><span className="shrink-0 whitespace-nowrap tabular-nums">− {r0(v.rent)}</span></li>
         {v.livingCosts.map((c) => (
           <li key={c.id} className={cn(row, 'group')}>
@@ -50,7 +65,7 @@ export function AfterMove() {
         <span className="font-semibold">Sobra no mês</span>
         <span className="font-serif text-3xl font-bold">{r0(left)}</span>
       </div>
-      <p className="mt-3 text-xs text-tinta/55">Mercado fica fora: o VA cobre. Toque num valor para editar — a moradia vem do campo “moradia total”, que já inclui o IPTU.</p>
+      <p className="mt-3 text-xs text-tinta/55">Conta com salário + vale-alimentação. Toque num valor para editar — a moradia vem do campo “moradia total”, que já inclui o IPTU.</p>
     </div>
   )
 }

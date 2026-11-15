@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { FormKind } from './useQuickAdd'
 import {
-  useBooks, useCourses, useEvents, useTasks, useTransactions, useVaultCosts,
+  useBooks, useCourses, useEvents, useTasks, useVaultCosts,
 } from './useData'
 import { normalize, money } from '@/utils/format'
 import { formatShort } from '@/utils/date'
@@ -22,7 +22,6 @@ export function useGlobalSearch(query: string): SearchResult[] {
   const costs = useVaultCosts()
   const books = useBooks()
   const courses = useCourses()
-  const tx = useTransactions()
 
   return useMemo(() => {
     const q = normalize(query.trim())
@@ -34,7 +33,6 @@ export function useGlobalSearch(query: string): SearchResult[] {
     costs.filter((c) => hit(c.name)).forEach((c) => out.push({ id: c.id, group: 'Cofre: sair de casa', title: c.name, subtitle: money(c.amount), path: '/sair-de-casa' }))
     books.filter((b) => hit(b.title, b.author)).forEach((b) => out.push({ id: b.id, group: 'Livros', title: b.title, subtitle: b.author, path: `/leitura?livro=${b.id}` }))
     courses.filter((c) => hit(c.name, c.institution)).forEach((c) => out.push({ id: c.id, group: 'Estudos', title: c.name, subtitle: c.institution, path: '/estudos' }))
-    tx.filter((t) => hit(t.description, t.category)).slice(0, 6).forEach((t) => out.push({ id: t.id, group: 'Finanças', title: t.description, subtitle: `${money(t.amount)} · ${formatShort(t.date)}`, path: '/financas', form: { kind: 'transaction', initial: t as never } }))
     return out.slice(0, 30)
-  }, [query, tasks, events, costs, books, courses, tx])
+  }, [query, tasks, events, costs, books, courses])
 }

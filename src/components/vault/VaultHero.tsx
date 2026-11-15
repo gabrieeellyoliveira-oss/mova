@@ -57,22 +57,22 @@ export function VaultHero() {
   )
 }
 
-/** Três números: quanto guardar por mês (% só do salário), quanto já foi neste mês e quanto sobra depois de sair. */
+/** Três números: quanto guardar por mês (% da renda = salário + VA), quanto já foi neste mês e quanto sobra depois de sair. */
 export function VaultKpis() {
   const v = useVault()
   const inc = useIncome()
   const month = new Date().toLocaleDateString('pt-BR', { month: 'long' })
   const need = v.neededPerMonth ?? 0
-  const pctSalary = inc.salary ? Math.round((need / inc.salary) * 100) : 0
+  const pctSalary = inc.total ? Math.round((need / inc.total) * 100) : 0
   const pctParcel = need ? Math.min(100, (Math.max(0, v.thisMonth) / need) * 100) : 0
-  const after = inc.salary - v.livingTotal
+  const after = inc.total - v.livingTotal - (v.settings.groceries ?? inc.voucher)
   const card = 'flex flex-col rounded-3xl border-2 border-ink bg-quente p-6 shadow-pixel'
   return (
     <div className="grid gap-6 md:grid-cols-3">
       <div className={card}>
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-tinta/60">Precisa guardar por mês</p>
         <p className="mt-1 font-serif text-4xl font-bold">{v.neededPerMonth !== null ? r0(need) : '—'}</p>
-        <p className="text-sm text-tinta/65">{v.neededPerMonth !== null ? `${pctSalary}% do salário (${r0(inc.salary)}) — VA não entra no cálculo` : 'defina a data meta no topo'}</p>
+        <p className="text-sm text-tinta/65">{v.neededPerMonth !== null ? `${pctSalary}% da sua renda (salário + VA = ${r0(inc.total)})` : 'defina a data meta no topo'}</p>
         <div className="mt-auto pt-4"><Progress value={Math.min(100, pctSalary)} height={8} color={pctSalary > 40 ? '#C0466A' : '#376139'} /></div>
       </div>
       <div className={card}>
@@ -84,8 +84,8 @@ export function VaultKpis() {
       <div className={card}>
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-tinta/60">Sobra depois de sair</p>
         <p className={cn('mt-1 font-serif text-4xl font-bold', after < 0 ? 'text-cereja' : 'text-oliva-600')}>{r0(after)}/mês</p>
-        <p className="text-sm text-tinta/65">salário − custos fixos da casa nova</p>
-        <div className="mt-auto pt-4"><Progress value={inc.salary ? Math.max(0, (after / inc.salary) * 100) : 0} height={8} color="#376139" /></div>
+        <p className="text-sm text-tinta/65">salário + VA − custos da casa nova</p>
+        <div className="mt-auto pt-4"><Progress value={inc.total ? Math.max(0, (after / inc.total) * 100) : 0} height={8} color="#376139" /></div>
       </div>
     </div>
   )

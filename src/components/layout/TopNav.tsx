@@ -6,7 +6,7 @@ import { HeaderActions } from './HeaderActions'
 import { cn } from '@/lib/cn'
 
 // todas as abas direto no menu, sem "Mais" (Configurações fica só no menu do perfil)
-const ORDER = ['/', '/agenda', '/financas', '/estudos', '/leitura', '/sair-de-casa', '/evolucao', '/diario', '/trabalho']
+const ORDER = ['/', '/agenda', '/estudos', '/leitura', '/sair-de-casa', '/evolucao', '/diario', '/trabalho']
 const items = ORDER.map((p) => NAV_ITEMS.find((i) => i.path === p)).filter((i): i is (typeof NAV_ITEMS)[number] => !!i)
 
 /** Menu do topo (computador): logo, abas e ações da conta. */

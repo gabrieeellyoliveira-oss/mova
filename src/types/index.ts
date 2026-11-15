@@ -174,6 +174,8 @@ export interface VaultSettings {
   depositMultiplier?: 1 | 2 | 3
   /** Custos fixos depois de sair (além do aluguel) */
   livingCosts?: { id: string; name: string; amount: number }[]
+  /** Mercado por mês depois de sair (padrão = vale-alimentação) */
+  groceries?: number
   /** Garantia escolhida para o aluguel */
   guarantee?: MoveGuarantee
   /** Itens marcados da checklist da mudança (documentos e linha do tempo) e tarefa criada na Agenda */

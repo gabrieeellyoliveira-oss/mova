@@ -42,7 +42,6 @@ export const NAV_ITEMS: { label: string; path: string; sprite: IconName }[] = [
   { label: 'Dashboard', path: '/', sprite: 'home' },
   { label: 'Agenda', path: '/agenda', sprite: 'planner' },
   { label: 'Trabalho', path: '/trabalho', sprite: 'briefcase' },
-  { label: 'Finanças', path: '/financas', sprite: 'coins' },
   { label: 'Sair de casa', path: '/sair-de-casa', sprite: 'piggy' },
   { label: 'Estudos', path: '/estudos', sprite: 'laptop' },
   { label: 'Leitura', path: '/leitura', sprite: 'book' },

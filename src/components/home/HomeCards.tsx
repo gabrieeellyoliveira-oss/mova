@@ -2,14 +2,13 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight, BookOpen, Calendar, ChevronDown, Cloud, CloudRain,
-  GraduationCap, Home as HomeIcon, Layers, Sun, Wallet,
+  GraduationCap, Home as HomeIcon, Layers, Sun,
 } from 'lucide-react'
-import { useBooks, useSettings, useStudyWeek, useVault } from '@/hooks/useData'
+import { useBooks, useIncome, useSettings, useStudyWeek, useVault } from '@/hooks/useData'
 import { useWeather, weatherKind } from '@/hooks/useWeather'
 import { fromISODate, today } from '@/utils/date'
-import { ratio } from '@/utils/format'
+import { money, ratio } from '@/utils/format'
 import { cn } from '@/lib/cn'
-import { SalaryFlow } from '@/components/finance/SalaryFlow'
 
 /** Card padrão do projeto de referência: creme, borda de 2px em tinta e sombra deslocada. */
 export const card = 'min-w-0 rounded-3xl border-2 border-ink bg-quente p-6 shadow-pixel'
@@ -68,33 +67,58 @@ export function DateWeather() {
   )
 }
 
-/** Finanças: saldo atual, o salário do mês passo a passo (contas do mês passado, gastos, disponível) e a dica do mês. */
-export function FinanceCard() {
+/** Sair de casa: quanto já tem no cofre, a parcela do mês e se está no ritmo (a aba de Finanças foi removida). */
+export function VaultCard() {
+  const v = useVault()
+  const inc = useIncome()
+  const need = v.neededPerMonth
+  const done = v.remaining <= 0 && v.target > 0
+  const status = done ? { label: 'Meta batida', cls: 'bg-salvia' } : v.onTrack === null ? { label: 'Defina a data', cls: 'bg-lavanda-100' } : v.onTrack ? { label: 'No ritmo', cls: 'bg-salvia' } : { label: 'Fora do ritmo', cls: 'bg-[#F6D6DC] text-cereja' }
+  const parcelLeft = need ? Math.max(0, need - Math.max(0, v.thisMonth)) : 0
+  const r0 = (n: number) => money(Math.round(n)).replace(',00', '')
   return (
     <div className={card}>
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><Wallet size={20} /> Finanças</h2>
-        <IconBtn label="Abrir finanças" to="/financas"><ArrowRight size={16} /></IconBtn>
+        <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><HomeIcon size={20} /> Sair de casa</h2>
+        <IconBtn label="Abrir Sair de casa" to="/sair-de-casa"><ArrowRight size={16} /></IconBtn>
       </div>
-      <SalaryFlow />
+      <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-tinta/60">No cofre</p>
+          <p className="font-serif text-4xl font-bold">{money(v.saved)}</p>
+          <p className="text-sm text-tinta/60">de {r0(v.target)} · {Math.round(v.progress)}%</p>
+        </div>
+        <span className={cn('rounded-full border-2 border-ink px-3 py-1 text-sm font-semibold', status.cls)}>{status.label}</span>
+      </div>
+      <Bar value={v.progress} className="mt-4 bg-nevoa" />
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="rounded-2xl border-2 border-ink bg-lavanda-100 px-4 py-3">
+          <p className="text-xs text-tinta/60">Guardar por mês</p>
+          <p className="font-serif text-xl font-bold">{need !== null ? r0(need) : '—'}</p>
+          <p className="text-xs text-tinta/55">{need !== null && inc.total ? `${Math.round((need / inc.total) * 100)}% de salário + VA` : 'defina a data meta'}</p>
+        </div>
+        <div className="rounded-2xl border-2 border-ink bg-salvia/50 px-4 py-3">
+          <p className="text-xs text-tinta/60">Neste mês</p>
+          <p className="font-serif text-xl font-bold">{r0(Math.max(0, v.thisMonth))}</p>
+          <p className="text-xs text-tinta/55">{need ? (parcelLeft > 0 ? `faltam ${r0(parcelLeft)}` : 'parcela batida ✓') : 'guardado no mês'}</p>
+        </div>
+      </div>
     </div>
   )
 }
 
-/** Em andamento: Estudos, Leitura e Sair de casa. */
+/** Em andamento: Estudos e Leitura (Sair de casa tem o card próprio acima). */
 export function InProgress() {
   const study = useStudyWeek()
   const book = useBooks().find((b) => b.status === 'lendo')
-  const vault = useVault()
   const items = [
     { label: 'Estudos', icon: GraduationCap, value: study.progress, to: '/estudos' },
     { label: 'Leitura', icon: BookOpen, value: book ? ratio(book.currentPage, book.pages) : 0, to: '/leitura' },
-    { label: 'Sair de casa', icon: HomeIcon, value: vault.progress, to: '/sair-de-casa' },
   ]
   return (
     <section>
       <h2 className="mb-4 flex items-center gap-2 font-serif text-2xl font-bold"><Layers size={20} /> Em andamento</h2>
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2">
         {items.map(({ label, icon: I, value, to }) => (
           <Link key={label} to={to} className={cn(card, 'group block transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-lift')}>
             <div className="flex items-center justify-between">

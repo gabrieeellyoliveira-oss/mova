@@ -1,7 +1,7 @@
 import { useAgendaEvents } from './useAgenda'
 import { useMemo } from 'react'
-import { useCourses, useFinanceSummary, useIncome, useTransactions, useVault } from './useData'
-import { daysBetween, fromISODate, monthKey, relativeDay, toISODate, today } from '@/utils/date'
+import { useCourses, useIncome, useVault } from './useData'
+import { daysBetween, relativeDay, today } from '@/utils/date'
 import { money } from '@/utils/format'
 
 export interface Notice {
@@ -16,9 +16,7 @@ export interface Notice {
 export function useNotifications(now: Date): Notice[] {
   const events = useAgendaEvents()
   const courses = useCourses()
-  const fin = useFinanceSummary()
   const vault = useVault()
-  const tx = useTransactions()
   const inc = useIncome()
 
   return useMemo(() => {
@@ -33,23 +31,8 @@ export function useNotifications(now: Date): Notice[] {
       list.push({ id: `ensaio-${t.slice(0, 7)}`, emoji: '🔑', title: `Ensaio do mês: guarde ${money(Math.round(rehearsalLeft))}`, text: 'o custo de morar sozinha vai para o cofre', path: '/sair-de-casa' })
     else if (vault.remaining > 0 && vault.thisMonth <= 0)
       list.push({ id: `vault-${t.slice(0, 7)}`, emoji: '🪙', title: 'Que tal guardar um pouquinho no cofre?', text: `faltam ${Math.round(100 - vault.progress)}% para sair de casa`, path: '/sair-de-casa' })
-    if (fin.budgetUsed >= 80) list.push({ id: 'budget', emoji: '🪙', title: `Você já usou ${Math.round(fin.budgetUsed)}% do orçamento`, text: 'Que tal um rolê grátis essa semana?', path: '/financas' })
     courses.filter((c) => c.active && c.deadline && daysBetween(t, c.deadline) >= 0 && daysBetween(t, c.deadline) <= 10).forEach((c) =>
       list.push({ id: `course-${c.id}`, emoji: '📚', title: `${c.name}`, text: `prazo ${relativeDay(c.deadline!)}`, path: '/estudos' }))
-    // contas fixas que vencem nos próximos 3 dias (pelo dia do mês da última vez) e ainda não foram lançadas no mês
-    const latest = new Map<string, (typeof tx)[number]>()
-    tx.filter((x) => x.type === 'despesa' && x.recurring).forEach((x) => {
-      const prev = latest.get(x.description)
-      if (!prev || x.date > prev.date) latest.set(x.description, x)
-    })
-    latest.forEach((x) => {
-      if (monthKey(x.date) === monthKey(t)) return
-      const n = fromISODate(t)
-      const last = new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate()
-      const due = toISODate(new Date(n.getFullYear(), n.getMonth(), Math.min(fromISODate(x.date).getDate(), last)))
-      const d = daysBetween(t, due)
-      if (d >= 0 && d <= 3) list.push({ id: `bill-${x.description}-${monthKey(t)}`, emoji: '🧾', title: `${money(x.amount)} · ${x.description}`, text: d === 0 ? 'vence hoje' : `em ${d} ${d === 1 ? 'dia' : 'dias'} (${relativeDay(due)})`, path: '/financas' })
-    })
     return list
-  }, [events, courses, fin.budgetUsed, vault, tx, now, inc.payday])
+  }, [events, courses, vault, now, inc.payday])
 }

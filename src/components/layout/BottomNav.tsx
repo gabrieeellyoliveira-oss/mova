@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { BookOpen, CalendarPlus, ListTodo, PiggyBank, Plus, Wallet } from 'lucide-react'
+import { BookOpen, CalendarPlus, ListTodo, PiggyBank, Plus } from 'lucide-react'
 import { Icon, type IconName } from '@/components/ui/Icon'
 import { cn } from '@/lib/cn'
 import { openForm, type FormKind } from '@/hooks/useQuickAdd'
@@ -9,13 +9,12 @@ const items: ({ label: string; path: string; sprite: IconName } | null)[] = [
   { label: 'Início', path: '/', sprite: 'home' },
   { label: 'Agenda', path: '/agenda', sprite: 'planner' },
   null,
-  { label: 'Finanças', path: '/financas', sprite: 'coins' },
+  { label: 'Sair de casa', path: '/sair-de-casa', sprite: 'piggy' },
   { label: 'Perfil', path: '/perfil', sprite: 'user' },
 ]
 
 export const QUICK_ACTIONS: { kind: FormKind; label: string; icon: typeof Plus; color: string }[] = [
   { kind: 'task', label: 'Nova tarefa', icon: ListTodo, color: '#C3AEEC' },
-  { kind: 'transaction', label: 'Novo gasto', icon: Wallet, color: '#A8CA96' },
   { kind: 'event', label: 'Novo compromisso', icon: CalendarPlus, color: '#FAF1DF' },
   { kind: 'deposit', label: 'Guardar no cofre', icon: PiggyBank, color: '#DCD1F4' },
   { kind: 'book', label: 'Nova leitura', icon: BookOpen, color: '#D2E5C8' },

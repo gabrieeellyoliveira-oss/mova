@@ -1,11 +1,8 @@
-import { Link } from 'react-router-dom'
-import { ArrowRight, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useIncome, useVault } from '@/hooks/useData'
 import { openForm } from '@/hooks/useQuickAdd'
 import { money } from '@/utils/format'
-import { monthKey, today } from '@/utils/date'
 import { Progress } from '@/components/ui/Progress'
-import { useMonthFlow } from '@/components/finance/useMonthFlow'
 import { cn } from '@/lib/cn'
 
 const r0 = (n: number) => money(Math.round(n)).replace(',00', '')
@@ -53,40 +50,6 @@ export function Rehearsal() {
           <Plus size={15} strokeWidth={2.6} /> Guardar {r0(r.left || r.suggested)}
         </button>
       </div>
-    </div>
-  )
-}
-
-/** Cabe no meu mês? A mesma conta de Finanças (recebi − contas − gastos − cofre) contra o que falta da parcela. */
-export function MonthFit() {
-  const v = useVault()
-  const f = useMonthFlow(monthKey(today()))
-  const need = v.neededPerMonth ?? 0
-  const parcelLeft = Math.max(0, need - Math.max(0, v.thisMonth))
-  const hasData = f.salary > 0 || f.billTx.length > 0 || f.spentTx.length > 0 || f.others.length > 0
-  const fits = f.available >= parcelLeft
-  const month = new Date().toLocaleDateString('pt-BR', { month: 'long' })
-  const row = 'flex items-center justify-between gap-3 border-b border-dashed border-ink/15 py-2 text-sm'
-  return (
-    <div className="flex h-full flex-col">
-      <ul>
-        <li className={row}><span>Recebi{f.salaryEstimate ? <span className="text-xs text-tinta/50"> (salário previsto)</span> : null}</span><span className="tabular-nums text-oliva-600">+ {r0(f.received)}</span></li>
-        <li className={row}><span>Contas do mês passado</span><span className="tabular-nums">− {r0(f.bills)}</span></li>
-        <li className={row}><span>Gastos de {month}</span><span className="tabular-nums">− {r0(f.spent)}</span></li>
-        <li className={row}><span>Já guardado no cofre</span><span className="tabular-nums">− {r0(f.saved)}</span></li>
-      </ul>
-      <div className={cn('mt-3 flex items-center justify-between rounded-2xl border-2 border-ink px-5 py-3', fits ? 'bg-salvia' : 'bg-[#F6D6DC]')}>
-        <span className="text-sm font-semibold">Disponível agora</span>
-        <span className="font-serif text-2xl font-bold">{r0(f.available)}</span>
-      </div>
-      <p className="mt-3 text-sm text-tinta/75">
-        {need <= 0 ? 'Defina a data meta para comparar com a parcela.'
-          : parcelLeft <= 0 ? 'A parcela deste mês já está no cofre ✓'
-          : fits ? <>Cabe: dá para guardar os <b>{r0(parcelLeft)}</b> que faltam da parcela e ainda sobram {r0(f.available - parcelLeft)}.</>
-          : <>Não cabe ainda: faltam <b>{r0(parcelLeft)}</b> da parcela e o disponível é {r0(f.available)} — diferença de {r0(parcelLeft - f.available)}.</>}
-      </p>
-      {!hasData && <p className="mt-3 text-xs text-tinta/55">Os números ficam reais quando você lança salário, contas e gastos em Finanças.</p>}
-      <Link to="/financas" className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-semibold hover:underline">Abrir Finanças <ArrowRight size={14} /></Link>
     </div>
   )
 }
